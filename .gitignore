@@ -5,3 +5,4 @@ drizzle
 Dockerfile
 entrypoint.sh
 /data
+.env
