@@ -8,3 +8,7 @@ export const level = pgTable("level", {
   required_weighting: integer().notNull(),
   category_id: integer().notNull().references(() => category.category_id),
 })
+
+type LevelType = typeof level.$inferSelect
+
+export interface ILevel extends LevelType {}

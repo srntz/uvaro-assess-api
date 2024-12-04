@@ -1,10 +1,10 @@
-import {configDotenv} from "dotenv";
+import dotenv from "dotenv";
 import {ApolloServer} from "@apollo/server";
 import {expressMiddleware} from "@apollo/server/express4";
 import express from "express";
 import {resolvers, typeDefs} from "./graphql";
 
-configDotenv({path: "../.env"});
+dotenv.config();
 
 const app = express();
 

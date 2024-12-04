@@ -1,24 +1,28 @@
-import {ICategory} from "../db/schemas";
+import {CategoryService} from "../services/CategoryService";
+import {DatabaseConnection} from "../db/DatabaseConnection";
+import {answer, category, level, question} from "../db/schemas";
 
 export const resolvers = {
   Query: {
-    categories: () => {
-      const categories: ICategory[] = [
-        {
-          category_id: 1,
-          category_name: "Category 1",
-          questions: [],
-          levels: []
-        },
-        {
-          category_id: 2,
-          category_name: "Category 2",
-          questions: [],
-          levels: []
-        }
-      ]
-
-      return categories;
+    categories: async () => {
+      const service = new CategoryService();
+      return await service.getCategories();
+    }
+  },
+  Category: {
+    levels: async (parent) => {
+      const db = DatabaseConnection.getInstance();
+      return await db.select().from(level);
+    },
+    questions: async (parent) => {
+      const db = DatabaseConnection.getInstance();
+      return await db.select().from(question).where(question.category_id === parent.category_id);
+    }
+  },
+  Question: {
+    answers: async (parent) => {
+      const db = DatabaseConnection.getInstance();
+      return await db.select().from(answer);
     }
   }
 }
