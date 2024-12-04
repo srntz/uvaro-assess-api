@@ -1,4 +1,5 @@
 import {drizzle} from "drizzle-orm/node-postgres";
+import * as dbSchema from './schemas'
 
 export class DatabaseConnection {
   private static instance: any;
@@ -6,9 +7,10 @@ export class DatabaseConnection {
   private constructor() {}
 
   public static getInstance() {
-    console.log(process.env.UVARO_POSTGRES_URL);
     if(!this.instance) {
-      this.instance = drizzle(process.env.UVARO_POSTGRES_URL as string);
+      this.instance = drizzle(process.env.UVARO_POSTGRES_URL as string, {
+        schema: dbSchema
+      });
     }
     return this.instance;
   }
