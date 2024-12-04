@@ -10,3 +10,10 @@ export const category = pgTable("category", {
 export const categoryRelations = relations(category, ({many}) => ({
   questions: many(question)
 }))
+
+type CategoryType = typeof category.$inferSelect
+
+export interface ICategory extends CategoryType {
+  questions: any[]
+  levels: any[]
+}

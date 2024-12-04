@@ -1,9 +1,9 @@
-export const typedefs =  `#graphql
+export const entities =  `#graphql
     type Category {
         category_id: Int!
         category_name: String!
-        questions: [Question!]!
-        levels: [Level!]!
+        questions: [Question]!
+        levels: [Level]!
     }
     
     type Question {
@@ -11,7 +11,7 @@ export const typedefs =  `#graphql
         question_text: String!
         category_id: Int!
         category: Category!
-        answers: [Answer!]!
+        answers: [Answer]!
     }
 
     type Answer {

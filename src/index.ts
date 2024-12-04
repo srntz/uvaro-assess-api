@@ -1,17 +1,14 @@
 import {configDotenv} from "dotenv";
 import {ApolloServer} from "@apollo/server";
-import {buildSchema} from 'graphql'
-import {graphqlString} from "./graphql";
 import {expressMiddleware} from "@apollo/server/express4";
 import express from "express";
+import {resolvers, typeDefs} from "./graphql";
 
 configDotenv({path: "../.env"});
 
 const app = express();
 
-const schema = buildSchema(graphqlString);
-
-const server = new ApolloServer({schema: schema});
+const server = new ApolloServer({typeDefs, resolvers});
 await server.start();
 
 app.use(express.json());

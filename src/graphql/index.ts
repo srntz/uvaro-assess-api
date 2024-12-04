@@ -1,4 +1,5 @@
-import {typedefs} from "./typedefs";
+import {entities} from "./entities";
 import {queryType} from "./query";
+export * from './resolvers'
 
-export const graphqlString = `${typedefs} ${queryType}`;
+export const typeDefs = `${entities} ${queryType}`;
