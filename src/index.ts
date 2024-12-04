@@ -1,15 +1,22 @@
 import {configDotenv} from "dotenv";
 import {ApolloServer} from "@apollo/server";
-import {startStandaloneServer} from "@apollo/server/standalone";
 import {buildSchema} from 'graphql'
 import {graphqlString} from "./graphql";
+import {expressMiddleware} from "@apollo/server/express4";
+import express from "express";
 
 configDotenv({path: "../.env"});
+
+const app = express();
 
 const schema = buildSchema(graphqlString);
 
 const server = new ApolloServer({schema: schema});
+await server.start();
 
-const { url } = await startStandaloneServer(server, {
-  listen: { port: 4000 },
-});
+app.use(express.json());
+app.use("/graphql", expressMiddleware(server))
+
+app.listen(3000, () => {
+  console.log("Server started on port 3000");
+})
