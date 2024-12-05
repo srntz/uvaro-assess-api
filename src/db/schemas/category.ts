@@ -1,6 +1,7 @@
 import {pgTable, serial, varchar} from "drizzle-orm/pg-core";
 import {relations} from "drizzle-orm";
-import {question} from "./question";
+import {IQuestion, question} from "./question";
+import {ILevel} from "./level";
 
 export const category = pgTable("category", {
   category_id: serial().primaryKey(),
@@ -11,9 +12,9 @@ export const categoryRelations = relations(category, ({many}) => ({
   questions: many(question)
 }))
 
-type CategoryType = typeof category.$inferSelect
+export type CategoryType = typeof category.$inferSelect
 
 export interface ICategory extends CategoryType {
-  questions: any[]
-  levels: any[]
+  questions: IQuestion[]
+  levels: ILevel[]
 }

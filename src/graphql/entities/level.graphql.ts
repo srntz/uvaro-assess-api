@@ -1,0 +1,10 @@
+export const levelEntity = `#graphql
+  type Level {
+      level_id: Int!
+      level_name: String!
+      level_statement: String!
+      required_weighting: Int!
+      category_id: Int!
+      category: Category!
+  }
+`
