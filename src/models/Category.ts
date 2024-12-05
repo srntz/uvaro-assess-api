@@ -6,6 +6,11 @@ export class Category implements ICategory {
     category_id: number;
     category_name: string;
 
+    constructor(categoryId: number, categoryName: string) {
+      this.category_id = categoryId;
+      this.category_name = categoryName;
+    }
+
     public addQuestion(question: IQuestion) {
       this.questions.push(question);
     }
