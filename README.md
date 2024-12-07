@@ -9,7 +9,7 @@
 2. Download the .env file and put it into API's root directory
 3. Create the database container with the following command
     ```shell
-   docker run --name uvaro_db -d -p 5550:5432 -e POSTGRES_PASSWORD:password srntz/uvaro_assess_postgres
+   docker run --name uvaro_db -d -p 5550:5432 -e POSTGRES_PASSWORD=password srntz/uvaro_assess_postgres
     ```
 4. Run the API
     ```
