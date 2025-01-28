@@ -4,7 +4,6 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc && node dist/index.js",
     "start": "nodemon --watch src --ext ts,js --exec tsx ./src/index.ts"
   },
   "type": "module",
