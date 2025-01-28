@@ -1,29 +1,26 @@
 import {IService} from "../interfaces/IService";
-import {IUser, IUserInsert, user} from "../db/schemas";
+import {user} from "../db/schemas";
 import {DatabaseConnection} from "../db/DatabaseConnection";
+import {User} from "../models/User";
 
-export class UserService implements IService<IUser, IUserInsert> {
+export class UserService implements IService<User> {
   private db: any;
 
   constructor() {
     this.db = DatabaseConnection.getInstance()
   }
 
-  async create(item: IUserInsert): Promise<IUser> {
-    const insertedItem = await this.db.insert(user).values({
-      first_name: item.first_name,
-      last_name: item.last_name,
-      email: item.email
-    }).returning()
+  async create(item: User): Promise<User> {
+    const insertedItem = await this.db.insert(user).values(item.createInsertableJsonObject()).returning()
 
-    return insertedItem[0]
+    return User.instantiateFromSourceData(insertedItem[0]);
   }
 
-  get(id: number): Promise<IUser> {
+  get(id: number): Promise<User> {
     throw new Error("Method not implemented.");
   }
 
-  getAll(): Promise<IUser[]> {
+  getAll(): Promise<User[]> {
     throw new Error("Method not implemented.");
   }
 }
