@@ -1,21 +1,14 @@
-import {IService} from "../interfaces/IService";
 import {Question} from "../models/Question";
-import {DatabaseConnection} from "../db/DatabaseConnection";
 import {IQuestion, question} from "../db/schemas";
 import {eq} from "drizzle-orm";
+import {Service} from "./Service";
 
-export class QuestionService implements IService<Question> {
-  private db: any;
-
+export class QuestionService extends Service<Question> {
   constructor() {
-    this.db = DatabaseConnection.getInstance()
+    super();
   }
 
-  async getAll(): Promise<Question[]> {
-    throw new Error("Method not implemented.");
-  }
-
-  async getRelated(parentId: number): Promise<Question[]> {
+  override async getRelated(parentId: number): Promise<Question[]> {
     const relatedQuestions: Question[] = []
 
     const data: IQuestion[] = await this.db.select().from(question).where(eq(question.category_id, parentId));
@@ -28,7 +21,7 @@ export class QuestionService implements IService<Question> {
     return relatedQuestions;
   }
 
-  async get(id: number): Promise<Question> {
+  override async get(id: number): Promise<Question> {
     const data: IQuestion[] = await this.db.select().from(question).where(eq(question.question_id, id));
 
     if(data.length > 0) {
