@@ -5,6 +5,7 @@ import {answerEntity} from "./answer.graphql";
 import {queryEntity} from "./query.graphql";
 import {userEntity} from "./user.graphql";
 import {mutationEntity} from "./mutation.graphql";
+import {assessemntEntity} from "./assessment.graphql";
 
 export const typeDefs =
   `
@@ -12,7 +13,8 @@ export const typeDefs =
     ${questionEntity} 
     ${levelEntity} 
     ${answerEntity}
-    ${queryEntity}
     ${userEntity}
+    ${assessemntEntity}
+    ${queryEntity}
     ${mutationEntity}
   `;
