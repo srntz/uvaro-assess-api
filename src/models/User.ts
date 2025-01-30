@@ -1,29 +1,21 @@
-import {BasicModel} from "./BasicModel";
+import {BaseModel} from "./BaseModel";
+import {IUser} from "../db/schemas";
+import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
-export class User implements BasicModel {
-    private user_id: string | null;
+export class User implements BaseModel<IUser> {
+    private user_id: string | undefined;
     private first_name: string;
     private last_name: string;
     private email: string;
 
-    constructor(first_name: string, last_name: string, email: string, user_id?: string) {
-      this.user_id = user_id || null;
-      this.first_name = first_name;
-      this.last_name = last_name;
-      this.email = email;
-    }
-
-    static instantiateFromSourceData(data: any) {
-      let user: User;
+    constructor(data: IUser) {
       try {
-        if(data.hasOwnProperty('user_id')) {
-          user = new User(data.first_name, data.last_name, data.email, data.user_id);
-        } else {
-          user = new User(data.first_name, data.last_name, data.email);
-        }
-        return user
+        this.user_id = data.user_id;
+        this.first_name = data.first_name;
+        this.last_name = data.last_name;
+        this.email = data.email
       } catch (e) {
-        throw new Error(JSON.stringify({code: "D001", message: "An error occurred during automated object instantiation."}));
+        throw new InvalidModelConstructionException(Object.getPrototypeOf(this).constructor.name)
       }
     }
 

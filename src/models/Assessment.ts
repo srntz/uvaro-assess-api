@@ -1,30 +1,24 @@
-import {BasicModel} from "./BasicModel";
+import {BaseModel} from "./BaseModel";
+import {IAssessment} from "../db/schemas";
+import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
-interface ConstructorArgument {
-  assessment_id: number;
-  start_date_time: string;
-  end_date_time?: string;
-  notes?: string;
-  user_id: string;
-}
-
-export class Assessment implements BasicModel {
-  private assessment_id: number;
-  private start_date_time: string;
-  private end_date_time: string | null;
-  private notes: string | null;
+export class Assessment implements BaseModel<IAssessment> {
+  private assessment_id: number | undefined;
+  private start_date_time: Date;
+  private end_date_time: Date | undefined;
+  private notes: string
   private user_id: string;
 
-  constructor(assessmentData: ConstructorArgument) {
-    this.assessment_id = assessmentData.assessment_id
-    this.start_date_time = assessmentData.start_date_time
-    this.end_date_time = assessmentData.end_date_time || null;
-    this.notes = assessmentData.notes || null;
-    this.user_id = assessmentData.user_id;
-  }
-
-  static instantiateFromSourceData(data: any) {
-
+  constructor(data: IAssessment) {
+    try {
+      this.assessment_id = data.assessment_id
+      this.start_date_time = data.start_date_time
+      this.end_date_time = data.end_date_time
+      this.notes = data.notes
+      this.user_id = data.user_id;
+    } catch (e) {
+      throw new InvalidModelConstructionException(Object.getPrototypeOf(this).constructor.name)
+    }
   }
 
   createFullJsonObject() {
@@ -39,6 +33,9 @@ export class Assessment implements BasicModel {
 
   createInsertableJsonObject() {
     return {
+      start_date_time: this.start_date_time,
+      end_date_time: this.end_date_time,
+      notes: this.notes,
       user_id: this.user_id,
     }
   }

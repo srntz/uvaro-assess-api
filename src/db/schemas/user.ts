@@ -7,5 +7,8 @@ export const user = pgTable("user", {
   email: varchar({length: 255}).notNull(),
 })
 
-export type IUser = typeof user.$inferSelect
+type User = typeof user.$inferInsert
+export interface IUser extends User {
+  user_id?: string
+}
 export type IUserInsert = typeof user.$inferInsert

@@ -1,8 +1,8 @@
-import {BasicModel} from "./BasicModel";
+import {BaseModel} from "./BaseModel";
 import {IAnswer} from "../db/schemas";
-import {InvalidModelConstruction} from "../errors/InvalidModelConstruction";
+import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
-export class Answer implements BasicModel<IAnswer> {
+export class Answer implements BaseModel<IAnswer> {
     private answer_id: number;
     private answer_text: string;
     private weighting: number;
@@ -15,7 +15,7 @@ export class Answer implements BasicModel<IAnswer> {
             this.weighting = data.weighting
             this.question_id = data.question_id;
         } catch (e) {
-            throw new InvalidModelConstruction(Object.getPrototypeOf(this).constructor.name)
+            throw new InvalidModelConstructionException(Object.getPrototypeOf(this).constructor.name)
         }
     }
 
