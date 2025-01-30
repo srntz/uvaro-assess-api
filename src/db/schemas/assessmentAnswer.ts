@@ -11,6 +11,6 @@ export const assessmentAnswer = pgTable("assessment_answer", {
   }
 })
 
-type AssessmentAnswerType = typeof assessmentAnswer.$inferSelect
+export type IAssessemntAnswer = typeof assessmentAnswer.$inferSelect
 
 

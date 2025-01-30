@@ -1,7 +1,7 @@
 import {integer, pgTable, serial, text} from "drizzle-orm/pg-core";
 import {category} from "./category";
 import {relations} from "drizzle-orm";
-import {answer, IAnswer} from "./answer";
+import {answer} from "./answer";
 
 export const question = pgTable("question", {
   question_id: serial().primaryKey(),
@@ -17,8 +17,8 @@ export const questionRelations = relations(question, ({one, many}) => ({
   answers: many(answer)
 }))
 
-type QuestionType = typeof question.$inferSelect
+type QuestionType = typeof question.$inferInsert
 
 export interface IQuestion extends QuestionType {
-  answers: IAnswer[];
+  question_id?: number;
 }
