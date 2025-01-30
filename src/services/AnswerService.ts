@@ -1,21 +1,14 @@
-import {IService} from "../interfaces/IService";
 import {Answer} from "../models/Answer";
-import {DatabaseConnection} from "../db/DatabaseConnection";
 import {answer, IAnswer} from "../db/schemas";
 import {eq} from "drizzle-orm";
+import {Service} from "./Service";
 
-export class AnswerService implements IService<IAnswer> {
-  private db: any;
-
+export class AnswerService extends Service<IAnswer> {
   constructor() {
-    this.db = DatabaseConnection.getInstance()
+    super();
   }
 
-  getAll(): Promise<IAnswer[]> {
-      throw new Error("Method not implemented.");
-  }
-
-  async get(id: number): Promise<IAnswer> {
+  override async get(id: number): Promise<IAnswer> {
     const data: IAnswer[] = await this.db.select().from(answer).where(eq(answer.answer_id, id));
 
     if(data.length > 0) {
@@ -25,7 +18,7 @@ export class AnswerService implements IService<IAnswer> {
     return null
   }
 
-  async getRelated(parentId: number): Promise<IAnswer[]> {
+  override async getRelated(parentId: number): Promise<IAnswer[]> {
     const relatedAnswers: IAnswer[] = [];
 
     const data: IAnswer[] = await this.db.select().from(answer).where(eq(answer.question_id, parentId));

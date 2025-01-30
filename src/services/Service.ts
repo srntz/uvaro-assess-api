@@ -1,4 +1,5 @@
 import {DatabaseConnection} from "../db/DatabaseConnection";
+import {ServiceCallFallthroughException} from "../errors/ServiceCallFallthroughException";
 
 export class Service<T> {
   protected db: any;
@@ -8,18 +9,18 @@ export class Service<T> {
   }
 
   async get(id: string | number): Promise<T> {
-    throw new Error("Method not implemented.");
+    throw new ServiceCallFallthroughException(Object.getPrototypeOf(this).constructor.name);
   }
 
   async getAll(): Promise<T[]> {
-    throw new Error("Method not implemented.");
+    throw new ServiceCallFallthroughException(Object.getPrototypeOf(this).constructor.name);
   }
 
   async create(item: T): Promise<T> {
-    throw new Error("Method not implemented.");
+    throw new ServiceCallFallthroughException(Object.getPrototypeOf(this).constructor.name);
   }
 
   async getRelated(parentId: string | number): Promise<T[]> {
-    throw new Error("Method not implemented.");
+    throw new ServiceCallFallthroughException(Object.getPrototypeOf(this).constructor.name);
   }
 }
