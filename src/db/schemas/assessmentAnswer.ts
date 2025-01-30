@@ -10,3 +10,7 @@ export const assessmentAnswer = pgTable("assessment_answer", {
     pk: primaryKey({name: "assessment_answer_primary_key", columns: [table.assessment_id, table.answer_id]})
   }
 })
+
+type AssessmentAnswerType = typeof assessmentAnswer.$inferSelect
+
+

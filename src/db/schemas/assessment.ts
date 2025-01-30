@@ -8,3 +8,7 @@ export const assessment = pgTable("assessment", {
   notes: text().notNull(),
   user_id: uuid().notNull().references(() => user.user_id)
 })
+
+type AssessmentType = typeof assessment.$inferSelect
+
+export interface IAssessment extends AssessmentType {}

@@ -6,6 +6,7 @@ import {Service} from "../../services/Service";
 import {IAnswer, ICategory} from "../../db/schemas";
 import {Level} from "../../models/Level";
 import {Question} from "../../models/Question";
+import {Answer} from "../../models/Answer";
 
 async function categoriesFieldResolver() {
   const service: Service<ICategory> = new CategoryService();
@@ -38,12 +39,12 @@ async function questionsFromCategoryFieldResolver(args: any) {
 }
 
 async function answerFieldResolver(args: any) {
-  const service: Service<IAnswer> = new AnswerService();
+  const service = new AnswerService();
   return await service.get(args.id);
 }
 
 async function answersFromQuestionFieldResolver(args: any) {
-  const service: Service<IAnswer> = new AnswerService();
+  const service = new AnswerService();
   return await service.getRelated(args.question_id);
 }
 

@@ -16,6 +16,8 @@ export const answerRelations = relations(answer, ({one}) => ({
   }),
 }))
 
-type AnswerType = typeof answer.$inferSelect
+type AnswerType = typeof answer.$inferInsert
 
-export interface IAnswer extends AnswerType {}
+export interface IAnswer extends AnswerType {
+  answer_id?: number;
+}

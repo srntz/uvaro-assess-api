@@ -3,28 +3,28 @@ import {answer, IAnswer} from "../db/schemas";
 import {eq} from "drizzle-orm";
 import {Service} from "./Service";
 
-export class AnswerService extends Service<IAnswer> {
+export class AnswerService extends Service<Answer> {
   constructor() {
     super();
   }
 
-  override async get(id: number): Promise<IAnswer> {
+  override async get(id: number): Promise<Answer> {
     const data: IAnswer[] = await this.db.select().from(answer).where(eq(answer.answer_id, id));
 
     if(data.length > 0) {
-      return new Answer(data[0].answer_id, data[0].answer_text, data[0].weighting, data[0].question_id)
+      return new Answer(data[0])
     }
 
     return null
   }
 
-  override async getRelated(parentId: number): Promise<IAnswer[]> {
-    const relatedAnswers: IAnswer[] = [];
+  override async getRelated(parentId: number): Promise<Answer[]> {
+    const relatedAnswers: Answer[] = [];
 
     const data: IAnswer[] = await this.db.select().from(answer).where(eq(answer.question_id, parentId));
 
     data.forEach((item) => {
-      relatedAnswers.push(new Answer(item.answer_id, item.answer_text, item.weighting, item.question_id));
+      relatedAnswers.push(new Answer(item));
     })
 
     return relatedAnswers
