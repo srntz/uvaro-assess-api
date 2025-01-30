@@ -10,6 +10,6 @@ export class UserService extends Service<User> {
   override async create(item: User): Promise<User> {
     const insertedItem = await this.db.insert(user).values(item.createInsertableJsonObject()).returning()
 
-    return User.instantiateFromSourceData(insertedItem[0]);
+    return new User(insertedItem[0]);
   }
 }

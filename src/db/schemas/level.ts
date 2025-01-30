@@ -9,6 +9,9 @@ export const level = pgTable("level", {
   category_id: integer().notNull().references(() => category.category_id),
 })
 
-type LevelType = typeof level.$inferSelect
+type LevelType = typeof level.$inferInsert
 
-export interface ILevel extends LevelType {}
+export interface ILevel extends LevelType {
+  level_id?: number;
+  level_statement: string;
+}
