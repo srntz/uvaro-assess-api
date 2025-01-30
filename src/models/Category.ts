@@ -1,21 +1,31 @@
-import {ICategory, ILevel, IQuestion} from "../db/schemas";
+import {ICategory} from "../db/schemas";
+import {BaseModel} from "./BaseModel";
+import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
-export class Category implements ICategory {
-    questions: IQuestion[] = [];
-    levels: ILevel[] = [];
-    category_id: number;
-    category_name: string;
+export class Category implements BaseModel<ICategory> {
+    private category_id: number;
+    private category_name: string;
 
-    constructor(categoryId: number, categoryName: string) {
-      this.category_id = categoryId;
-      this.category_name = categoryName;
+    constructor(data: ICategory) {
+      try {
+        this.category_id = data.category_id;
+        this.category_name = data.category_name;
+      } catch (e) {
+        throw new InvalidModelConstructionException(Object.getPrototypeOf(this).constructor.name)
+      }
     }
 
-    public addQuestion(question: IQuestion) {
-      this.questions.push(question);
-    }
+  createFullJsonObject(): ICategory {
+    return {
+      category_id: this.category_id,
+      category_name: this.category_name,
+    };
+  }
 
-    public addLevel(level: ILevel) {
-      this.levels.push(level);
-    }
+  createInsertableJsonObject(): ICategory {
+    return {
+      category_name: this.category_name,
+    };
+  }
+
 }

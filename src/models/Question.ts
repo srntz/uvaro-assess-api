@@ -1,14 +1,34 @@
-import {IAnswer, IQuestion} from "../db/schemas";
+import {IQuestion} from "../db/schemas";
+import {BaseModel} from "./BaseModel";
+import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
-export class Question implements IQuestion {
-    answers: IAnswer[] = [];
-    category_id: number;
-    question_id: number;
-    question_text: string;
+export class Question implements BaseModel<IQuestion> {
+    private question_id: number | undefined;
+    private category_id: number;
+    private question_text: string;
 
-    constructor(questionId: number, questionText: string, categoryId: number) {
-        this.question_id = questionId;
-        this.question_text = questionText;
-        this.category_id = categoryId;
+    constructor(data: IQuestion) {
+        try {
+            this.question_id = data.question_id;
+            this.question_text = data.question_text;
+            this.category_id = data.category_id;
+        } catch (e) {
+            throw new InvalidModelConstructionException(Object.getPrototypeOf(this).constructor.name)
+        }
+    }
+
+    createFullJsonObject(): IQuestion {
+        return {
+            question_id: this.question_id,
+            category_id: this.category_id,
+            question_text: this.question_text,
+        };
+    }
+
+    createInsertableJsonObject(): IQuestion {
+        return {
+            question_text: this.question_text,
+            category_id: this.category_id,
+        };
     }
 }
