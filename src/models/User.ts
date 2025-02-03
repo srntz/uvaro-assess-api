@@ -3,10 +3,10 @@ import {IUser} from "../db/schemas";
 import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
 export class User implements BaseModel<IUser> {
-    private user_id: string | undefined;
-    private first_name: string;
-    private last_name: string;
-    private email: string;
+    readonly user_id: string | undefined;
+    readonly first_name: string;
+    readonly last_name: string;
+    readonly email: string;
 
     constructor(data: IUser) {
       try {

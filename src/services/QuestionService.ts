@@ -14,7 +14,7 @@ export class QuestionService extends Service<Question> {
     const data: IQuestion[] = await this.db.select().from(question).where(eq(question.category_id, parentId));
 
     data.forEach((item) => {
-      const question = new Question(item.question_id, item.question_text, item.category_id);
+      const question = new Question(item);
       relatedQuestions.push(question);
     })
 
@@ -25,7 +25,7 @@ export class QuestionService extends Service<Question> {
     const data: IQuestion[] = await this.db.select().from(question).where(eq(question.question_id, id));
 
     if(data.length > 0) {
-      return new Question(data[0].question_id, data[0].question_text, data[0].category_id)
+      return new Question(data[0])
     }
 
     return null

@@ -3,32 +3,28 @@ import {ILevel, level} from "../db/schemas";
 import {eq} from "drizzle-orm";
 import {Service} from "./Service";
 
-export class LevelService extends Service<ILevel> {
+export class LevelService extends Service<Level> {
   constructor() {
     super();
   }
 
-  override async get(id: number): Promise<ILevel> {
+  override async get(id: number): Promise<Level> {
     const data: ILevel[] = await this.db.select().from(level).where(eq(level.level_id, id));
 
     if(data.length > 0) {
-      return new Level(data[0].level_id, data[0].level_name, data[0].level_statement, data[0].required_weighting, data[0].category_id)
+      return new Level(data[0])
     }
 
     return null
   }
 
-  override async getRelated(parentId: number): Promise<ILevel[]> {
-    const relatedLevels: ILevel[] = [];
+  override async getRelated(parentId: number): Promise<Level[]> {
+    const relatedLevels: Level[] = [];
 
     const data: ILevel[] = await this.db.select().from(level).where(eq(level.category_id, parentId));
 
     data.forEach((item) => {
-      relatedLevels.push(new Level(item.level_id,
-                                  item.level_name,
-                                  item.level_statement,
-                                  item.required_weighting,
-                                  item.category_id));
+      relatedLevels.push(new Level(item));
     })
 
     return relatedLevels;

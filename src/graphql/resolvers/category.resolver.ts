@@ -1,21 +1,20 @@
 import {QuestionService} from "../../services/QuestionService";
 import {Question} from "../../models/Question";
-import {Level} from "../../models/Level";
 import {LevelService} from "../../services/LevelService";
 
-async function questionsFieldResolver(parent: any): Promise<Question[]> {
+async function questionsFieldResolver(parent: Question) {
   const service = new QuestionService()
   return await service.getRelated(parent.category_id)
 }
 
-async function levelsFieldResolver(parent: any): Promise<Level[]> {
+async function levelsFieldResolver(parent: Question) {
   const service = new LevelService();
   return await service.getRelated(parent.category_id)
 }
 
 export const categoryResolvers = {
   CategoryWithChildren: {
-    questions: (parent) => questionsFieldResolver(parent),
-    levels: (parent) => levelsFieldResolver(parent),
+    questions: (parent: Question) => questionsFieldResolver(parent),
+    levels: (parent: Question) => levelsFieldResolver(parent),
   }
 }

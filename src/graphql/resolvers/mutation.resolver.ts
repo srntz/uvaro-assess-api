@@ -16,7 +16,7 @@ async function addAssessmentResolver(userId) {
 
 export const mutationResolvers = {
   Mutation: {
-    addUser: (parent, args) => addUserResolver(args.user),
-    addAssessment: (parent, args) => addAssessmentResolver(args.user_id)
+    addUser: (_, args) => addUserResolver(args.user),
+    addAssessment: (_, args) => addAssessmentResolver(args.user_id)
   }
 }

@@ -3,11 +3,11 @@ import {IAssessment} from "../db/schemas";
 import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
 export class Assessment implements BaseModel<IAssessment> {
-  private assessment_id: number | undefined;
-  private start_date_time: Date;
-  private end_date_time: Date | undefined;
-  private notes: string
-  private user_id: string;
+  readonly assessment_id: number | undefined;
+  readonly start_date_time: Date;
+  readonly end_date_time: Date | undefined;
+  readonly notes: string
+  readonly user_id: string;
 
   constructor(data: IAssessment) {
     try {
