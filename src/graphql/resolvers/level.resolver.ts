@@ -1,5 +1,5 @@
-import {CategoryService} from "../../services/CategoryService";
-import {Level} from "../../models/Level";
+import { CategoryService } from "../../services/CategoryService";
+import { Level } from "../../models/Level";
 
 async function categoryFieldResolver(parent: Level) {
   const service = new CategoryService();
@@ -9,5 +9,5 @@ async function categoryFieldResolver(parent: Level) {
 export const levelResolvers = {
   Level: {
     category: (parent: Level) => categoryFieldResolver(parent),
-  }
-}
+  },
+};

@@ -1,6 +1,6 @@
-import {ILevel} from "../db/schemas";
-import {BaseModel} from "./BaseModel";
-import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
+import { ILevel } from "../db/schemas";
+import { BaseModel } from "./BaseModel";
+import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
 
 export class Level implements BaseModel<ILevel> {
   readonly level_id: number | undefined;
@@ -16,8 +16,10 @@ export class Level implements BaseModel<ILevel> {
       this.level_name = data.level_name;
       this.level_statement = data.level_statement;
       this.required_weighting = data.required_weighting;
-    } catch (e) {
-      throw new InvalidModelConstructionException(Object.getPrototypeOf(this).constructor.name)
+    } catch {
+      throw new InvalidModelConstructionException(
+        Object.getPrototypeOf(this).constructor.name,
+      );
     }
   }
 

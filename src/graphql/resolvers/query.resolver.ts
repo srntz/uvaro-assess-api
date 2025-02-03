@@ -1,13 +1,12 @@
-import {CategoryService} from "../../services/CategoryService";
-import {LevelService} from "../../services/LevelService";
-import {QuestionService} from "../../services/QuestionService";
-import {AnswerService} from "../../services/AnswerService";
-import {Service} from "../../services/Service";
-import {ICategory} from "../../db/schemas";
-import {Level} from "../../models/Level";
-import {Question} from "../../models/Question";
-import {Answer} from "../../models/Answer";
-import {Category} from "../../models/Category";
+import { CategoryService } from "../../services/CategoryService";
+import { LevelService } from "../../services/LevelService";
+import { QuestionService } from "../../services/QuestionService";
+import { AnswerService } from "../../services/AnswerService";
+import { Service } from "../../services/Service";
+import { Level } from "../../models/Level";
+import { Question } from "../../models/Question";
+import { Answer } from "../../models/Answer";
+import { Category } from "../../models/Category";
 
 async function categoriesFieldResolver() {
   const service: Service<Category> = new CategoryService();
@@ -52,12 +51,22 @@ async function answersFromQuestionFieldResolver(question_id: number) {
 export const queryResolvers = {
   Query: {
     allCategories: categoriesFieldResolver,
+
     category: (_, args) => categoryFieldResolver(args.id),
-    levelsFromCategory: (_, args) => levelsFromCategoryFieldResolver(args.category_id),
+
+    levelsFromCategory: (_, args) =>
+      levelsFromCategoryFieldResolver(args.category_id),
+
     level: (_, args) => levelFieldResolver(args.id),
+
     question: (_, args) => questionFieldResolver(args.id),
-    questionsFromCategory: (_, args) => questionsFromCategoryFieldResolver(args.category_id),
+
+    questionsFromCategory: (_, args) =>
+      questionsFromCategoryFieldResolver(args.category_id),
+
     answer: (_, args) => answerFieldResolver(args.id),
-    answersFromQuestion: (_, args) => answersFromQuestionFieldResolver(args.question_id),
-  }
-}
+
+    answersFromQuestion: (_, args) =>
+      answersFromQuestionFieldResolver(args.question_id),
+  },
+};

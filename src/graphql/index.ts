@@ -1,2 +1,2 @@
-export {typeDefs} from "./entities"
-export {resolvers} from './resolvers'
+export { typeDefs } from "./entities";
+export { resolvers } from "./resolvers";
