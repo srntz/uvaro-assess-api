@@ -16,7 +16,7 @@ export class Level implements BaseModel<ILevel> {
       this.level_name = data.level_name;
       this.level_statement = data.level_statement;
       this.required_weighting = data.required_weighting;
-    } catch (e) {
+    } catch {
       throw new InvalidModelConstructionException(
         Object.getPrototypeOf(this).constructor.name,
       );

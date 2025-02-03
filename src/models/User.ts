@@ -14,7 +14,7 @@ export class User implements BaseModel<IUser> {
       this.first_name = data.first_name;
       this.last_name = data.last_name;
       this.email = data.email;
-    } catch (e) {
+    } catch {
       throw new InvalidModelConstructionException(
         Object.getPrototypeOf(this).constructor.name,
       );

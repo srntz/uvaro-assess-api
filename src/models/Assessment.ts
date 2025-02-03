@@ -16,7 +16,7 @@ export class Assessment implements BaseModel<IAssessment> {
       this.end_date_time = data.end_date_time;
       this.notes = data.notes;
       this.user_id = data.user_id;
-    } catch (e) {
+    } catch {
       throw new InvalidModelConstructionException(
         Object.getPrototypeOf(this).constructor.name,
       );

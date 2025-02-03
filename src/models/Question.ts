@@ -12,7 +12,7 @@ export class Question implements BaseModel<IQuestion> {
       this.question_id = data.question_id;
       this.question_text = data.question_text;
       this.category_id = data.category_id;
-    } catch (e) {
+    } catch {
       throw new InvalidModelConstructionException(
         Object.getPrototypeOf(this).constructor.name,
       );

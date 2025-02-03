@@ -10,6 +10,8 @@ async function addUserResolver(userData: IUser) {
   return await service.create(user);
 }
 
+// TODO: implement the method and enable eslint
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function addAssessmentResolver(userId) {}
 
 export const mutationResolvers = {

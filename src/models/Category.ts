@@ -10,7 +10,7 @@ export class Category implements BaseModel<ICategory> {
     try {
       this.category_id = data.category_id;
       this.category_name = data.category_name;
-    } catch (e) {
+    } catch {
       throw new InvalidModelConstructionException(
         Object.getPrototypeOf(this).constructor.name,
       );

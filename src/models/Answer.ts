@@ -14,7 +14,7 @@ export class Answer implements BaseModel<IAnswer> {
       this.answer_text = data.answer_text;
       this.weighting = data.weighting;
       this.question_id = data.question_id;
-    } catch (e) {
+    } catch {
       throw new InvalidModelConstructionException(
         Object.getPrototypeOf(this).constructor.name,
       );
