@@ -3,9 +3,9 @@ import {BaseModel} from "./BaseModel";
 import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
 export class Question implements BaseModel<IQuestion> {
-    private question_id: number | undefined;
-    private category_id: number;
-    private question_text: string;
+    readonly question_id: number | undefined;
+    readonly category_id: number;
+    readonly question_text: string;
 
     constructor(data: IQuestion) {
         try {

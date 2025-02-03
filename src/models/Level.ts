@@ -3,11 +3,11 @@ import {BaseModel} from "./BaseModel";
 import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
 export class Level implements BaseModel<ILevel> {
-  private level_id: number | undefined;
-  private level_name: string;
-  private level_statement: string;
-  private required_weighting: number;
-  private category_id: number;
+  readonly level_id: number | undefined;
+  readonly level_name: string;
+  readonly level_statement: string;
+  readonly required_weighting: number;
+  readonly category_id: number;
 
   constructor(data: ILevel) {
     try {

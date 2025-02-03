@@ -3,8 +3,8 @@ import {BaseModel} from "./BaseModel";
 import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
 export class Category implements BaseModel<ICategory> {
-    private category_id: number;
-    private category_name: string;
+    readonly category_id: number;
+    readonly category_name: string;
 
     constructor(data: ICategory) {
       try {

@@ -7,56 +7,57 @@ import {ICategory} from "../../db/schemas";
 import {Level} from "../../models/Level";
 import {Question} from "../../models/Question";
 import {Answer} from "../../models/Answer";
+import {Category} from "../../models/Category";
 
 async function categoriesFieldResolver() {
-  const service: Service<ICategory> = new CategoryService();
+  const service: Service<Category> = new CategoryService();
   return await service.getAll();
 }
 
-async function categoryFieldResolver(args) {
-  const service: Service<ICategory> = new CategoryService();
-  return await service.get(args.id);
+async function categoryFieldResolver(category_id: number) {
+  const service: Service<Category> = new CategoryService();
+  return await service.get(category_id);
 }
 
-async function levelsFromCategoryFieldResolver(args: any) {
+async function levelsFromCategoryFieldResolver(category_id: number) {
   const service: Service<Level> = new LevelService();
-  return await service.getRelated(args.category_id);
+  return await service.getRelated(category_id);
 }
 
-async function levelsFieldResolver(args: any) {
+async function levelFieldResolver(level_id: number) {
   const service: Service<Level> = new LevelService();
-  return await service.get(args.id);
+  return await service.get(level_id);
 }
 
-async function questionFieldResolver(args: any) {
+async function questionFieldResolver(question_id: number) {
   const service: Service<Question> = new QuestionService();
-  return await service.get(args.id);
+  return await service.get(question_id);
 }
 
-async function questionsFromCategoryFieldResolver(args: any) {
+async function questionsFromCategoryFieldResolver(category_id: number) {
   const service: Service<Question> = new QuestionService();
-  return await service.getRelated(args.category_id);
+  return await service.getRelated(category_id);
 }
 
-async function answerFieldResolver(args: any) {
+async function answerFieldResolver(answer_id: number) {
   const service: Service<Answer> = new AnswerService();
-  return await service.get(args.id);
+  return await service.get(answer_id);
 }
 
-async function answersFromQuestionFieldResolver(args: any) {
+async function answersFromQuestionFieldResolver(question_id: number) {
   const service: Service<Answer> = new AnswerService();
-  return await service.getRelated(args.question_id);
+  return await service.getRelated(question_id);
 }
 
 export const queryResolvers = {
   Query: {
     allCategories: categoriesFieldResolver,
-    category: (parent, args) => categoryFieldResolver(args),
-    levelsFromCategory: (parent, args) => levelsFromCategoryFieldResolver(args),
-    level: (parent, args) => levelsFieldResolver(args),
-    question: (parent, args) => questionFieldResolver(args),
-    questionsFromCategory: (parent, args) => questionsFromCategoryFieldResolver(args),
-    answer: (parend, args) => answerFieldResolver(args),
-    answersFromQuestion: (parent, args) => answersFromQuestionFieldResolver(args),
+    category: (_, args) => categoryFieldResolver(args.id),
+    levelsFromCategory: (_, args) => levelsFromCategoryFieldResolver(args.category_id),
+    level: (_, args) => levelFieldResolver(args.id),
+    question: (_, args) => questionFieldResolver(args.id),
+    questionsFromCategory: (_, args) => questionsFromCategoryFieldResolver(args.category_id),
+    answer: (_, args) => answerFieldResolver(args.id),
+    answersFromQuestion: (_, args) => answersFromQuestionFieldResolver(args.question_id),
   }
 }

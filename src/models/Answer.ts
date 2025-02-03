@@ -3,10 +3,10 @@ import {IAnswer} from "../db/schemas";
 import {InvalidModelConstructionException} from "../errors/InvalidModelConstructionException";
 
 export class Answer implements BaseModel<IAnswer> {
-    private answer_id: number;
-    private answer_text: string;
-    private weighting: number;
-    private question_id: number;
+    readonly answer_id: number;
+    readonly answer_text: string;
+    readonly weighting: number;
+    readonly question_id: number;
 
     constructor(data: IAnswer) {
         try {

@@ -1,22 +1,23 @@
 import {CategoryService} from "../../services/CategoryService";
 import {AnswerService} from "../../services/AnswerService";
+import {Question} from "../../models/Question";
 
-async function categoryFieldResolver(parent: any) {
+async function categoryFieldResolver(parent: Question) {
   const service = new CategoryService();
   return await service.get(parent.category_id);
 }
 
-async function answersFieldResolver(parent: any) {
+async function answersFieldResolver(parent: Question) {
   const service = new AnswerService();
   return await service.getRelated(parent.question_id);
 }
 
 export const questionResolvers = {
   QuestionWithChildren: {
-    category: (parent) => categoryFieldResolver(parent),
-    answers: (parent) => answersFieldResolver(parent),
+    category: (parent: Question) => categoryFieldResolver(parent),
+    answers: (parent: Question) => answersFieldResolver(parent),
   },
   Question: {
-    category: (parent) => categoryFieldResolver(parent)
+    category: (parent: Question) => categoryFieldResolver(parent),
   }
 }
