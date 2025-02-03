@@ -1,7 +1,7 @@
-import {Answer} from "../models/Answer";
-import {answer, IAnswer} from "../db/schemas";
-import {eq} from "drizzle-orm";
-import {Service} from "./Service";
+import { Answer } from "../models/Answer";
+import { answer, IAnswer } from "../db/schemas";
+import { eq } from "drizzle-orm";
+import { Service } from "./Service";
 
 export class AnswerService extends Service<Answer> {
   constructor() {
@@ -9,25 +9,30 @@ export class AnswerService extends Service<Answer> {
   }
 
   override async get(id: number): Promise<Answer> {
-    const data: IAnswer[] = await this.db.select().from(answer).where(eq(answer.answer_id, id));
+    const data: IAnswer[] = await this.db
+      .select()
+      .from(answer)
+      .where(eq(answer.answer_id, id));
 
-    if(data.length > 0) {
-      return new Answer(data[0])
+    if (data.length > 0) {
+      return new Answer(data[0]);
     }
 
-    return null
+    return null;
   }
 
   override async getRelated(parentId: number): Promise<Answer[]> {
     const relatedAnswers: Answer[] = [];
 
-    const data: IAnswer[] = await this.db.select().from(answer).where(eq(answer.question_id, parentId));
+    const data: IAnswer[] = await this.db
+      .select()
+      .from(answer)
+      .where(eq(answer.question_id, parentId));
 
     data.forEach((item) => {
       relatedAnswers.push(new Answer(item));
-    })
+    });
 
-    return relatedAnswers
+    return relatedAnswers;
   }
-
 }

@@ -1,6 +1,6 @@
-import {CategoryService} from "../../services/CategoryService";
-import {AnswerService} from "../../services/AnswerService";
-import {Question} from "../../models/Question";
+import { CategoryService } from "../../services/CategoryService";
+import { AnswerService } from "../../services/AnswerService";
+import { Question } from "../../models/Question";
 
 async function categoryFieldResolver(parent: Question) {
   const service = new CategoryService();
@@ -19,5 +19,5 @@ export const questionResolvers = {
   },
   Question: {
     category: (parent: Question) => categoryFieldResolver(parent),
-  }
-}
+  },
+};

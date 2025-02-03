@@ -1,6 +1,6 @@
-import {user} from "../db/schemas";
-import {User} from "../models/User";
-import {Service} from "./Service";
+import { user } from "../db/schemas";
+import { User } from "../models/User";
+import { Service } from "./Service";
 
 export class UserService extends Service<User> {
   constructor() {
@@ -8,7 +8,10 @@ export class UserService extends Service<User> {
   }
 
   override async create(item: User): Promise<User> {
-    const insertedItem = await this.db.insert(user).values(item.createInsertableJsonObject()).returning()
+    const insertedItem = await this.db
+      .insert(user)
+      .values(item.createInsertableJsonObject())
+      .returning();
 
     return new User(insertedItem[0]);
   }

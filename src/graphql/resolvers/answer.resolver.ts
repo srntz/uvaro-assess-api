@@ -1,5 +1,5 @@
-import {QuestionService} from "../../services/QuestionService";
-import {Answer} from "../../models/Answer";
+import { QuestionService } from "../../services/QuestionService";
+import { Answer } from "../../models/Answer";
 
 async function questionFieldResolver(question_id: number) {
   const service = new QuestionService();
@@ -8,6 +8,6 @@ async function questionFieldResolver(question_id: number) {
 
 export const answerResolvers = {
   Answer: {
-    question: (parent: Answer) => questionFieldResolver(parent.question_id)
-  }
-}
+    question: (parent: Answer) => questionFieldResolver(parent.question_id),
+  },
+};
