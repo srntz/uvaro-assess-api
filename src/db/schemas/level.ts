@@ -4,7 +4,7 @@ import { category } from "./category";
 export const level = pgTable("level", {
   level_id: serial().primaryKey(),
   level_name: varchar({ length: 100 }).notNull(),
-  level_statement: text(),
+  level_statement: text().notNull(),
   required_weighting: integer().notNull(),
   category_id: integer()
     .notNull()
