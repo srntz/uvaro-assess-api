@@ -1,10 +1,12 @@
-import { pgTable, serial, varchar } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { question } from "./question";
 
 export const category = pgTable("category", {
   category_id: serial().primaryKey(),
   category_name: varchar({ length: 100 }).notNull(),
+  category_description: text().notNull(),
+  category_image: varchar({ length: 2048 }).notNull(),
 });
 
 export const categoryRelations = relations(category, ({ many }) => ({
