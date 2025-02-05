@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --watch src --ext ts,js --exec tsx ./src/index.ts"
+    "start": "nodemon --watch src --ext ts,js --exec tsx ./src/index.ts",
+    "load": "tsx ./src/db/load.ts"
   },
   "type": "module",
   "keywords": [],
