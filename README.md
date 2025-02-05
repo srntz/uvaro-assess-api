@@ -19,6 +19,7 @@ ____
    docker run --name uvaro_db -d -p 5550:5432 -e POSTGRES_PASSWORD=password srntz/uvaro_assess_postgres
    ```
    <br>
+   
 #### API
 1. Clone the repository and install node modules.
     ```
