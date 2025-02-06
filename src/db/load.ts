@@ -1,15 +1,21 @@
 import { DatabaseConnection } from "./DatabaseConnection";
 import {
   answer,
+  assessment,
   category,
   IAnswer,
+  IAssessment,
   ICategory,
   ILevel,
   IQuestion,
+  IUser,
   level,
   question,
+  user,
 } from "./schemas";
 import dotenv from "dotenv";
+import { UserService } from "../services/UserService";
+import { User } from "../models/User";
 
 dotenv.config();
 
@@ -907,6 +913,14 @@ const data: IData[] = [
   },
 ];
 
+const userData: IUser[] = [
+  {
+    first_name: "John",
+    last_name: "Doe",
+    email: "johndoe@example.com",
+  },
+];
+
 async function truncateAll() {
   await db.execute('TRUNCATE "user", category RESTART IDENTITY CASCADE');
 }
@@ -937,6 +951,15 @@ async function levelInsert(data: ILevel) {
   await db.insert(level).values(data);
 }
 
+async function userInsert(data: IUser) {
+  const res = await db
+    .insert(user)
+    .values(data)
+    .returning({ user_id: user.user_id });
+
+  return res[0].user_id;
+}
+
 async function main() {
   console.log("Truncating tables...");
   await truncateAll();
@@ -956,6 +979,14 @@ async function main() {
     for (const level of category.levels) {
       await levelInsert({ ...level, category_id });
     }
+  }
+
+  for (const user of userData) {
+    await userInsert(user).then(async (user_id) => {
+      await db
+        .insert(assessment)
+        .values({ user_id, start_date_time: new Date() });
+    });
   }
 
   console.log("The database has been loaded successfully.");
