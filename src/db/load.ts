@@ -4,7 +4,6 @@ import {
   assessment,
   category,
   IAnswer,
-  IAssessment,
   ICategory,
   ILevel,
   IQuestion,
@@ -14,8 +13,6 @@ import {
   user,
 } from "./schemas";
 import dotenv from "dotenv";
-import { UserService } from "../services/UserService";
-import { User } from "../models/User";
 
 dotenv.config();
 
@@ -33,7 +30,8 @@ interface IData extends ICategory {
 const data: IData[] = [
   {
     category_name: "Financial Health",
-    category_description: "Evaluate your financial habits, planning, and stability. This category assesses your ability to plan for the future, manage your resources, and reach your financial objectives. Stress reduction and long-term professional and personal development are made possible by sound financial health.",
+    category_description:
+      "Evaluate your financial habits, planning, and stability. This category assesses your ability to plan for the future, manage your resources, and reach your financial objectives. Stress reduction and long-term professional and personal development are made possible by sound financial health.",
     category_image: "https://example.com/images/finhealth.jpg",
     questions: [
       {
@@ -151,68 +149,78 @@ const data: IData[] = [
       {
         question_text:
           "How prepared are you for unexpected financial emergencies?",
-          follow_up: true,
-          answers: [
-            {
-              answer_text: "I don’t have any savings and would struggle to handle an emergency.",
-              weighting: 0,
-              question_id: null,
-            },
-            {
-              answer_text: "I have a small emergency fund but it wouldn’t cover much.",
-              weighting: 10,
-              question_id: null,
-            },
-            {
-              answer_text: "I have enough savings to cover a minor emergency, like a car repair.",
-              weighting: 20,
-              question_id: null,
-            },
-            {
-              answer_text: "I have a solid emergency fund that could cover several months of expenses.",
-              weighting: 30,
-              question_id: null,
-            },
-            {
-              answer_text: "I am fully prepared for emergencies and have a plan to handle any financial setback.",
-              weighting: 40,
-              question_id: null,
-            },
-          ],
-          category_id: null,
+        follow_up: true,
+        answers: [
+          {
+            answer_text:
+              "I don’t have any savings and would struggle to handle an emergency.",
+            weighting: 0,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "I have a small emergency fund but it wouldn’t cover much.",
+            weighting: 10,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "I have enough savings to cover a minor emergency, like a car repair.",
+            weighting: 20,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "I have a solid emergency fund that could cover several months of expenses.",
+            weighting: 30,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "I am fully prepared for emergencies and have a plan to handle any financial setback.",
+            weighting: 40,
+            question_id: null,
+          },
+        ],
+        category_id: null,
       },
       {
         question_text:
           "How confident are you in your ability to make smart investment decisions?",
-          follow_up: true,
-          answers: [
-            {
-              answer_text: "I don’t know where to start and avoid investing altogether.",
-              weighting: 0,
-              question_id: null,
-            },
-            {
-              answer_text: "I’m learning about investing but still feel unsure about my decisions.",
-              weighting: 10,
-              question_id: null,
-            },
-            {
-              answer_text: "I make small investments and feel somewhat confident in my choices.",
-              weighting: 20,
-              question_id: null,
-            },
-            {
-              answer_text: "I regularly invest and feel confident in my ability to grow my wealth.",
-              weighting: 30,
-              question_id: null,
-            },
-            {
-              answer_text: "I’m an experienced investor and often guide others in making smart financial decisions.",
-              weighting: 40,
-              question_id: null,
-            },
-          ],
-          category_id: null,
+        follow_up: true,
+        answers: [
+          {
+            answer_text:
+              "I don’t know where to start and avoid investing altogether.",
+            weighting: 0,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "I’m learning about investing but still feel unsure about my decisions.",
+            weighting: 10,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "I make small investments and feel somewhat confident in my choices.",
+            weighting: 20,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "I regularly invest and feel confident in my ability to grow my wealth.",
+            weighting: 30,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "I’m an experienced investor and often guide others in making smart financial decisions.",
+            weighting: 40,
+            question_id: null,
+          },
+        ],
+        category_id: null,
       },
     ],
     levels: [
@@ -253,7 +261,8 @@ const data: IData[] = [
   },
   {
     category_name: "Work You Enjoy",
-    category_description: "Explore how fulfilled and confident you feel in your current role. This category looks at how well you align with your work, your ability to seek feedback, and how confident you are in your capacity to make a significant contribution. Enjoying your work is essential for sustained motivation and career satisfaction.",
+    category_description:
+      "Explore how fulfilled and confident you feel in your current role. This category looks at how well you align with your work, your ability to seek feedback, and how confident you are in your capacity to make a significant contribution. Enjoying your work is essential for sustained motivation and career satisfaction.",
     category_image: "https://example.com/images/wye.jpg",
     questions: [
       {
@@ -371,68 +380,76 @@ const data: IData[] = [
       {
         question_text:
           "How often do you feel excited or motivated to start your workday?",
-          follow_up: true,
-          answers: [
-            {
-              answer_text: "Rarely, I often dread going to work.",
-              weighting: 0,
-              question_id: null,
-            },
-            {
-              answer_text: "Sometimes, but it depends on the tasks I have to do.",
-              weighting: 10,
-              question_id: null,
-            },
-            {
-              answer_text: "Often, I usually find something to look forward to at work.",
-              weighting: 20,
-              question_id: null,
-            },
-            {
-              answer_text: "Frequently, I feel energized and motivated by my work.",
-              weighting: 30,
-              question_id: null,
-            },
-            {
-              answer_text: "Always, I’m passionate about my work and feel excited to contribute.",
-              weighting: 40,
-              question_id: null,
-            },
-          ],
-          category_id: null,
+        follow_up: true,
+        answers: [
+          {
+            answer_text: "Rarely, I often dread going to work.",
+            weighting: 0,
+            question_id: null,
+          },
+          {
+            answer_text: "Sometimes, but it depends on the tasks I have to do.",
+            weighting: 10,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Often, I usually find something to look forward to at work.",
+            weighting: 20,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Frequently, I feel energized and motivated by my work.",
+            weighting: 30,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Always, I’m passionate about my work and feel excited to contribute.",
+            weighting: 40,
+            question_id: null,
+          },
+        ],
+        category_id: null,
       },
       {
         question_text:
           "How well do your skills and strengths align with your current role?",
-          follow_up: true,
-          answers: [
-            {
-              answer_text: "Not at all, I feel like I’m in the wrong role for my skills.",
-              weighting: 0,
-              question_id: null,
-            },
-            {
-              answer_text: "Somewhat, but I often feel underutilized or mismatched.",
-              weighting: 10,
-              question_id: null,
-            },
-            {
-              answer_text: "Moderately, I use some of my strengths but not all of them.",
-              weighting: 20,
-              question_id: null,
-            },
-            {
-              answer_text: "Well, I feel my skills and strengths are a good fit for my role.",
-              weighting: 30,
-              question_id: null,
-            },
-            {
-              answer_text: "Perfectly, I thrive in my role and feel it fully leverages my strengths.",
-              weighting: 40,
-              question_id: null,
-            },
-          ],
-          category_id: null,
+        follow_up: true,
+        answers: [
+          {
+            answer_text:
+              "Not at all, I feel like I’m in the wrong role for my skills.",
+            weighting: 0,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Somewhat, but I often feel underutilized or mismatched.",
+            weighting: 10,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Moderately, I use some of my strengths but not all of them.",
+            weighting: 20,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Well, I feel my skills and strengths are a good fit for my role.",
+            weighting: 30,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Perfectly, I thrive in my role and feel it fully leverages my strengths.",
+            weighting: 40,
+            question_id: null,
+          },
+        ],
+        category_id: null,
       },
     ],
     levels: [
@@ -473,7 +490,8 @@ const data: IData[] = [
   },
   {
     category_name: "Life Choice Fulfillment",
-    category_description: "Reflect on how well your life choices align with your values and sense of purpose. This category assists you in assessing your fulfillment, balance, and clarity about your 'why.' Happiness and resilience increase when you live your life in accordance with your principles.",
+    category_description:
+      "Reflect on how well your life choices align with your values and sense of purpose. This category assists you in assessing your fulfillment, balance, and clarity about your 'why'. Happiness and resilience increase when you live your life in accordance with your principles.",
     category_image: "https://example.com/images/lcf.jpg",
     questions: [
       {
@@ -520,7 +538,7 @@ const data: IData[] = [
         answers: [
           {
             answer_text:
-              "I don’t fully understand my “why” or how to discover it.",
+              "I don’t fully understand my 'why' or how to discover it.",
             weighting: 0,
             question_id: null,
           },
@@ -590,68 +608,77 @@ const data: IData[] = [
       {
         question_text:
           "How often do you feel that your daily activities align with your long-term goals?",
-          follow_up: true,
-          answers: [
-            {
-              answer_text: "Rarely, I feel like I’m just going through the motions.",
-              weighting: 0,
-              question_id: null,
-            },
-            {
-              answer_text: "Sometimes, but I’m not sure if I’m on the right path.",
-              weighting: 10,
-              question_id: null,
-            },
-            {
-              answer_text: "Often, I try to make choices that align with my goals.",
-              weighting: 20,
-              question_id: null,
-            },
-            {
-              answer_text: "Frequently, I actively prioritize activities that move me closer to my goals.",
-              weighting: 30,
-              question_id: null,
-            },
-            {
-              answer_text: "Always, I live intentionally and feel confident in my choices.",
-              weighting: 40,
-              question_id: null,
-            },
-          ],
-          category_id: null,
+        follow_up: true,
+        answers: [
+          {
+            answer_text:
+              "Rarely, I feel like I’m just going through the motions.",
+            weighting: 0,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Sometimes, but I’m not sure if I’m on the right path.",
+            weighting: 10,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Often, I try to make choices that align with my goals.",
+            weighting: 20,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Frequently, I actively prioritize activities that move me closer to my goals.",
+            weighting: 30,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Always, I live intentionally and feel confident in my choices.",
+            weighting: 40,
+            question_id: null,
+          },
+        ],
+        category_id: null,
       },
       {
         question_text:
           "How satisfied are you with the amount of time you spend on activities you enjoy?",
-          follow_up: true,
-          answers: [
-            {
-              answer_text: "Not at all, I rarely have time for things I enjoy.",
-              weighting: 0,
-              question_id: null,
-            },
-            {
-              answer_text: "A little, but I wish I had more time for hobbies and passions.",
-              weighting: 10,
-              question_id: null,
-            },
-            {
-              answer_text: "Somewhat, I try to balance work and personal interests.",
-              weighting: 20,
-              question_id: null,
-            },
-            {
-              answer_text: "Quite a bit, I make time for activities that bring me joy.",
-              weighting: 30,
-              question_id: null,
-            },
-            {
-              answer_text: "Completely, I prioritize my happiness and enjoy a fulfilling lifestyle.",
-              weighting: 40,
-              question_id: null,
-            },
-          ],
-          category_id: null,
+        follow_up: true,
+        answers: [
+          {
+            answer_text: "Not at all, I rarely have time for things I enjoy.",
+            weighting: 0,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "A little, but I wish I had more time for hobbies and passions.",
+            weighting: 10,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Somewhat, I try to balance work and personal interests.",
+            weighting: 20,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Quite a bit, I make time for activities that bring me joy.",
+            weighting: 30,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Completely, I prioritize my happiness and enjoy a fulfilling lifestyle.",
+            weighting: 40,
+            question_id: null,
+          },
+        ],
+        category_id: null,
       },
     ],
     levels: [
@@ -692,7 +719,8 @@ const data: IData[] = [
   },
   {
     category_name: "Peer Community Fulfillment",
-    category_description: "Assess your sense of belonging and contribution within your peer community. This category evaluates your capacity to encourage others, provide and receive feedback, and form deep connections. Collaboration, development, and a feeling of purpose are all enhanced by a strong peer network.",
+    category_description:
+      "Assess your sense of belonging and contribution within your peer community. This category evaluates your capacity to encourage others, provide and receive feedback, and form deep connections. Collaboration, development, and a feeling of purpose are all enhanced by a strong peer network.",
     category_image: "https://example.com/images/pcf.jpg",
     questions: [
       {
@@ -811,68 +839,75 @@ const data: IData[] = [
       {
         question_text:
           "How often do you feel supported by your peers in achieving your goals?",
-          follow_up: true,
-          answers: [
-            {
-              answer_text: "Rarely, I don’t feel connected to a supportive peer group.",
-              weighting: 0,
-              question_id: null,
-            },
-            {
-              answer_text: "Sometimes, but I wish I had more support.",
-              weighting: 10,
-              question_id: null,
-            },
-            {
-              answer_text: "Often, I have a few peers who encourage and help me.",
-              weighting: 20,
-              question_id: null,
-            },
-            {
-              answer_text: "Frequently, I feel supported and actively seek advice from my peers.",
-              weighting: 30,
-              question_id: null,
-            },
-            {
-              answer_text: "Always, I have a strong network that consistently helps me grow.",
-              weighting: 40,
-              question_id: null,
-            },
-          ],
-          category_id: null,
+        follow_up: true,
+        answers: [
+          {
+            answer_text:
+              "Rarely, I don’t feel connected to a supportive peer group.",
+            weighting: 0,
+            question_id: null,
+          },
+          {
+            answer_text: "Sometimes, but I wish I had more support.",
+            weighting: 10,
+            question_id: null,
+          },
+          {
+            answer_text: "Often, I have a few peers who encourage and help me.",
+            weighting: 20,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Frequently, I feel supported and actively seek advice from my peers.",
+            weighting: 30,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Always, I have a strong network that consistently helps me grow.",
+            weighting: 40,
+            question_id: null,
+          },
+        ],
+        category_id: null,
       },
       {
         question_text:
           "How comfortable are you in sharing your challenges or vulnerabilities with your peers?",
-          follow_up: true,
-          answers: [
-            {
-              answer_text: "Not at all, I avoid sharing personal challenges with others.",
-              weighting: 0,
-              question_id: null,
-            },
-            {
-              answer_text: "A little, but only with people I trust deeply.",
-              weighting: 10,
-              question_id: null,
-            },
-            {
-              answer_text: "Somewhat, I share when necessary but still feel hesitant.",
-              weighting: 20,
-              question_id: null,
-            },
-            {
-              answer_text: "Quite a bit, I’m open about my challenges and seek support.",
-              weighting: 30,
-              question_id: null,
-            },
-            {
-              answer_text: "Completely, I’m comfortable being vulnerable and often help others do the same.",
-              weighting: 40,
-              question_id: null,
-            },
-          ],
-          category_id: null,
+        follow_up: true,
+        answers: [
+          {
+            answer_text:
+              "Not at all, I avoid sharing personal challenges with others.",
+            weighting: 0,
+            question_id: null,
+          },
+          {
+            answer_text: "A little, but only with people I trust deeply.",
+            weighting: 10,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Somewhat, I share when necessary but still feel hesitant.",
+            weighting: 20,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Quite a bit, I’m open about my challenges and seek support.",
+            weighting: 30,
+            question_id: null,
+          },
+          {
+            answer_text:
+              "Completely, I’m comfortable being vulnerable and often help others do the same.",
+            weighting: 40,
+            question_id: null,
+          },
+        ],
+        category_id: null,
       },
     ],
     levels: [
