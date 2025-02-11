@@ -4,6 +4,7 @@ export const questionEntity = `#graphql
       question_text: String!
       category_id: Int!
       category: Category!
+      follow_up: Boolean!
   }
 
   type QuestionWithChildren {
@@ -12,5 +13,6 @@ export const questionEntity = `#graphql
       category_id: Int!
       category: Category!
       answers: [Answer]!
+      follow_up: Boolean!
   }
-`
+`;

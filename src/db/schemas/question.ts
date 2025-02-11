@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { boolean, integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 import { category } from "./category";
 import { relations } from "drizzle-orm";
 import { answer } from "./answer";
@@ -9,6 +9,7 @@ export const question = pgTable("question", {
   category_id: integer()
     .notNull()
     .references(() => category.category_id),
+  follow_up: boolean().notNull(),
 });
 
 export const questionRelations = relations(question, ({ one, many }) => ({
