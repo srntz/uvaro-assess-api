@@ -4,6 +4,8 @@ import { IUser } from "../../db/schemas";
 import { NoteService } from "../../services/NoteService";
 import { Service } from "../../services/Service";
 import { Note } from "../../models/Note";
+import { Assessment } from "../../models/Assessment";
+import { AssessmentService } from "../../services/AssessmentService";
 
 async function addUserResolver(userData: IUser) {
   const service = new UserService();
@@ -13,9 +15,18 @@ async function addUserResolver(userData: IUser) {
   return await service.create(user);
 }
 
-// TODO: implement the method and enable eslint
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function addAssessmentResolver(userId) {}
+async function addAssessmentResolver(userId: string) {
+  const insertAssessment = new Assessment({ user_id: userId });
+  const service = new AssessmentService();
+
+  return await service.create(insertAssessment);
+}
+
+async function finishAssessmentResolver(assessmentId: number) {
+  const service = new AssessmentService();
+
+  return await service.insertEndDateTime(assessmentId);
+}
 
 async function saveNoteResolver(note: Note) {
   const service: Service<Note> = new NoteService();
@@ -26,6 +37,7 @@ export const mutationResolvers = {
   Mutation: {
     addUser: (_, args) => addUserResolver(args.user),
     addAssessment: (_, args) => addAssessmentResolver(args.user_id),
+    endAssessment: (_, args) => finishAssessmentResolver(args.assessment_id),
     saveNote: (_, args) =>
       saveNoteResolver(
         new Note({

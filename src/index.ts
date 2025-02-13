@@ -9,7 +9,10 @@ dotenv.config();
 
 const app = express();
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
 await server.start();
 
 app.use(cors());

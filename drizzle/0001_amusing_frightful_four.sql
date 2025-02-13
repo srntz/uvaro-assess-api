@@ -1,0 +1,1 @@
+ALTER TABLE "assessment" ALTER COLUMN "start_date_time" SET DEFAULT now();
