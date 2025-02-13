@@ -8,6 +8,13 @@
       "when": 1739299761562,
       "tag": "0000_zippy_stephen_strange",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1739480660684,
+      "tag": "0001_amusing_frightful_four",
+      "breakpoints": true
     }
   ]
 }

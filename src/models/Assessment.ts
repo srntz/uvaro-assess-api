@@ -4,7 +4,7 @@ import { InvalidModelConstructionException } from "../errors/InvalidModelConstru
 
 export class Assessment implements BaseModel<IAssessment> {
   readonly assessment_id: number | undefined;
-  readonly start_date_time: Date;
+  readonly start_date_time: Date | undefined;
   readonly end_date_time: Date | undefined;
   readonly user_id: string;
 
