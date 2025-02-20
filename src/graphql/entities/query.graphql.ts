@@ -1,6 +1,7 @@
 export const queryEntity = `#graphql
     type Query {
         allCategories: [CategoryWithChildren]
+        getAssessments(user_id: String!): [AssessmentWithChildren]
         category(id: Int!): CategoryWithChildren
         levelsFromCategory(category_id: Int!): [Level]
         level(id: Int!): Level
@@ -9,4 +10,4 @@ export const queryEntity = `#graphql
         answer(id: Int!): Answer
         answersFromQuestion(question_id: Int!): [Answer]
     }
-`
+`;

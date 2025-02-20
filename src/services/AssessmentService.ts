@@ -1,12 +1,28 @@
-import { Service } from "./Service";
 import { Assessment } from "../models/Assessment";
-import { assessment } from "../db/schemas";
+import { Service } from "./Service";
+import { assessment, assessmentAnswer } from "../db/schemas";
 import { eq } from "drizzle-orm";
+import { Answer } from "../models/Answer";
 import { GraphQLError } from "graphql/error";
 
 export class AssessmentService extends Service<Assessment> {
   constructor() {
     super();
+  }
+
+  override async getRelated(parentId: string | number): Promise<Assessment[]> {
+    const assessments: Assessment[] = [];
+
+    const res = await this.db
+      .select()
+      .from(assessment)
+      .where(eq(assessment.user_id, parentId.toString()));
+
+    res.forEach((item) => {
+      assessments.push(new Assessment(item));
+    });
+
+    return assessments;
   }
 
   override async create(item: Assessment): Promise<Assessment> {
@@ -46,5 +62,20 @@ export class AssessmentService extends Service<Assessment> {
     } else {
       throw new GraphQLError("The assessment is already finished");
     }
+  }
+
+  async getAnswers(assessment_id: number): Promise<Answer[]> {
+    const answers: Answer[] = [];
+
+    const res = await this.db
+      .select()
+      .from(assessmentAnswer)
+      .where(eq(assessmentAnswer.assessment_id, assessment_id));
+
+    res.forEach((item) => {
+      answers.push(new Answer(item));
+    });
+
+    return answers;
   }
 }

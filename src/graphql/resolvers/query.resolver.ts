@@ -7,6 +7,8 @@ import { Level } from "../../models/Level";
 import { Question } from "../../models/Question";
 import { Answer } from "../../models/Answer";
 import { Category } from "../../models/Category";
+import { AssessmentService } from "../../services/AssessmentService";
+import { Assessment } from "../../models/Assessment";
 
 async function categoriesFieldResolver() {
   const service: Service<Category> = new CategoryService();
@@ -48,9 +50,16 @@ async function answersFromQuestionFieldResolver(question_id: number) {
   return await service.getRelated(question_id);
 }
 
+async function getAssessmentResolver(user_id: string) {
+  const service: Service<Assessment> = new AssessmentService();
+  return await service.getRelated(user_id);
+}
+
 export const queryResolvers = {
   Query: {
     allCategories: categoriesFieldResolver,
+
+    getAssessments: (_, args) => getAssessmentResolver(args.user_id),
 
     category: (_, args) => categoryFieldResolver(args.id),
 

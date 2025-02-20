@@ -4,6 +4,7 @@ import { questionResolvers } from "./question.resolver";
 import { levelResolvers } from "./level.resolver";
 import { answerResolvers } from "./answer.resolver";
 import { mutationResolvers } from "./mutation.resolver";
+import { assessmentResolvers } from "./assessment.resolver";
 
 export const resolvers = {
   ...queryResolvers,
@@ -12,4 +13,5 @@ export const resolvers = {
   ...levelResolvers,
   ...answerResolvers,
   ...mutationResolvers,
+  ...assessmentResolvers,
 };
