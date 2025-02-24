@@ -50,16 +50,22 @@ async function answersFromQuestionFieldResolver(question_id: number) {
   return await service.getRelated(question_id);
 }
 
-async function getAssessmentResolver(user_id: string) {
+async function getAssessmentsResolver(user_id: string) {
   const service: Service<Assessment> = new AssessmentService();
   return await service.getRelated(user_id);
+}
+
+async function getAssessmentResolver(assessment_id: string) {
+  const service: Service<Assessment> = new AssessmentService();
+  return await service.get(assessment_id);
 }
 
 export const queryResolvers = {
   Query: {
     allCategories: categoriesFieldResolver,
 
-    getAssessments: (_, args) => getAssessmentResolver(args.user_id),
+    getAssessments: (_, args) => getAssessmentsResolver(args.user_id),
+    getAssessment: (_, args) => getAssessmentResolver(args.id),
 
     category: (_, args) => categoryFieldResolver(args.id),
 

@@ -2,6 +2,7 @@ export const queryEntity = `#graphql
     type Query {
         allCategories: [CategoryWithChildren]
         getAssessments(user_id: String!): [AssessmentWithChildren]
+        getAssessment(id: Int!): AssessmentWithChildren
         category(id: Int!): CategoryWithChildren
         levelsFromCategory(category_id: Int!): [Level]
         level(id: Int!): Level

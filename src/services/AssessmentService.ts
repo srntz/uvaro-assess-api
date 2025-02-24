@@ -10,6 +10,19 @@ export class AssessmentService extends Service<Assessment> {
     super();
   }
 
+  override async get(id: number): Promise<Assessment> {
+    const data = await this.db
+      .select()
+      .from(assessment)
+      .where(eq(assessment.assessment_id, id));
+
+    if (data.length > 0) {
+      return new Assessment(data[0]);
+    } else {
+      return null;
+    }
+  }
+
   override async getRelated(parentId: string | number): Promise<Assessment[]> {
     const assessments: Assessment[] = [];
 
