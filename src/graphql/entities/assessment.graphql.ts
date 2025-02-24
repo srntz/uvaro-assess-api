@@ -12,6 +12,7 @@ export const assessemntEntity = `#graphql
         end_date_time: String
         user_id: String!
         answers: [AssessmentAnswer]!
+        notes: [Note]!
     }
 
     type AssessmentAnswer {

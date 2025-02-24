@@ -1,6 +1,6 @@
 import { Assessment } from "../models/Assessment";
 import { Service } from "./Service";
-import { assessment, assessmentAnswer } from "../db/schemas";
+import { answer, assessment, assessmentAnswer } from "../db/schemas";
 import { eq } from "drizzle-orm";
 import { Answer } from "../models/Answer";
 import { GraphQLError } from "graphql/error";
@@ -65,15 +65,21 @@ export class AssessmentService extends Service<Assessment> {
   }
 
   async getAnswers(assessment_id: number): Promise<Answer[]> {
+    interface IAssessmentAnswerJoin {
+      assessment_answer: typeof assessmentAnswer.$inferSelect;
+      answer: typeof answer.$inferSelect;
+    }
+
     const answers: Answer[] = [];
 
-    const res = await this.db
+    const res: IAssessmentAnswerJoin[] = await this.db
       .select()
       .from(assessmentAnswer)
+      .leftJoin(answer, eq(assessmentAnswer.answer_id, answer.answer_id))
       .where(eq(assessmentAnswer.assessment_id, assessment_id));
 
     res.forEach((item) => {
-      answers.push(new Answer(item));
+      answers.push(new Answer(item.answer));
     });
 
     return answers;
