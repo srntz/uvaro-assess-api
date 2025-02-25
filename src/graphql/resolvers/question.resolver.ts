@@ -12,7 +12,7 @@ async function answersFieldResolver(parent: Question) {
   return await service.getRelated(parent.question_id);
 }
 
-export const questionResolvers = {
+const questionResolvers = {
   QuestionWithChildren: {
     category: (parent: Question) => categoryFieldResolver(parent),
     answers: (parent: Question) => answersFieldResolver(parent),
@@ -21,3 +21,5 @@ export const questionResolvers = {
     category: (parent: Question) => categoryFieldResolver(parent),
   },
 };
+
+export default questionResolvers;

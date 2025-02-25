@@ -25,6 +25,9 @@
   },
   "dependencies": {
     "@apollo/server": "^4.11.2",
+    "@graphql-tools/load-files": "^7.0.1",
+    "@graphql-tools/merge": "^9.0.20",
+    "@graphql-tools/schema": "^10.0.19",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "drizzle-graphql": "^0.8.5",

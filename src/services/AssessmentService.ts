@@ -1,12 +1,41 @@
-import { Service } from "./Service";
 import { Assessment } from "../models/Assessment";
-import { assessment } from "../db/schemas";
+import { Service } from "./Service";
+import { answer, assessment, assessmentAnswer } from "../db/schemas";
 import { eq } from "drizzle-orm";
+import { Answer } from "../models/Answer";
 import { GraphQLError } from "graphql/error";
 
 export class AssessmentService extends Service<Assessment> {
   constructor() {
     super();
+  }
+
+  override async get(id: number): Promise<Assessment> {
+    const data = await this.db
+      .select()
+      .from(assessment)
+      .where(eq(assessment.assessment_id, id));
+
+    if (data.length > 0) {
+      return new Assessment(data[0]);
+    } else {
+      return null;
+    }
+  }
+
+  override async getRelated(parentId: string | number): Promise<Assessment[]> {
+    const assessments: Assessment[] = [];
+
+    const res = await this.db
+      .select()
+      .from(assessment)
+      .where(eq(assessment.user_id, parentId.toString()));
+
+    res.forEach((item) => {
+      assessments.push(new Assessment(item));
+    });
+
+    return assessments;
   }
 
   override async create(item: Assessment): Promise<Assessment> {
@@ -46,5 +75,26 @@ export class AssessmentService extends Service<Assessment> {
     } else {
       throw new GraphQLError("The assessment is already finished");
     }
+  }
+
+  async getAnswers(assessment_id: number): Promise<Answer[]> {
+    interface IAssessmentAnswerJoin {
+      assessment_answer: typeof assessmentAnswer.$inferSelect;
+      answer: typeof answer.$inferSelect;
+    }
+
+    const answers: Answer[] = [];
+
+    const res: IAssessmentAnswerJoin[] = await this.db
+      .select()
+      .from(assessmentAnswer)
+      .leftJoin(answer, eq(assessmentAnswer.answer_id, answer.answer_id))
+      .where(eq(assessmentAnswer.assessment_id, assessment_id));
+
+    res.forEach((item) => {
+      answers.push(new Answer(item.answer));
+    });
+
+    return answers;
   }
 }

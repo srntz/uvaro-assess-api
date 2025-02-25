@@ -33,7 +33,7 @@ async function saveNoteResolver(note: Note) {
   return await service.create(note);
 }
 
-export const mutationResolvers = {
+const mutationResolvers = {
   Mutation: {
     addUser: (_, args) => addUserResolver(args.user),
     addAssessment: (_, args) => addAssessmentResolver(args.user_id),
@@ -48,3 +48,5 @@ export const mutationResolvers = {
       ),
   },
 };
+
+export default mutationResolvers;
