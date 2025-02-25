@@ -30,6 +30,9 @@ const assessmentResolvers = {
         args.question_id,
         args.answer_id,
       ),
+
+    calculateLevel: (_, args, { AssessmentService }: IContext) =>
+      AssessmentService.calculateLevel(args.assessment_id, args.category_id),
   },
 
   AssessmentWithChildren: {

@@ -2,6 +2,7 @@ import { Assessment } from "../../models/Assessment";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";
+import { Level } from "../../models/Level";
 
 export interface IAssessmentService {
   getAssessmentById(assessmentId: number): Promise<Assessment>;
@@ -20,4 +21,5 @@ export interface IAssessmentService {
     questionId: number,
     answer_id: number,
   ): Promise<AssessmentAnswer>;
+  calculateLevel(assessmentId: number, categoryId: number): Promise<Level>;
 }

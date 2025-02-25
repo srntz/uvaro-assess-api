@@ -3,37 +3,40 @@ import { IAssessmentRepository } from "../../repositories/interfaces/IAssessment
 import { Assessment } from "../../models/Assessment";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
-import { assessment } from "../../db/schemas";
-import { text } from "drizzle-orm/pg-core";
-import { note } from "../../db/schemas/note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";
+import { Level } from "../../models/Level";
+import { AssessmentLevel } from "../../models/AssessmentLevel";
+import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository";
 
 export class AssessmentService implements IAssessmentService {
-  constructor(private repository: IAssessmentRepository) {}
+  constructor(
+    private assessmentRepository: IAssessmentRepository,
+    private levelRepository: ILevelRepository,
+  ) {}
 
   async addAssessment(userId: string): Promise<Assessment> {
     const assessment = new Assessment({ user_id: userId });
-    return await this.repository.addAssessment(assessment);
+    return await this.assessmentRepository.addAssessment(assessment);
   }
 
   async endAssessment(assessmentId: number): Promise<Assessment> {
-    return await this.repository.endAssessment(assessmentId);
+    return await this.assessmentRepository.endAssessment(assessmentId);
   }
 
   async getAssessmentById(assessmentId: number): Promise<Assessment> {
-    return await this.repository.getAssessmentById(assessmentId);
+    return await this.assessmentRepository.getAssessmentById(assessmentId);
   }
 
   async getUserAssessments(userId: string): Promise<Assessment[]> {
-    return await this.repository.getUserAssessments(userId);
+    return await this.assessmentRepository.getUserAssessments(userId);
   }
 
   async getAssessmentAnswers(assessmentId: number): Promise<Answer[]> {
-    return await this.repository.getAssessmentAnswers(assessmentId);
+    return await this.assessmentRepository.getAssessmentAnswers(assessmentId);
   }
 
   async getNotes(assessmentId: number): Promise<Note[]> {
-    return await this.repository.getNotes(assessmentId);
+    return await this.assessmentRepository.getNotes(assessmentId);
   }
 
   async insertNote(
@@ -46,7 +49,7 @@ export class AssessmentService implements IAssessmentService {
       category_id: categoryId,
       note_text: text,
     });
-    return await this.repository.insertNote(note);
+    return await this.assessmentRepository.insertNote(note);
   }
 
   async insertAnswer(
@@ -60,6 +63,52 @@ export class AssessmentService implements IAssessmentService {
       answer_id,
     );
 
-    return await this.repository.insertAnswer(assessmentAnswer);
+    return await this.assessmentRepository.insertAnswer(assessmentAnswer);
+  }
+
+  async calculateLevel(
+    assessmentId: number,
+    categoryId: number,
+  ): Promise<Level> {
+    let totalScore = 0;
+
+    const assessmentLevel = new AssessmentLevel(assessmentId, categoryId);
+
+    // Answers from assessment_answer table related to the provided category
+    const answers =
+      await this.assessmentRepository.getAnswersForLevelCalculation(
+        assessmentLevel,
+      );
+
+    // All levels related to the specified category
+    const levels = await this.levelRepository.getLevelsByCategory(
+      assessmentLevel.category_id,
+    );
+    levels.sort((a, b) => a.required_weighting - b.required_weighting);
+
+    // Iterating the answers to calculate the total score
+    for (let i = 0; i < answers.length; i++) {
+      totalScore += answers[i].answer.weighting;
+    }
+
+    /*
+      Iterating the sorted levels array to find the correct level.
+
+      The array is accessed with i-1 because the if condition is checked after the incrementation
+      which makes the index jump over the correct level.
+    */
+    for (let i = 0; i < levels.length; i++) {
+      if (totalScore < levels[i].required_weighting) {
+        assessmentLevel.level_id = levels[i - 1].level_id;
+        break;
+      }
+    }
+
+    // assessment_level record returned by the insert query
+    const insertedLevel =
+      await this.assessmentRepository.insertLevel(assessmentLevel);
+
+    // Querying and returning the actual level.
+    return this.levelRepository.getLevelById(insertedLevel.level_id);
   }
 }

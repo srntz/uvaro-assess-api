@@ -15,6 +15,13 @@
       "when": 1739480660684,
       "tag": "0001_amusing_frightful_four",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1740517758250,
+      "tag": "0002_clammy_major_mapleleaf",
+      "breakpoints": true
     }
   ]
 }

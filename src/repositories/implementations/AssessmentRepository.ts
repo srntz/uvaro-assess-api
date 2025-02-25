@@ -1,13 +1,22 @@
 import { IAssessmentRepository } from "../interfaces/IAssessmentRepository";
 import { Repository } from "../base/Repository";
 import { Assessment } from "../../models/Assessment";
-import { answer, assessment, assessmentAnswer } from "../../db/schemas";
+import {
+  answer,
+  assessment,
+  assessmentAnswer,
+  assessmentLevel,
+  question,
+} from "../../db/schemas";
 import { eq } from "drizzle-orm";
 import { GraphQLError } from "graphql/error";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
 import { note } from "../../db/schemas/note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";
+import { AssessmentLevel } from "../../models/AssessmentLevel";
+import { Level } from "../../models/Level";
+import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
 
 export class AssessmentRepository
   extends Repository
@@ -108,6 +117,10 @@ export class AssessmentRepository
     return answers;
   }
 
+  async getAssessmentLevels(assessmentId: number): Promise<Level[]> {
+    return Promise.resolve(null);
+  }
+
   async getNotes(assessmentId: number): Promise<Note[]> {
     const res: Note[] = [];
     const data = await this.db
@@ -146,5 +159,34 @@ export class AssessmentRepository
 
     console.log(data);
     return AssessmentAnswer.init(data[0]);
+  }
+
+  async getAnswersForLevelCalculation(
+    item: AssessmentLevel,
+  ): Promise<ICalculateLevelAnswer[]> {
+    const answers: ICalculateLevelAnswer[] = await this.db
+      .select()
+      .from(assessmentAnswer)
+      .leftJoin(answer, eq(assessmentAnswer.answer_id, answer.answer_id))
+      .leftJoin(
+        question,
+        eq(assessmentAnswer.question_id, question.question_id),
+      )
+      .where(eq(question.category_id, item.category_id));
+
+    return answers;
+  }
+
+  async insertLevel(item: AssessmentLevel): Promise<AssessmentLevel> {
+    const data: AssessmentLevel = await this.db
+      .insert(assessmentLevel)
+      .values(item)
+      .onConflictDoUpdate({
+        target: [assessmentLevel.assessment_id, assessmentLevel.category_id],
+        set: { level_id: item.level_id },
+      })
+      .returning();
+
+    return AssessmentLevel.init(data[0]);
   }
 }

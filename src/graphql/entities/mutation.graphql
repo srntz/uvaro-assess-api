@@ -4,4 +4,5 @@ type Mutation {
     endAssessment(assessment_id: Int!): Assessment!
     insertNote(assessment_id: Int!, category_id: Int!, note_text: String!): Note!
     insertAnswer(assessment_id: Int!, question_id: Int!, answer_id: Int!): AssessmentAnswer!
+    calculateLevel(assessment_id: Int!, category_id: Int!): Level!
 }
