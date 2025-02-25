@@ -1,6 +1,7 @@
 import { Assessment } from "../../models/Assessment";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
+import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 
 export interface IAssessmentService {
   getAssessmentById(assessmentId: number): Promise<Assessment>;
@@ -14,4 +15,9 @@ export interface IAssessmentService {
     categoryId: number,
     text: string,
   ): Promise<Note>;
+  insertAnswer(
+    assessmentId: number,
+    questionId: number,
+    answer_id: number,
+  ): Promise<AssessmentAnswer>;
 }

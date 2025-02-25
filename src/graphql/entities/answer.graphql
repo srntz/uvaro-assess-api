@@ -5,3 +5,11 @@ type Answer {
   question_id: Int!
   question: Question!
 }
+
+type AnswerFlat {
+  answer_id: Int!
+  answer_text: String!
+  weighting: Int!
+  question_id: Int!
+}
+

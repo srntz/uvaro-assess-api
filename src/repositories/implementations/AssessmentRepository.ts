@@ -7,6 +7,7 @@ import { GraphQLError } from "graphql/error";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
 import { note } from "../../db/schemas/note";
+import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 
 export class AssessmentRepository
   extends Repository
@@ -122,7 +123,28 @@ export class AssessmentRepository
   }
 
   async insertNote(item: Note): Promise<Note> {
-    const res = await this.db.insert(note).values(item).returning();
+    const res = await this.db
+      .insert(note)
+      .values(item)
+      .onConflictDoUpdate({
+        target: [note.assessment_id, note.category_id],
+        set: { note_text: item.note_text },
+      })
+      .returning();
     return new Note(res[0]);
+  }
+
+  async insertAnswer(item: AssessmentAnswer): Promise<AssessmentAnswer> {
+    const data = await this.db
+      .insert(assessmentAnswer)
+      .values(item)
+      .onConflictDoUpdate({
+        target: [assessmentAnswer.assessment_id, assessmentAnswer.question_id],
+        set: { answer_id: item.answer_id },
+      })
+      .returning();
+
+    console.log(data);
+    return AssessmentAnswer.init(data[0]);
   }
 }

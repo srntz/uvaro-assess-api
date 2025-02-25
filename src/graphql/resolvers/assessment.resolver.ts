@@ -1,5 +1,5 @@
-import { IAssessment } from "../../db/schemas";
 import { IContext } from "../../context/IContext";
+import { Assessment } from "../../models/Assessment";
 
 const assessmentResolvers = {
   Query: {
@@ -23,14 +23,21 @@ const assessmentResolvers = {
         args.category_id,
         args.note_text,
       ),
+
+    insertAnswer: (_, args, { AssessmentService }: IContext) =>
+      AssessmentService.insertAnswer(
+        args.assessment_id,
+        args.question_id,
+        args.answer_id,
+      ),
   },
 
   AssessmentWithChildren: {
-    answers: (parent: IAssessment, _, { AssessmentService }: IContext) =>
-      AssessmentService.getAssessmentAnswers(parent.assessment_id),
+    answers: (parent: Assessment, _, { AssessmentService }: IContext) =>
+      AssessmentService.getAssessmentAnswers(parent.id),
 
-    notes: (parent: IAssessment, _, { AssessmentService }: IContext) =>
-      AssessmentService.getNotes(parent.assessment_id),
+    notes: (parent: Assessment, _, { AssessmentService }: IContext) =>
+      AssessmentService.getNotes(parent.id),
   },
 };
 

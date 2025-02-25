@@ -1,6 +1,7 @@
 import { Assessment } from "../../models/Assessment";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
+import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 
 export interface IAssessmentRepository {
   getAssessmentById(assessmentId: number): Promise<Assessment>;
@@ -10,4 +11,5 @@ export interface IAssessmentRepository {
   getAssessmentAnswers(assessmentId: number): Promise<Answer[]>;
   getNotes(assessmentId: number): Promise<Note[]>;
   insertNote(item: Note): Promise<Note>;
+  insertAnswer(item: AssessmentAnswer): Promise<AssessmentAnswer>;
 }
