@@ -6,8 +6,10 @@ async function categoryFieldResolver(parent: Level) {
   return await service.get(parent.category_id);
 }
 
-export const levelResolvers = {
+const levelResolvers = {
   Level: {
     category: (parent: Level) => categoryFieldResolver(parent),
   },
 };
+
+export default levelResolvers;

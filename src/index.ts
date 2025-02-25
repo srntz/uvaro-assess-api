@@ -2,7 +2,8 @@ import dotenv from "dotenv";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import express from "express";
-import { resolvers, typeDefs } from "./graphql";
+// import { resolvers, typeDefs } from "./graphql";
+import schema from "./graphql";
 import cors from "cors";
 
 dotenv.config();
@@ -10,8 +11,7 @@ dotenv.config();
 const app = express();
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
 });
 await server.start();
 

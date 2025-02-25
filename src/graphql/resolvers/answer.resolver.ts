@@ -6,8 +6,10 @@ async function questionFieldResolver(question_id: number) {
   return await service.get(question_id);
 }
 
-export const answerResolvers = {
+const answerResolvers = {
   Answer: {
     question: (parent: Answer) => questionFieldResolver(parent.question_id),
   },
 };
+
+export default answerResolvers;

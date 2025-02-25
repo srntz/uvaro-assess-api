@@ -60,7 +60,7 @@ async function getAssessmentResolver(assessment_id: string) {
   return await service.get(assessment_id);
 }
 
-export const queryResolvers = {
+const queryResolvers = {
   Query: {
     allCategories: categoriesFieldResolver,
 
@@ -85,3 +85,5 @@ export const queryResolvers = {
       answersFromQuestionFieldResolver(args.question_id),
   },
 };
+
+export default queryResolvers;

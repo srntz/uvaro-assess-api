@@ -12,7 +12,7 @@ async function assessmentNoteResolver(assessment_id: number) {
   return await service.getRelated(assessment_id);
 }
 
-export const assessmentResolvers = {
+const assessmentResolvers = {
   AssessmentWithChildren: {
     answers: (parent: IAssessment) =>
       assessmentAnswerResolver(parent.assessment_id),
@@ -20,3 +20,5 @@ export const assessmentResolvers = {
       assessmentNoteResolver(parent.assessment_id),
   },
 };
+
+export default assessmentResolvers;
