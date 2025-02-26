@@ -11,6 +11,7 @@ export interface IAssessmentService {
   addAssessmentAsGuest(): Promise<Assessment>;
   endAssessment(assessmentId: number): Promise<Assessment>;
   getAssessmentAnswers(assessmentId: number): Promise<Answer[]>;
+  getAssessmentLevels(assessmentId: number): Promise<Level[]>;
   getNotes(assessmentId: number): Promise<Note[]>;
   insertNote(
     assessmentId: number,

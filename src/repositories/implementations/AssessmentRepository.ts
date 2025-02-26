@@ -6,6 +6,7 @@ import {
   assessment,
   assessmentAnswer,
   assessmentLevel,
+  level,
   question,
 } from "../../db/schemas";
 import { eq } from "drizzle-orm";
@@ -118,7 +119,24 @@ export class AssessmentRepository
   }
 
   async getAssessmentLevels(assessmentId: number): Promise<Level[]> {
-    return Promise.resolve(null);
+    interface IData {
+      assessmentLevel: typeof assessmentLevel.$inferSelect;
+      level: typeof level.$inferSelect;
+    }
+
+    const levels: Level[] = [];
+
+    const data: IData[] = await this.db
+      .select()
+      .from(assessmentLevel)
+      .leftJoin(level, eq(assessmentLevel.level_id, level.level_id))
+      .where(eq(assessmentLevel.assessment_id, assessmentId));
+
+    data.forEach((item) => {
+      levels.push(Level.init(item.level));
+    });
+
+    return levels;
   }
 
   async getNotes(assessmentId: number): Promise<Note[]> {

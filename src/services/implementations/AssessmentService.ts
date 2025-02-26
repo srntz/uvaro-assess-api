@@ -45,6 +45,10 @@ export class AssessmentService implements IAssessmentService {
     return await this.assessmentRepository.getAssessmentAnswers(assessmentId);
   }
 
+  async getAssessmentLevels(assessmentId: number): Promise<Level[]> {
+    return await this.assessmentRepository.getAssessmentLevels(assessmentId);
+  }
+
   async getNotes(assessmentId: number): Promise<Note[]> {
     return await this.assessmentRepository.getNotes(assessmentId);
   }

@@ -44,6 +44,9 @@ const assessmentResolvers = {
 
     notes: (parent: Assessment, _, { AssessmentService }: IContext) =>
       AssessmentService.getNotes(parent.id),
+
+    levels: (parent: Assessment, _, { AssessmentService }: IContext) =>
+      AssessmentService.getAssessmentLevels(parent.id),
   },
 };
 
