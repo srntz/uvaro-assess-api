@@ -8,7 +8,7 @@ export const assessmentLevel = pgTable(
   {
     assessment_id: integer()
       .notNull()
-      .references(() => assessment.assessment_id),
+      .references(() => assessment.assessment_id, { onDelete: "cascade" }),
     category_id: integer()
       .notNull()
       .references(() => category.category_id),

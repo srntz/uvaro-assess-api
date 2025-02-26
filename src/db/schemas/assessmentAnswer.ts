@@ -8,7 +8,7 @@ export const assessmentAnswer = pgTable(
   {
     assessment_id: integer()
       .notNull()
-      .references(() => assessment.assessment_id),
+      .references(() => assessment.assessment_id, { onDelete: "cascade" }),
     question_id: integer()
       .notNull()
       .references(() => question.question_id),

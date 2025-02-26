@@ -13,4 +13,8 @@ export class UserService implements IUserService {
     const user = new User(firstName, lastName, email);
     return await this.userRepository.insertUser(user);
   }
+
+  async deleteUser(userId: string): Promise<User> {
+    return await this.userRepository.deleteUser(userId);
+  }
 }

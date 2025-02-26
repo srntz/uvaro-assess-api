@@ -7,7 +7,7 @@ export const assessment = pgTable("assessment", {
   end_date_time: timestamp(),
   user_id: uuid()
     .notNull()
-    .references(() => user.user_id),
+    .references(() => user.user_id, { onDelete: "cascade" }),
 });
 
 type AssessmentType = typeof assessment.$inferInsert;
