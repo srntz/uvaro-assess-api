@@ -9,7 +9,7 @@ import {
   level,
   question,
 } from "../../db/schemas";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { GraphQLError } from "graphql/error";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
@@ -190,7 +190,12 @@ export class AssessmentRepository
         question,
         eq(assessmentAnswer.question_id, question.question_id),
       )
-      .where(eq(question.category_id, item.category_id));
+      .where(
+        and(
+          eq(question.category_id, item.category_id),
+          eq(assessmentAnswer.assessment_id, item.assessment_id),
+        ),
+      );
 
     return answers;
   }
