@@ -1,23 +1,52 @@
-import { IAssessment } from "../../db/schemas";
-import { AssessmentService } from "../../services/AssessmentService";
-import { NoteService } from "../../services/NoteService";
-
-async function assessmentAnswerResolver(assessment_id: number) {
-  const service = new AssessmentService();
-  return await service.getAnswers(assessment_id);
-}
-
-async function assessmentNoteResolver(assessment_id: number) {
-  const service = new NoteService();
-  return await service.getRelated(assessment_id);
-}
+import { IContext } from "../../context/IContext";
+import { Assessment } from "../../models/Assessment";
 
 const assessmentResolvers = {
+  Query: {
+    getUserAssessments: async (_, args, { AssessmentService }: IContext) =>
+      AssessmentService.getUserAssessments(args.user_id),
+
+    getAssessmentById: (_, args, { AssessmentService }: IContext) =>
+      AssessmentService.getAssessmentById(args.id),
+  },
+
+  Mutation: {
+    addAssessment: (_, args, { AssessmentService }: IContext) =>
+      AssessmentService.addAssessment(args.user_id),
+
+    addAssessmentAsGuest: (_, __, { AssessmentService }: IContext) =>
+      AssessmentService.addAssessmentAsGuest(),
+
+    endAssessment: (_, args, { AssessmentService }: IContext) =>
+      AssessmentService.endAssessment(args.assessment_id),
+
+    insertNote: (_, args, { AssessmentService }: IContext) =>
+      AssessmentService.insertNote(
+        args.assessment_id,
+        args.category_id,
+        args.note_text,
+      ),
+
+    insertAnswer: (_, args, { AssessmentService }: IContext) =>
+      AssessmentService.insertAnswer(
+        args.assessment_id,
+        args.question_id,
+        args.answer_id,
+      ),
+
+    calculateLevel: (_, args, { AssessmentService }: IContext) =>
+      AssessmentService.calculateLevel(args.assessment_id, args.category_id),
+  },
+
   AssessmentWithChildren: {
-    answers: (parent: IAssessment) =>
-      assessmentAnswerResolver(parent.assessment_id),
-    notes: (parent: IAssessment) =>
-      assessmentNoteResolver(parent.assessment_id),
+    answers: (parent: Assessment, _, { AssessmentService }: IContext) =>
+      AssessmentService.getAssessmentAnswers(parent.id),
+
+    notes: (parent: Assessment, _, { AssessmentService }: IContext) =>
+      AssessmentService.getNotes(parent.id),
+
+    levels: (parent: Assessment, _, { AssessmentService }: IContext) =>
+      AssessmentService.getAssessmentLevels(parent.id),
   },
 };
 
