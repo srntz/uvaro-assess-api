@@ -14,6 +14,9 @@ const assessmentResolvers = {
     addAssessment: (_, args, { AssessmentService }: IContext) =>
       AssessmentService.addAssessment(args.user_id),
 
+    addAssessmentAsGuest: (_, __, { AssessmentService }: IContext) =>
+      AssessmentService.addAssessmentAsGuest(),
+
     endAssessment: (_, args, { AssessmentService }: IContext) =>
       AssessmentService.endAssessment(args.assessment_id),
 

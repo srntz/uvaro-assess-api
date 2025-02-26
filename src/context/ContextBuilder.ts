@@ -3,6 +3,8 @@ import { AssessmentService } from "../services/implementations/AssessmentService
 import { AssessmentRepository } from "../repositories/implementations/AssessmentRepository";
 import { LevelRepository } from "../repositories/implementations/LevelRepository";
 import { LevelService } from "../services/implementations/LevelService";
+import { UserRepository } from "../repositories/implementations/UserRepository";
+import { UserService } from "../services/implementations/UserService";
 
 export class ContextBuilder {
   static Build(): IContext {
@@ -10,8 +12,10 @@ export class ContextBuilder {
       AssessmentService: new AssessmentService(
         new AssessmentRepository(),
         new LevelRepository(),
+        new UserRepository(),
       ),
       LevelService: new LevelService(new LevelRepository()),
+      UserService: new UserService(new UserRepository()),
     };
   }
 }

@@ -7,11 +7,21 @@ import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { Level } from "../../models/Level";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository";
+import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
+import {
+  assessment,
+  assessmentAnswer,
+  assessmentLevel,
+} from "../../db/schemas";
+import { text } from "drizzle-orm/pg-core";
+import { note } from "../../db/schemas/note";
+import { User } from "../../models/User";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
     private assessmentRepository: IAssessmentRepository,
     private levelRepository: ILevelRepository,
+    private userRepository: IUserRepository,
   ) {}
 
   async addAssessment(userId: string): Promise<Assessment> {
@@ -110,5 +120,11 @@ export class AssessmentService implements IAssessmentService {
 
     // Querying and returning the actual level.
     return this.levelRepository.getLevelById(insertedLevel.level_id);
+  }
+
+  async addAssessmentAsGuest(): Promise<Assessment> {
+    const guestUser = new User("GUEST", "GUEST", "guest@guest.com");
+    const insertedUser = await this.userRepository.insertUser(guestUser);
+    return await this.addAssessment(insertedUser.user_id);
   }
 }
