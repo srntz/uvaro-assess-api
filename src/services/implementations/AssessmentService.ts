@@ -115,6 +115,9 @@ export class AssessmentService implements IAssessmentService {
       if (totalScore < levels[i].required_weighting) {
         assessmentLevel.level_id = levels[i - 1].level_id;
         break;
+      } else if (totalScore === levels[i].required_weighting) {
+        assessmentLevel.level_id = levels[i].level_id;
+        break;
       }
     }
 
