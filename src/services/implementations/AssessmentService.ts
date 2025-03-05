@@ -101,9 +101,11 @@ export class AssessmentService implements IAssessmentService {
     levels.sort((a, b) => a.required_weighting - b.required_weighting);
 
     // Iterating the answers to calculate the total score
+    let totalScoreUnmatched = 0;
     for (let i = 0; i < answers.length; i++) {
-      totalScore += answers[i].answer.weighting;
+      totalScoreUnmatched += answers[i].answer.weighting;
     }
+    totalScore = (totalScoreUnmatched / answers.length) * 3;
 
     /*
       Iterating the sorted levels array to find the correct level.
