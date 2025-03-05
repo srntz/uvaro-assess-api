@@ -1,6 +1,6 @@
 import { Question } from "../models/Question";
 import { IQuestion, question } from "../db/schemas";
-import { eq } from "drizzle-orm";
+import { and , eq } from "drizzle-orm";
 import { Service } from "./Service";
 
 export class QuestionService extends Service<Question> {
@@ -35,5 +35,31 @@ export class QuestionService extends Service<Question> {
     }
 
     return null;
+  }
+
+  async getFollowupQuestionsByCategory(categoryId: number): Promise<Question[]> {
+    const followupQuestions: Question[] = [];
+
+    try {
+      const data: IQuestion[] = await this.db
+        .select()
+        .from(question)
+        .where(
+          and(
+            eq(question.category_id, categoryId),
+            eq(question.follow_up, true)
+          )
+        );
+
+      data.forEach((item) => {
+        const question = new Question(item);
+        followupQuestions.push(question);
+      });
+
+      return followupQuestions;
+    } catch (error) {
+      console.error('Error fetching follow-up questions:', error);
+      throw new Error('Failed to fetch follow-up questions');
+    }
   }
 }
