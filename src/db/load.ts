@@ -229,12 +229,14 @@ const data: IData[] = [
         level_statement: "Yeah, that's sad :(",
         required_weighting: 0,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Ok!",
         level_statement: "You're not bad.",
         required_weighting: 30,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Not bad!",
@@ -242,6 +244,7 @@ const data: IData[] = [
           "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
         required_weighting: 60,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Good Job!",
@@ -249,6 +252,7 @@ const data: IData[] = [
           "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
         required_weighting: 90,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "You are great!",
@@ -256,6 +260,7 @@ const data: IData[] = [
           "You are doing a great job managing your personal finances. Keep it up!",
         required_weighting: 120,
         category_id: null,
+        image_url: "https://example.com/image",
       },
     ],
   },
@@ -458,12 +463,14 @@ const data: IData[] = [
         level_statement: "Yeah, that's sad :(",
         required_weighting: 0,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Ok!",
         level_statement: "You're not bad.",
         required_weighting: 30,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Not bad!",
@@ -471,6 +478,7 @@ const data: IData[] = [
           "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
         required_weighting: 60,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Good Job!",
@@ -478,6 +486,7 @@ const data: IData[] = [
           "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
         required_weighting: 90,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "You are great!",
@@ -485,6 +494,7 @@ const data: IData[] = [
           "You are doing a great job managing your personal finances. Keep it up!",
         required_weighting: 120,
         category_id: null,
+        image_url: "https://example.com/image",
       },
     ],
   },
@@ -687,12 +697,14 @@ const data: IData[] = [
         level_statement: "Yeah, that's sad :(",
         required_weighting: 0,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Ok!",
         level_statement: "You're not bad.",
         required_weighting: 30,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Not bad!",
@@ -700,6 +712,7 @@ const data: IData[] = [
           "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
         required_weighting: 60,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Good Job!",
@@ -707,6 +720,7 @@ const data: IData[] = [
           "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
         required_weighting: 90,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "You are great!",
@@ -714,6 +728,7 @@ const data: IData[] = [
           "You are doing a great job managing your personal finances. Keep it up!",
         required_weighting: 120,
         category_id: null,
+        image_url: "https://example.com/image",
       },
     ],
   },
@@ -916,12 +931,14 @@ const data: IData[] = [
         level_statement: "Yeah, that's sad :(",
         required_weighting: 0,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Ok!",
         level_statement: "You're not bad.",
         required_weighting: 30,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Not bad!",
@@ -929,6 +946,7 @@ const data: IData[] = [
           "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
         required_weighting: 60,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "Good Job!",
@@ -936,6 +954,7 @@ const data: IData[] = [
           "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
         required_weighting: 90,
         category_id: null,
+        image_url: "https://example.com/image",
       },
       {
         level_name: "You are great!",
@@ -943,6 +962,7 @@ const data: IData[] = [
           "You are doing a great job managing your personal finances. Keep it up!",
         required_weighting: 120,
         category_id: null,
+        image_url: "https://example.com/image",
       },
     ],
   },

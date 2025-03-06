@@ -7,7 +7,7 @@ import { dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const schemaFiles = loadFilesSync(`${__dirname}/entities/**/*.graphql`, {
+const schemaFiles = loadFilesSync(`${__dirname}/**/*.graphql`, {
   ignoreIndex: true,
 });
 const resolverFiles = loadFilesSync(`${__dirname}/resolvers/**/*.resolver.ts`, {

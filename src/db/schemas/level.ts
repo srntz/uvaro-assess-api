@@ -15,6 +15,7 @@ export const level = pgTable(
     level_name: varchar({ length: 100 }).notNull(),
     level_statement: text().notNull(),
     required_weighting: integer().notNull(),
+    image_url: text().notNull(),
     category_id: integer()
       .notNull()
       .references(() => category.category_id),

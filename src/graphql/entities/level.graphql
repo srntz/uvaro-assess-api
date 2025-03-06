@@ -3,6 +3,7 @@ type Level {
   level_name: String!
   level_statement: String!
   required_weighting: Int!
+  image_url: String!
   category_id: Int!
   category: Category!
 }
@@ -12,5 +13,6 @@ type LevelFlat {
   level_name: String!
   level_statement: String!
   required_weighting: Int!
+  image_url: String!
   category_id: Int!
 }

@@ -3,6 +3,7 @@ export class Level {
     readonly level_name: string,
     readonly level_statement: string,
     readonly required_weighting: number,
+    readonly image_url: string,
     readonly category_id: number,
     readonly level_id?: number,
   ) {}
@@ -12,6 +13,7 @@ export class Level {
       data.level_name,
       data.level_statement,
       data.required_weighting,
+      data.image_url,
       data.category_id,
       data.level_id,
     );

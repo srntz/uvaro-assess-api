@@ -1,0 +1,4 @@
+enum ImageAssetPage {
+    HOME
+    DASHBOARD
+}
