@@ -1,6 +1,0 @@
-type ImageAsset {
-    id: String!
-    page: ImageAssetPage!
-    name: String!
-    url: String!
-}

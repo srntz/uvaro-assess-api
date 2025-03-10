@@ -1,0 +1,5 @@
+type Image {
+    name: String!
+    page: ImagePageEnum!
+    url: String!
+}

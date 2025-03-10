@@ -3,4 +3,5 @@ type Query {
     getUserAssessments(user_id: String!): [AssessmentWithChildren]
     getAssessmentById(id: Int!): AssessmentWithChildren
     getFollowUpQuestionsByCategory(category_id: Int!): [Question]
+    getImagesByPage(page: ImagePageEnum): [Image]
 }
