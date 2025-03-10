@@ -1,6 +1,7 @@
 import { CategoryService } from "../../services/CategoryService";
 import { AnswerService } from "../../services/AnswerService";
 import { Question } from "../../models/Question";
+import { IContext } from "../../context/IContext";
 
 async function categoryFieldResolver(parent: Question) {
   const service = new CategoryService();
@@ -13,6 +14,17 @@ async function answersFieldResolver(parent: Question) {
 }
 
 const questionResolvers = {
+  Query: {
+    getFollowUpQuestionsByCategory: async (
+      _,
+      args,
+      { QuestionService }: IContext,
+    ) => {
+      return await QuestionService.getFollowupQuestionsByCategory(
+        args.category_id,
+      );
+    },
+  },
   QuestionWithChildren: {
     category: (parent: Question) => categoryFieldResolver(parent),
     answers: (parent: Question) => answersFieldResolver(parent),
