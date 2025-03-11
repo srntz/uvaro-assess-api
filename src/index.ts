@@ -5,6 +5,8 @@ import express from "express";
 import schema from "./graphql";
 import cors from "cors";
 import { ContextBuilder } from "./context/ContextBuilder";
+import "../instrument";
+import * as Sentry from "@sentry/node";
 
 dotenv.config();
 
@@ -23,6 +25,8 @@ app.use(
   "/graphql",
   expressMiddleware(server, { context: async () => context }),
 );
+
+Sentry.setupExpressErrorHandler(app);
 
 app.listen(4000, () => {
   console.log("Server started on port 4000");

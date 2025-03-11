@@ -4,9 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --watch src --ext ts,js --exec tsx ./src/index.ts",
+    "start": "nodemon --watch src --ext ts,js --exec \"npm run upload-source-maps && tsx ./src/index.ts\"",
     "load": "tsx ./src/db/load.ts",
-    "migrate": "drizzle-kit migrate"
+    "migrate": "drizzle-kit migrate",
+    "upload-source-maps": "npx @sentry/wizard@latest -i sourcemaps --saas"
   },
   "type": "module",
   "keywords": [],
@@ -28,6 +29,7 @@
     "@graphql-tools/load-files": "^7.0.1",
     "@graphql-tools/merge": "^9.0.20",
     "@graphql-tools/schema": "^10.0.19",
+    "@sentry/node": "^9.5.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "drizzle-graphql": "^0.8.5",
