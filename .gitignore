@@ -7,6 +7,6 @@ Dockerfile
 entrypoint.sh
 
 .env
-.env.production
-.env.development
+.env.*
+
 .sentryclirc
