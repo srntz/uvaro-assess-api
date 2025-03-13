@@ -7,6 +7,8 @@ import cors from "cors";
 import { ContextBuilder } from "./context/ContextBuilder";
 import "../instrument";
 import * as Sentry from "@sentry/node";
+import { ApolloErrorHandler } from "./errors/handlers/ApolloErrorHandler";
+import { responseHttpStatus } from "./errors/plugins/ResponseHttpStatus";
 
 dotenv.config();
 
@@ -16,7 +18,10 @@ const context = ContextBuilder.Build();
 
 const server = new ApolloServer({
   schema,
+  formatError: new ApolloErrorHandler().captureError,
+  plugins: [responseHttpStatus],
 });
+
 await server.start();
 
 app.use(cors());
