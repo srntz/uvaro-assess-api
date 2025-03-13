@@ -1,4 +1,4 @@
-interface IResponseSafeErrorObject {
+export interface IResponseSafeErrorObject {
   statusCode: number;
   code: string;
   message: string;

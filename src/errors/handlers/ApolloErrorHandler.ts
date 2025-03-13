@@ -4,7 +4,6 @@ import { mapApolloServerErrorToResponseSafeError } from "../mappers/mapApolloSer
 
 export class ApolloErrorHandler {
   private formattedError: GraphQLFormattedError;
-  private error: unknown;
   private processedError = {
     message:
       "Could not process error details. This behaviour is unexpected. Please report or try again later.",
@@ -16,12 +15,8 @@ export class ApolloErrorHandler {
 
   public captureError = (
     formattedError: GraphQLFormattedError,
-    error: unknown,
   ): GraphQLFormattedError => {
     this.formattedError = formattedError;
-    this.error = error;
-
-    console.log(error);
 
     const responseSafeError = mapApolloServerErrorToResponseSafeError(
       formattedError.extensions.code as ApolloServerErrorCodeExtended,

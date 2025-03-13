@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --watch src --ext ts,js --exec tsx ./src/index.ts",
+    "start": "nodemon --watch src --ext ts,js --exec tsx ./src/index.ts --mode:development",
+    "start:production": "nodemon --watch src --ext ts,js --exec tsx ./src/index.ts --mode:production",
     "load": "tsx ./src/db/load.ts",
     "migrate": "drizzle-kit migrate",
     "upload-source-maps": "npx @sentry/wizard@latest -i sourcemaps --saas",
