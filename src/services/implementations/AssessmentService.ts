@@ -19,9 +19,9 @@ import { User } from "../../models/User";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
-    private assessmentRepository: IAssessmentRepository,
-    private levelRepository: ILevelRepository,
-    private userRepository: IUserRepository,
+    private readonly assessmentRepository: IAssessmentRepository,
+    private readonly levelRepository: ILevelRepository,
+    private readonly userRepository: IUserRepository,
   ) {}
 
   async addAssessment(userId: string): Promise<Assessment> {

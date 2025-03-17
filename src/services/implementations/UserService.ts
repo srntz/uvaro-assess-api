@@ -3,7 +3,7 @@ import { User } from "../../models/User";
 import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
 
 export class UserService implements IUserService {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(private readonly userRepository: IUserRepository) {}
 
   async addUser(
     firstName: string,

@@ -1,14 +1,15 @@
-import { Answer } from "../models/Answer";
-import { answer, IAnswer } from "../db/schemas";
+import { IAnswerRepository } from "../interfaces/IAnswerRepository";
+import { Answer } from "../../models/Answer";
+import { answer, IAnswer } from "../../db/schemas";
 import { eq } from "drizzle-orm";
-import { Service } from "./Service";
+import { Repository } from "../base/Repository";
 
-export class AnswerService extends Service<Answer> {
+export class AnswerRepository extends Repository implements IAnswerRepository {
   constructor() {
     super();
   }
 
-  override async get(id: number): Promise<Answer> {
+  async getById(id: number): Promise<Answer> {
     const data: IAnswer[] = await this.db
       .select()
       .from(answer)
@@ -21,13 +22,13 @@ export class AnswerService extends Service<Answer> {
     return null;
   }
 
-  override async getRelated(parentId: number): Promise<Answer[]> {
+  async getByQuestionId(questionId: number): Promise<Answer[]> {
     const relatedAnswers: Answer[] = [];
 
     const data: IAnswer[] = await this.db
       .select()
       .from(answer)
-      .where(eq(answer.question_id, parentId));
+      .where(eq(answer.question_id, questionId));
 
     data.forEach((item) => {
       relatedAnswers.push(new Answer(item));
