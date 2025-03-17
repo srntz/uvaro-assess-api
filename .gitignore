@@ -1,7 +1,12 @@
 /node_modules
 /dist
 /.idea
+/data
+
 Dockerfile
 entrypoint.sh
-/data
+
 .env
+.env.production
+.env.development
+.sentryclirc

@@ -1,17 +1,5 @@
-import { CategoryService } from "../../services/CategoryService";
-import { AnswerService } from "../../services/AnswerService";
 import { Question } from "../../models/Question";
 import { IContext } from "../../context/IContext";
-
-async function categoryFieldResolver(parent: Question) {
-  const service = new CategoryService();
-  return await service.get(parent.category_id);
-}
-
-async function answersFieldResolver(parent: Question) {
-  const service = new AnswerService();
-  return await service.getRelated(parent.question_id);
-}
 
 const questionResolvers = {
   Query: {
@@ -26,11 +14,17 @@ const questionResolvers = {
     },
   },
   QuestionWithChildren: {
-    category: (parent: Question) => categoryFieldResolver(parent),
-    answers: (parent: Question) => answersFieldResolver(parent),
+    category: async (parent: Question, _, { CategoryService }: IContext) => {
+      return await CategoryService.getById(parent.category_id);
+    },
+    answers: async (parent: Question, _, { AnswerService }: IContext) => {
+      return await AnswerService.getByQuestionId(parent.question_id);
+    },
   },
   Question: {
-    category: (parent: Question) => categoryFieldResolver(parent),
+    category: async (parent: Question, _, { CategoryService }: IContext) => {
+      return await CategoryService.getById(parent.category_id);
+    },
   },
 };
 

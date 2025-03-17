@@ -2,6 +2,11 @@ import { Category } from "../../models/Category";
 import { IContext } from "../../context/IContext";
 
 const categoryResolvers = {
+  Query: {
+    allCategories: async (_, __, { CategoryService }: IContext) => {
+      return await CategoryService.getAll();
+    },
+  },
   CategoryWithChildren: {
     questions: async (category: Category, _, { QuestionService }: IContext) => {
       return await QuestionService.getRegularQuestionsByCategory(

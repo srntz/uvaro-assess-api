@@ -1,14 +1,14 @@
-import { category, ICategory } from "../db/schemas";
-import { Category } from "../models/Category";
+import { Repository } from "../base/Repository";
+import { ICategoryRepository } from "../interfaces/ICategoryRepository";
+import { Category } from "../../models/Category";
+import { category, ICategory } from "../../db/schemas";
 import { eq } from "drizzle-orm";
-import { Service } from "./Service";
 
-export class CategoryService extends Service<Category> {
-  constructor() {
-    super();
-  }
-
-  override async getAll(): Promise<Category[]> {
+export class CategoryRepository
+  extends Repository
+  implements ICategoryRepository
+{
+  async getAll(): Promise<Category[]> {
     const categories: Category[] = [];
     const data: ICategory[] = await this.db.select().from(category);
 
@@ -19,7 +19,7 @@ export class CategoryService extends Service<Category> {
     return categories;
   }
 
-  override async get(id: number): Promise<Category> {
+  async getById(id: number): Promise<Category> {
     const data: ICategory[] = await this.db
       .select()
       .from(category)
