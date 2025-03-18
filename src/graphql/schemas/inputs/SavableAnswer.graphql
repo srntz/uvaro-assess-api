@@ -1,0 +1,4 @@
+input AnswerInsert {
+    question_id: Int!
+    answer_id: Int!
+}

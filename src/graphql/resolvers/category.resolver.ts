@@ -1,5 +1,13 @@
 import { Category } from "../../models/Category";
 import { IContext } from "../../context/IContext";
+import { mapAll } from "../../dto/mappers/mapAll";
+import { AnswerInsertInput } from "../../interfaces/input/AnswerInsertInput";
+import { mapAnswerInputToDTO } from "../../dto/mappers/mapAnswerInputToDTO";
+
+interface CompleteCategoryInput {
+  assessment_id: number;
+  answers: AnswerInsertInput[];
+}
 
 const categoryResolvers = {
   Query: {
@@ -7,6 +15,20 @@ const categoryResolvers = {
       return await CategoryService.getAll();
     },
   },
+
+  // Mutation: {
+  //   completeCategory: async (
+  //     _,
+  //     { input }: { input: CompleteCategoryInput },
+  //     { AssessmentService }: IContext,
+  //   ) => {
+  //     return await AssessmentService.insertBatchedAnswers(
+  //       input.assessment_id,
+  //       mapAll(input.answers, mapAnswerInputToDTO),
+  //     );
+  //   },
+  // },
+
   CategoryWithChildren: {
     questions: async (category: Category, _, { QuestionService }: IContext) => {
       return await QuestionService.getRegularQuestionsByCategory(

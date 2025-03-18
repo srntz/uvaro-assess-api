@@ -19,6 +19,8 @@ export class ContextBuilder {
         new AssessmentRepository(),
         new LevelRepository(),
         new UserRepository(),
+        new CategoryRepository(),
+        new AnswerRepository(),
       ),
       LevelService: new LevelService(new LevelRepository()),
       UserService: new UserService(new UserRepository()),

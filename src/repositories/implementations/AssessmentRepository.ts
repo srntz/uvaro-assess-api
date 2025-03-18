@@ -175,7 +175,6 @@ export class AssessmentRepository
       })
       .returning();
 
-    console.log(data);
     return AssessmentAnswer.init(data[0]);
   }
 
@@ -211,5 +210,49 @@ export class AssessmentRepository
       .returning();
 
     return AssessmentLevel.init(data[0]);
+  }
+
+  async getAssessmentAnswersByCategoryId(
+    assessmentId: number,
+    categoryId: number,
+  ): Promise<(typeof answer.$inferSelect)[]> {
+    const answerObjects = [];
+    const answers = await this.db
+      .select()
+      .from(assessmentAnswer)
+      .leftJoin(answer, eq(assessmentAnswer.answer_id, answer.answer_id))
+      .leftJoin(
+        question,
+        eq(assessmentAnswer.question_id, question.question_id),
+      )
+      .where(
+        and(
+          eq(question.category_id, categoryId),
+          eq(assessmentAnswer.assessment_id, assessmentId),
+        ),
+      );
+
+    answers.forEach((answer) => {
+      answerObjects.push(answer.answer);
+    });
+
+    return answerObjects;
+  }
+
+  async getQuestionIdsByCategoryId(
+    categoryId: number,
+    followUp: boolean,
+  ): Promise<number[]> {
+    const data: { question_id: number }[] = await this.db
+      .select({ question_id: question.question_id })
+      .from(question)
+      .where(
+        and(
+          eq(question.category_id, categoryId),
+          eq(question.follow_up, followUp),
+        ),
+      );
+
+    return data.map((item) => item.question_id);
   }
 }

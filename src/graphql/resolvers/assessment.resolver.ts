@@ -1,5 +1,13 @@
 import { IContext } from "../../context/IContext";
 import { Assessment } from "../../models/Assessment";
+import { AnswerInsertInput } from "../../interfaces/input/AnswerInsertInput";
+import { mapAll } from "../../dto/mappers/mapAll";
+import { mapAnswerInputToDTO } from "../../dto/mappers/mapAnswerInputToDTO";
+
+interface ISubmitAssessmentInput {
+  assessment_id: number;
+  answers: AnswerInsertInput[];
+}
 
 const assessmentResolvers = {
   Query: {
@@ -8,6 +16,17 @@ const assessmentResolvers = {
 
     getAssessmentById: (_, args, { AssessmentService }: IContext) =>
       AssessmentService.getAssessmentById(args.id),
+
+    calculateLevelFromInputData: async (
+      _,
+      args,
+      { AssessmentService }: IContext,
+    ) => {
+      return await AssessmentService.getLevelFromInputData(
+        args.input.category_id,
+        mapAll(args.input.answers, mapAnswerInputToDTO),
+      );
+    },
   },
 
   Mutation: {
@@ -17,8 +36,16 @@ const assessmentResolvers = {
     addAssessmentAsGuest: (_, __, { AssessmentService }: IContext) =>
       AssessmentService.addAssessmentAsGuest(),
 
-    endAssessment: (_, args, { AssessmentService }: IContext) =>
-      AssessmentService.endAssessment(args.assessment_id),
+    saveAnswers: async (
+      _,
+      { input }: { input: ISubmitAssessmentInput },
+      { AssessmentService }: IContext,
+    ) => {
+      return await AssessmentService.insertBatchedAnswers(
+        input.assessment_id,
+        mapAll(input.answers, mapAnswerInputToDTO),
+      );
+    },
 
     insertNote: (_, args, { AssessmentService }: IContext) =>
       AssessmentService.insertNote(
@@ -34,8 +61,11 @@ const assessmentResolvers = {
         args.answer_id,
       ),
 
-    calculateLevel: (_, args, { AssessmentService }: IContext) =>
-      AssessmentService.calculateLevel(args.assessment_id, args.category_id),
+    calculateLevel: async (_, args, { AssessmentService }: IContext) => {
+      return await AssessmentService.calculateLevelsFromDatabaseAnswers(
+        args.assessment_id,
+      );
+    },
   },
 
   AssessmentWithChildren: {

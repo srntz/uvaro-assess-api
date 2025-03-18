@@ -1,0 +1,4 @@
+input SubmitAssessmentInput {
+    assessment_id: Int!
+    answers: [AnswerInsert!]!
+}

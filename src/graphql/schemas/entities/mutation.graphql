@@ -3,8 +3,8 @@ type Mutation {
     deleteUser(user_id: String!): User!
     addAssessment(user_id: String!): Assessment!
     addAssessmentAsGuest: Assessment!
-    endAssessment(assessment_id: Int!): Assessment!
+    saveAnswers(input: SubmitAssessmentInput): [AssessmentAnswer]!
     insertNote(assessment_id: Int!, category_id: Int!, note_text: String!): Note!
     insertAnswer(assessment_id: Int!, question_id: Int!, answer_id: Int!): AssessmentAnswer!
-    calculateLevel(assessment_id: Int!, category_id: Int!): Level!
+    calculateLevel(assessment_id: Int!): [Level]!
 }

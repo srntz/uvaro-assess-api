@@ -8,20 +8,19 @@ import { Level } from "../../models/Level";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository";
 import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
-import {
-  assessment,
-  assessmentAnswer,
-  assessmentLevel,
-} from "../../db/schemas";
-import { text } from "drizzle-orm/pg-core";
-import { note } from "../../db/schemas/note";
 import { User } from "../../models/User";
+import { AnswerInsertDTO } from "../../dto/AnswerInsertDTO";
+import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
+import { GraphQLError } from "graphql/error";
+import { IAnswerRepository } from "../../repositories/interfaces/IAnswerRepository";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
     private readonly assessmentRepository: IAssessmentRepository,
     private readonly levelRepository: ILevelRepository,
     private readonly userRepository: IUserRepository,
+    private readonly categoryRepository: ICategoryRepository,
+    private readonly answerRepository: IAnswerRepository,
   ) {}
 
   async addAssessment(userId: string): Promise<Assessment> {
@@ -80,29 +79,68 @@ export class AssessmentService implements IAssessmentService {
     return await this.assessmentRepository.insertAnswer(assessmentAnswer);
   }
 
-  async calculateLevel(
+  async insertBatchedAnswers(
     assessmentId: number,
-    categoryId: number,
-  ): Promise<Level> {
-    let totalScore = 0;
+    answers: AnswerInsertDTO[],
+  ): Promise<AssessmentAnswer[]> {
+    const insertedAnswers = [];
 
-    const assessmentLevel = new AssessmentLevel(assessmentId, categoryId);
+    for (let i = 0; i < answers.length; i++) {
+      insertedAnswers.push(
+        await this.assessmentRepository.insertAnswer(
+          new AssessmentAnswer(
+            assessmentId,
+            answers[i].questionId,
+            answers[i].answerId,
+          ),
+        ),
+      );
+    }
 
-    // Answers from assessment_answer table related to the provided category
-    const answers =
-      await this.assessmentRepository.getAnswersForLevelCalculation(
-        assessmentLevel,
+    return insertedAnswers;
+  }
+
+  async calculateLevelsFromDatabaseAnswers(
+    assessmentId: number,
+  ): Promise<Level[]> {
+    const calculatedLevels = [];
+
+    const categoryIds = await this.categoryRepository.getAllIds();
+
+    for (let i = 0; i < categoryIds.length; i++) {
+      const availableLevels = await this.levelRepository.getLevelsByCategory(
+        categoryIds[i].category_id,
+      );
+      const answers =
+        await this.assessmentRepository.getAssessmentAnswersByCategoryId(
+          assessmentId,
+          categoryIds[i].category_id,
+        );
+
+      const calculatedLevel = this.calculateLevel(
+        answers as Answer[],
+        availableLevels,
       );
 
-    // All levels related to the specified category
-    const levels = await this.levelRepository.getLevelsByCategory(
-      assessmentLevel.category_id,
-    );
+      await this.assessmentRepository.insertLevel({
+        level_id: calculatedLevel.level_id,
+        assessment_id: assessmentId,
+        category_id: categoryIds[i].category_id,
+      });
+
+      calculatedLevels.push(calculatedLevel);
+    }
+
+    return calculatedLevels;
+  }
+
+  private calculateLevel(answers: Answer[], levels: Level[]): Level {
+    let totalScore = 0;
     levels.sort((a, b) => a.required_weighting - b.required_weighting);
 
     // Iterating the answers to calculate the total score
     for (let i = 0; i < answers.length; i++) {
-      totalScore += answers[i].answer.weighting;
+      totalScore += answers[i].weighting;
     }
 
     /*
@@ -113,25 +151,62 @@ export class AssessmentService implements IAssessmentService {
     */
     for (let i = 0; i < levels.length; i++) {
       if (totalScore < levels[i].required_weighting) {
-        assessmentLevel.level_id = levels[i - 1].level_id;
-        break;
+        return levels[i - 1];
       } else if (totalScore === levels[i].required_weighting) {
-        assessmentLevel.level_id = levels[i].level_id;
-        break;
+        return levels[i];
       }
     }
-
-    // assessment_level record returned by the insert query
-    const insertedLevel =
-      await this.assessmentRepository.insertLevel(assessmentLevel);
-
-    // Querying and returning the actual level.
-    return this.levelRepository.getLevelById(insertedLevel.level_id);
   }
 
   async addAssessmentAsGuest(): Promise<Assessment> {
     const guestUser = new User("GUEST", "GUEST", "guest@guest.com");
     const insertedUser = await this.userRepository.insertUser(guestUser);
     return await this.addAssessment(insertedUser.user_id);
+  }
+
+  async getLevelFromInputData(
+    categoryId: number,
+    answers: AnswerInsertDTO[],
+  ): Promise<Level> {
+    if (!(await this.verifyRequiredQuestionsPresence(categoryId, answers))) {
+      throw new GraphQLError(
+        "Please provide answers for all non follow-up question for the specified category to get a level.",
+      );
+    }
+
+    const availableLevels =
+      await this.levelRepository.getLevelsByCategory(categoryId);
+
+    const dbAnswers = [];
+    for (let i = 0; i < answers.length; i++) {
+      dbAnswers.push(await this.answerRepository.getById(answers[i].answerId));
+    }
+
+    return this.calculateLevel(dbAnswers, availableLevels);
+  }
+
+  private async verifyRequiredQuestionsPresence(
+    categoryId: number,
+    answers: AnswerInsertDTO[],
+  ): Promise<boolean> {
+    const requiredQuestionIds =
+      await this.assessmentRepository.getQuestionIdsByCategoryId(
+        categoryId,
+        false,
+      );
+
+    for (let i = 0; i < requiredQuestionIds.length; i++) {
+      let match = false;
+      for (let j = 0; j < answers.length; j++) {
+        if (requiredQuestionIds[i] === answers[j].questionId) {
+          match = true;
+        }
+      }
+      if (!match) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

@@ -31,4 +31,12 @@ export class CategoryRepository
 
     return null;
   }
+
+  async getAllIds(): Promise<{ category_id: number }[]> {
+    return await this.db
+      .select({
+        category_id: category.category_id,
+      })
+      .from(category);
+  }
 }

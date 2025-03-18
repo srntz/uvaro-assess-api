@@ -5,6 +5,7 @@ import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
 import { Level } from "../../models/Level";
+import { answer } from "../../db/schemas";
 
 export interface IAssessmentRepository {
   getAssessmentById(assessmentId: number): Promise<Assessment>;
@@ -16,8 +17,13 @@ export interface IAssessmentRepository {
   getNotes(assessmentId: number): Promise<Note[]>;
   insertNote(item: Note): Promise<Note>;
   insertAnswer(item: AssessmentAnswer): Promise<AssessmentAnswer>;
-  getAnswersForLevelCalculation(
-    item: AssessmentLevel,
-  ): Promise<ICalculateLevelAnswer[]>;
+  getAssessmentAnswersByCategoryId(
+    assessmentId: number,
+    categoryId: number,
+  ): Promise<(typeof answer.$inferSelect)[]>;
   insertLevel(item: AssessmentLevel): Promise<AssessmentLevel>;
+  getQuestionIdsByCategoryId(
+    categoryId: number,
+    followUp: boolean,
+  ): Promise<number[]>;
 }

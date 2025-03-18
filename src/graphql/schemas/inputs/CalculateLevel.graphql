@@ -1,0 +1,4 @@
+input CalculateLevelInput {
+    category_id: Int!
+    answers: [AnswerInsert!]!
+}
