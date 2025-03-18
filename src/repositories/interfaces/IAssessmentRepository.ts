@@ -5,7 +5,7 @@ import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
 import { Level } from "../../models/Level";
-import { answer } from "../../db/schemas";
+import { answer, assessmentAnswer } from "../../db/schemas";
 
 export interface IAssessmentRepository {
   getAssessmentById(assessmentId: number): Promise<Assessment>;

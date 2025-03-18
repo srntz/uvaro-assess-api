@@ -17,12 +17,8 @@ const assessmentResolvers = {
     getAssessmentById: (_, args, { AssessmentService }: IContext) =>
       AssessmentService.getAssessmentById(args.id),
 
-    calculateLevelFromInputData: async (
-      _,
-      args,
-      { AssessmentService }: IContext,
-    ) => {
-      return await AssessmentService.getLevelFromInputData(
+    getCalculatedLevel: async (_, args, { AssessmentService }: IContext) => {
+      return await AssessmentService.getCalculatedLevel(
         args.input.category_id,
         mapAll(args.input.answers, mapAnswerInputToDTO),
       );
@@ -33,10 +29,14 @@ const assessmentResolvers = {
     addAssessment: (_, args, { AssessmentService }: IContext) =>
       AssessmentService.addAssessment(args.user_id),
 
+    endAssessment: async (_, args, { AssessmentService }: IContext) => {
+      return await AssessmentService.endAssessment(args.assessment_id);
+    },
+
     addAssessmentAsGuest: (_, __, { AssessmentService }: IContext) =>
       AssessmentService.addAssessmentAsGuest(),
 
-    saveAnswers: async (
+    saveAnswersInBatch: async (
       _,
       { input }: { input: ISubmitAssessmentInput },
       { AssessmentService }: IContext,
@@ -61,9 +61,10 @@ const assessmentResolvers = {
         args.answer_id,
       ),
 
-    calculateLevel: async (_, args, { AssessmentService }: IContext) => {
-      return await AssessmentService.calculateLevelsFromDatabaseAnswers(
+    calculateAndSaveLevel: async (_, args, { AssessmentService }: IContext) => {
+      return await AssessmentService.calculateAndSaveLevel(
         args.assessment_id,
+        args.category_id,
       );
     },
   },

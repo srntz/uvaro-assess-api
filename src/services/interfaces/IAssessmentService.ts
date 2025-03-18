@@ -29,8 +29,12 @@ export interface IAssessmentService {
     answers: AnswerInsertDTO[],
   ): Promise<AssessmentAnswer[]>;
   calculateLevelsFromDatabaseAnswers(assessmentId: number): Promise<Level[]>;
-  getLevelFromInputData(
+  getCalculatedLevel(
     category_id: number,
     answers: AnswerInsertDTO[],
+  ): Promise<Level>;
+  calculateAndSaveLevel(
+    assessmentId: number,
+    categoryId: number,
   ): Promise<Level>;
 }

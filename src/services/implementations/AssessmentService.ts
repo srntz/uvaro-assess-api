@@ -13,6 +13,8 @@ import { AnswerInsertDTO } from "../../dto/AnswerInsertDTO";
 import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
 import { GraphQLError } from "graphql/error";
 import { IAnswerRepository } from "../../repositories/interfaces/IAnswerRepository";
+import { mapAll } from "../../dto/mappers/mapAll";
+import { mapAnswerSelectToAnswerInsertDTO } from "../../dto/mappers/mapAnswerSelectToAnswerInsertDTO";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
@@ -29,6 +31,22 @@ export class AssessmentService implements IAssessmentService {
   }
 
   async endAssessment(assessmentId: number): Promise<Assessment> {
+    const assessment =
+      await this.assessmentRepository.getAssessmentById(assessmentId);
+
+    if (assessment.end_date_time) {
+      throw new GraphQLError("The assessment is already finished");
+    }
+
+    const assessmentLevels =
+      await this.assessmentRepository.getAssessmentLevels(assessmentId);
+
+    if (assessmentLevels.length !== 4) {
+      throw new GraphQLError(
+        "You can't end an assessment until levels for all categories are calculated",
+      );
+    }
+
     return await this.assessmentRepository.endAssessment(assessmentId);
   }
 
@@ -164,11 +182,16 @@ export class AssessmentService implements IAssessmentService {
     return await this.addAssessment(insertedUser.user_id);
   }
 
-  async getLevelFromInputData(
+  async getCalculatedLevel(
     categoryId: number,
     answers: AnswerInsertDTO[],
   ): Promise<Level> {
-    if (!(await this.verifyRequiredQuestionsPresence(categoryId, answers))) {
+    if (
+      !(await this.verifyRequiredQuestionsPresence(
+        categoryId,
+        answers.map((item) => item.questionId),
+      ))
+    ) {
       throw new GraphQLError(
         "Please provide answers for all non follow-up question for the specified category to get a level.",
       );
@@ -185,9 +208,46 @@ export class AssessmentService implements IAssessmentService {
     return this.calculateLevel(dbAnswers, availableLevels);
   }
 
+  async calculateAndSaveLevel(
+    assessmentId: number,
+    categoryId: number,
+  ): Promise<Level> {
+    const answers =
+      await this.assessmentRepository.getAssessmentAnswersByCategoryId(
+        assessmentId,
+        categoryId,
+      );
+
+    if (
+      !(await this.verifyRequiredQuestionsPresence(
+        categoryId,
+        answers.map((item) => item.question_id),
+      ))
+    ) {
+      throw new GraphQLError(
+        "Please provide answers for all non follow-up question for the specified category to get a level.",
+      );
+    }
+    const availableLevels =
+      await this.levelRepository.getLevelsByCategory(categoryId);
+
+    const calculatedLevel = this.calculateLevel(
+      answers as Answer[],
+      availableLevels,
+    );
+
+    await this.assessmentRepository.insertLevel({
+      assessment_id: assessmentId,
+      category_id: categoryId,
+      level_id: calculatedLevel.level_id,
+    });
+
+    return calculatedLevel;
+  }
+
   private async verifyRequiredQuestionsPresence(
     categoryId: number,
-    answers: AnswerInsertDTO[],
+    answers: number[],
   ): Promise<boolean> {
     const requiredQuestionIds =
       await this.assessmentRepository.getQuestionIdsByCategoryId(
@@ -198,7 +258,7 @@ export class AssessmentService implements IAssessmentService {
     for (let i = 0; i < requiredQuestionIds.length; i++) {
       let match = false;
       for (let j = 0; j < answers.length; j++) {
-        if (requiredQuestionIds[i] === answers[j].questionId) {
+        if (requiredQuestionIds[i] === answers[j]) {
           match = true;
         }
       }
