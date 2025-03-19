@@ -7,6 +7,8 @@ import cors from "cors";
 import { ContextBuilder } from "./context/ContextBuilder";
 import { PassportStrategyConfig } from "./configs/PassportStrategyConfig";
 import { AuthRouter } from "./routes/auth/AuthRouter";
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 import * as Sentry from "@sentry/node";
 import { ApolloErrorHandler } from "./errors/handlers/ApolloErrorHandler";
 import { responseHttpStatus } from "./errors/plugins/ResponseHttpStatus";
@@ -47,12 +49,22 @@ const server = new ApolloServer({
 
 await server.start();
 
-app.get("/error", () => {
-  throw new Error("a");
-});
+app.use(
+  cors({
+    origin: "http://localhost:3000", // or 'http://localhost:5500'
+    methods: ["GET", "POST"],
+    credentials: true,
+  }),
+);
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/error", () => {
+  throw new Error("a");
+});
 
 app.use("/", AuthRouter);
 

@@ -4,6 +4,7 @@ import { UserService } from "../services/implementations/UserService";
 import { UserRepository } from "../repositories/implementations/UserRepository";
 import { User } from "../models/User";
 import { UserUpdateDTO } from "../dto/UserUpdateDTO";
+import { JWTManager } from "../utils/JWTManager";
 
 export class PassportStrategyConfig {
   private static samlStrategy;
@@ -21,19 +22,6 @@ export class PassportStrategyConfig {
         logoutUrl: process.env.AUTH0_LOGOUT_URL,
         logoutCallbackUrl: process.env.AUTH0_SLS_URL,
       },
-      // function (req, profile, done) {
-      //   const userAttributes = {
-      //     id: profile["http://schemas.auth0.com/user_id"],
-      //     email:
-      //       profile[
-      //         "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-      //       ],
-      //     firstName: profile.first_name,
-      //     lastName: profile.last_name,
-      //   };
-      //
-      //   return done(null, userAttributes);
-      // },
       PassportStrategyConfig.signonVerify,
       function (req, profile, done) {
         return done(null, profile);
@@ -61,6 +49,7 @@ export class PassportStrategyConfig {
     const userService = new UserService(new UserRepository());
     const existingUser = await userService.getById(userAttributes.id);
 
+    let dbUser: User;
     if (!existingUser) {
       const user = new User(
         userAttributes.firstName,
@@ -69,7 +58,7 @@ export class PassportStrategyConfig {
         userAttributes.id,
       );
 
-      await userService.addUser(user);
+      dbUser = await userService.addUser(user);
     } else {
       const user = new UserUpdateDTO(
         userAttributes.id,
@@ -78,10 +67,25 @@ export class PassportStrategyConfig {
         userAttributes.email,
       );
 
-      await userService.updateUser(user);
+      dbUser = await userService.updateUser(user);
     }
 
-    done(null, userAttributes);
+    const jwt = new JWTManager();
+    const accessToken = jwt.sign(
+      {
+        user_id: dbUser.user_id,
+        email: dbUser.email,
+        firstName: dbUser.first_name,
+        lastName: dbUser.last_name,
+      },
+      120000,
+    );
+    const refreshToken = jwt.sign(
+      { user_id: dbUser.user_id, email: dbUser.email },
+      86400000,
+    );
+
+    done(null, { accessToken, refreshToken });
   };
 
   static getStrategy() {
