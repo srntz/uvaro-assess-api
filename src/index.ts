@@ -5,6 +5,12 @@ import express from "express";
 import schema from "./graphql";
 import cors from "cors";
 import { ContextBuilder } from "./context/ContextBuilder";
+import * as fs from "node:fs";
+import passport from "passport";
+import { Strategy } from "@node-saml/passport-saml";
+import bodyParser from "body-parser";
+import xml2js from "xml2js";
+import { PassportStrategyConfig } from "./configs/PassportStrategyConfig";
 import * as Sentry from "@sentry/node";
 import { ApolloErrorHandler } from "./errors/handlers/ApolloErrorHandler";
 import { responseHttpStatus } from "./errors/plugins/ResponseHttpStatus";
@@ -12,6 +18,7 @@ import { sentryErrorHandler } from "./errors/plugins/SentryErrorHandler";
 import { EnvironmentLoader } from "./util/environmentLoader/EnvironmentLoader";
 
 dotenv.config({ path: `.env.${EnvironmentLoader.load(process.argv)}` });
+PassportStrategyConfig.configure();
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -50,6 +57,32 @@ app.get("/error", () => {
 
 app.use(cors());
 app.use(express.json());
+
+app.get(
+  "/login",
+  passport.authenticate("saml", {
+    failureRedirect: "/",
+    failureFlash: true,
+    session: false,
+  }),
+  (req, res) => {
+    res.send();
+  },
+);
+
+app.post(
+  "/acs",
+  bodyParser.urlencoded({ extended: false }),
+  passport.authenticate("saml", {
+    failureRedirect: "/",
+    failureFlash: true,
+    session: false,
+  }),
+  (req, res) => {
+    console.log(req.user);
+  },
+);
+
 app.use(
   "/graphql",
   expressMiddleware(server, { context: async () => context }),
