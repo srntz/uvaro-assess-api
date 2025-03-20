@@ -9,4 +9,6 @@ entrypoint.sh
 .env
 .env.*
 
+*.pem
+
 .sentryclirc
