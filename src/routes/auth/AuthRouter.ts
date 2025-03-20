@@ -19,6 +19,11 @@ AuthRouter.get("/login", (req, res, next) => {
 });
 
 AuthRouter.get("/logout", (req, res) => {
+  if (req.query.referer) {
+    res.cookie("referer", req.query.referer);
+  } else {
+    res.cookie("referer", req.headers.referer);
+  }
   PassportStrategyConfig.getStrategy().logout(
     {
       user: {
@@ -84,7 +89,13 @@ AuthRouter.post(
       httpOnly: true,
     });
 
-    res.send();
+    if (req.cookies.referer) {
+      const redirectUrl = decodeURIComponent(req.cookies.referer);
+      res.clearCookie("referer");
+      res.redirect(redirectUrl);
+    } else {
+      res.send();
+    }
   },
 );
 
