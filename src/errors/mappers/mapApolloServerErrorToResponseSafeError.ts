@@ -18,6 +18,9 @@ export function mapApolloServerErrorToResponseSafeError(
     case ApolloServerErrorCodeExtended.PERSISTED_QUERY_NOT_SUPPORTED:
       return ResponseSafeError.NOT_FOUND;
 
+    case ApolloServerErrorCodeExtended.UNAUTHORIZED:
+      return ResponseSafeError.UNAUTHORIZED;
+
     default:
       return ResponseSafeError.INTERNAL_SERVER_ERROR;
   }

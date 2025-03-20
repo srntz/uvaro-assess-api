@@ -1,5 +1,6 @@
 import { Category } from "../../models/Category";
 import { IContext } from "../../context/IContext";
+import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 
 const categoryResolvers = {
   Query: {

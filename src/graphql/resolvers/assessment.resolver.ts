@@ -1,41 +1,102 @@
-import { IContext } from "../../context/IContext";
+import { IContext, IContextWithAuth } from "../../context/IContext";
 import { Assessment } from "../../models/Assessment";
+import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 
 const assessmentResolvers = {
   Query: {
-    getUserAssessments: async (_, args, { AssessmentService }: IContext) =>
-      AssessmentService.getUserAssessments(args.user_id),
+    getUserAssessments: async (
+      _,
+      args,
+      { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+    ) => {
+      if (AuthenticatedUser.user_id === null) {
+        throw new UnauthorizedError();
+      }
+      AssessmentService.getUserAssessments(AuthenticatedUser.user_id);
+    },
 
-    getAssessmentById: (_, args, { AssessmentService }: IContext) =>
-      AssessmentService.getAssessmentById(args.id),
+    getAssessmentById: (
+      _,
+      args,
+      { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+    ) => {
+      if (AuthenticatedUser.user_id === null) {
+        throw new UnauthorizedError();
+      }
+      AssessmentService.getAssessmentById(args.id);
+    },
   },
 
   Mutation: {
-    addAssessment: (_, args, { AssessmentService }: IContext) =>
-      AssessmentService.addAssessment(args.user_id),
+    addAssessment: (
+      _,
+      args,
+      { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+    ) => {
+      if (AuthenticatedUser.user_id === null) {
+        throw new UnauthorizedError();
+      }
+      AssessmentService.addAssessment(AuthenticatedUser.user_id);
+    },
 
     addAssessmentAsGuest: (_, __, { AssessmentService }: IContext) =>
       AssessmentService.addAssessmentAsGuest(),
 
-    endAssessment: (_, args, { AssessmentService }: IContext) =>
-      AssessmentService.endAssessment(args.assessment_id),
+    endAssessment: async (
+      _,
+      args,
+      { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+    ) => {
+      if (AuthenticatedUser.user_id === null) {
+        throw new UnauthorizedError();
+      }
+      return await AssessmentService.endAssessment(args.assessment_id);
+    },
 
-    insertNote: (_, args, { AssessmentService }: IContext) =>
-      AssessmentService.insertNote(
+    insertNote: async (
+      _,
+      args,
+      { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+    ) => {
+      if (AuthenticatedUser.user_id === null) {
+        throw new UnauthorizedError();
+      }
+
+      return await AssessmentService.insertNote(
         args.assessment_id,
         args.category_id,
         args.note_text,
-      ),
+      );
+    },
 
-    insertAnswer: (_, args, { AssessmentService }: IContext) =>
-      AssessmentService.insertAnswer(
+    insertAnswer: async (
+      _,
+      args,
+      { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+    ) => {
+      if (AuthenticatedUser.user_id === null) {
+        throw new UnauthorizedError();
+      }
+      return await AssessmentService.insertAnswer(
         args.assessment_id,
         args.question_id,
         args.answer_id,
-      ),
+      );
+    },
 
-    calculateLevel: (_, args, { AssessmentService }: IContext) =>
-      AssessmentService.calculateLevel(args.assessment_id, args.category_id),
+    calculateLevel: async (
+      _,
+      args,
+      { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+    ) => {
+      if (AuthenticatedUser.user_id === null) {
+        throw new UnauthorizedError();
+      }
+      return await AssessmentService.calculateLevel(
+        args.assessment_id,
+        args.category_id,
+      );
+    },
   },
 
   AssessmentWithChildren: {

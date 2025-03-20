@@ -9,4 +9,5 @@ export enum ApolloServerErrorCodeExtended {
   BAD_USER_INPUT = ApolloServerErrorCode.BAD_USER_INPUT,
   OPERATION_RESOLUTION_FAILURE = ApolloServerErrorCode.OPERATION_RESOLUTION_FAILURE,
   BAD_REQUEST = ApolloServerErrorCode.BAD_REQUEST,
+  UNAUTHORIZED = "UNAUTHORIZED",
 }

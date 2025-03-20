@@ -13,7 +13,7 @@ import * as Sentry from "@sentry/node";
 import { ApolloErrorHandler } from "./errors/handlers/ApolloErrorHandler";
 import { responseHttpStatus } from "./errors/plugins/ResponseHttpStatus";
 import { sentryErrorHandler } from "./errors/plugins/SentryErrorHandler";
-import { EnvironmentLoader } from "./util/environmentLoader/EnvironmentLoader";
+import { EnvironmentLoader } from "./utils/environmentLoader/EnvironmentLoader";
 
 dotenv.config({ path: `.env.${EnvironmentLoader.load(process.argv)}` });
 PassportStrategyConfig.configure();
@@ -58,8 +58,6 @@ app.use(
 );
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(cors());
 app.use(express.json());
 
 app.get("/error", () => {
