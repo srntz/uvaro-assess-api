@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "dist",
+    "skipLibCheck": true,
 
     // Treat files as modules even if it doesn't use import/export
     "moduleDetection": "force",
@@ -8,6 +11,8 @@
     "module": "Preserve",
 
     "target": "ESNext",
+
+    "allowSyntheticDefaultImports": true,
 
     // Allow JSON modules to be imported
     "resolveJsonModule": true,
@@ -20,5 +25,12 @@
 
     // Disallow features that require cross-file awareness
     "isolatedModules": true,
+
+    "inlineSources": true,
+
+    // Set `sourceRoot` to  "/" to strip the build path prefix
+    // from generated source code references.
+    // This improves issue grouping in Sentry.
+    "sourceRoot": "/"
   },
 }
