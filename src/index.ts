@@ -5,13 +5,18 @@ import express from "express";
 import schema from "./graphql";
 import cors from "cors";
 import { ContextBuilder } from "./context/ContextBuilder";
+import { PassportStrategyConfig } from "./configs/PassportStrategyConfig";
+import { AuthRouter } from "./routes/auth/AuthRouter";
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 import * as Sentry from "@sentry/node";
 import { ApolloErrorHandler } from "./errors/handlers/ApolloErrorHandler";
 import { responseHttpStatus } from "./errors/plugins/ResponseHttpStatus";
 import { sentryErrorHandler } from "./errors/plugins/SentryErrorHandler";
-import { EnvironmentLoader } from "./util/environmentLoader/EnvironmentLoader";
+import { EnvironmentLoader } from "./utils/environmentLoader/EnvironmentLoader";
 
 dotenv.config({ path: `.env.${EnvironmentLoader.load(process.argv)}` });
+PassportStrategyConfig.configure();
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -19,7 +24,7 @@ Sentry.init({
 
 const app = express();
 
-const context = ContextBuilder.Build();
+let context = ContextBuilder.Build();
 
 const server = new ApolloServer({
   schema,
@@ -44,15 +49,35 @@ const server = new ApolloServer({
 
 await server.start();
 
+app.use(
+  cors({
+    origin: "http://localhost:3000", // or 'http://localhost:5500'
+    methods: ["GET", "POST"],
+    credentials: true,
+  }),
+);
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+
 app.get("/error", () => {
   throw new Error("a");
 });
 
-app.use(cors());
-app.use(express.json());
+app.use("/", AuthRouter);
+
 app.use(
   "/graphql",
-  expressMiddleware(server, { context: async () => context }),
+  (req, res, next) => {
+    context = ContextBuilder.ParseTokens(req, res, context);
+    next();
+  },
+  expressMiddleware(server, {
+    context: async () => {
+      console.log(context);
+      return context;
+    },
+  }),
 );
 
 Sentry.setupExpressErrorHandler(app);

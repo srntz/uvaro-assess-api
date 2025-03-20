@@ -1,11 +1,11 @@
-import { pgTable, serial, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, serial, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { user } from "./user";
 
 export const assessment = pgTable("assessment", {
   assessment_id: serial().primaryKey(),
   start_date_time: timestamp().notNull().defaultNow(),
   end_date_time: timestamp(),
-  user_id: uuid()
+  user_id: varchar({ length: 255 })
     .notNull()
     .references(() => user.user_id, { onDelete: "cascade" }),
 });

@@ -13,3 +13,10 @@ export interface IContext {
   AnswerService: IAnswerService;
   CategoryService: ICategoryService;
 }
+
+export interface IContextWithAuth extends IContext {
+  AuthenticatedUser: {
+    user_id: string;
+    email: string;
+  };
+}

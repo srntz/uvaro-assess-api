@@ -8,6 +8,7 @@ interface IResponseSafeError {
   INTERNAL_SERVER_ERROR: IResponseSafeErrorObject;
   BAD_REQUEST: IResponseSafeErrorObject;
   NOT_FOUND: IResponseSafeErrorObject;
+  UNAUTHORIZED: IResponseSafeErrorObject;
 }
 
 export const ResponseSafeError: IResponseSafeError = {
@@ -26,5 +27,10 @@ export const ResponseSafeError: IResponseSafeError = {
     statusCode: 404,
     code: "NOT_FOUND",
     message: "The specified resource does not exist.",
+  },
+  UNAUTHORIZED: {
+    statusCode: 401,
+    code: "UNAUTHORIZED",
+    message: "You are not authorized to access this resource",
   },
 } as const;

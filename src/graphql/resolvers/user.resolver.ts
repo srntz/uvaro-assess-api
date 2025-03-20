@@ -1,16 +1,18 @@
-import { IContext } from "../../context/IContext";
+import { IContextWithAuth } from "../../context/IContext";
+import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 
 const userResolvers = {
-  Mutation: {
-    addUser: (_, args, { UserService }: IContext) =>
-      UserService.addUser(
-        args.user.first_name,
-        args.user.last_name,
-        args.user.email,
-      ),
-
-    deleteUser: (_, args, { UserService }: IContext) =>
-      UserService.deleteUser(args.user_id),
+  Query: {
+    getUser: async (
+      _,
+      __,
+      { UserService, AuthenticatedUser }: IContextWithAuth,
+    ) => {
+      if (AuthenticatedUser.user_id === null) {
+        throw new UnauthorizedError();
+      }
+      return await UserService.getById(AuthenticatedUser.user_id);
+    },
   },
 };
 
