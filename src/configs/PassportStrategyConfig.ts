@@ -75,8 +75,6 @@ export class PassportStrategyConfig {
       {
         user_id: dbUser.user_id,
         email: dbUser.email,
-        firstName: dbUser.first_name,
-        lastName: dbUser.last_name,
       },
       120000,
     );
