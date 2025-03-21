@@ -1,3 +1,6 @@
+import { Assessment } from "../../models/Assessment";
+import { validateArgs } from "../../validation/validation";
+import { z } from 'zod';
 import { IContext, IContextWithAuth } from "../../context/IContext";
 import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
@@ -5,6 +8,78 @@ import { GraphQLError } from "graphql";
 import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired";
 import { withUserAssessments } from "../middleware/withUserAssessments";
 import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
+
+// query schemas
+const getUserAssessmentsSchema = z.object({
+  user_id: z.string({
+    required_error: "User ID is required",
+    invalid_type_error: "User ID must be a string"
+  }).min(1, "User ID cannot be empty")
+});
+
+const getAssessmentByIdSchema = z.object({
+  id: z.number({
+    required_error: "Assessment ID is required",
+    invalid_type_error: "Assessment ID must be a number"
+  }).int().positive("Assessment ID must be a positive integer")
+});
+
+// mutation schemas
+const addAssessmentSchema = z.object({
+  user_id: z.string({
+    required_error: "User ID is required",
+    invalid_type_error: "User ID must be a string"
+  }).min(1, "User ID cannot be empty")
+});
+
+const endAssessmentSchema = z.object({
+  assessment_id: z.number({
+    required_error: "Assessment ID is required",
+    invalid_type_error: "Assessment ID must be a number"
+  }).int().positive("Assessment ID must be a positive integer")
+});
+
+const insertNoteSchema = z.object({
+  assessment_id: z.number({
+    required_error: "Assessment ID is required",
+    invalid_type_error: "Assessment ID must be a number"
+  }).int().positive("Assessment ID must be a positive integer"),
+  category_id: z.number({
+    required_error: "Category ID is required",
+    invalid_type_error: "Category ID must be a number"
+  }).int().positive("Category ID must be a positive integer"),
+  note_text: z.string({
+    required_error: "Note text is required",
+    invalid_type_error: "Note text must be a string"
+  }).min(1, "Note text cannot be empty")
+});
+
+const insertAnswerSchema = z.object({
+  assessment_id: z.number({
+    required_error: "Assessment ID is required",
+    invalid_type_error: "Assessment ID must be a number"
+  }).int().positive("Assessment ID must be a positive integer"),
+  question_id: z.number({
+    required_error: "Question ID is required",
+    invalid_type_error: "Question ID must be a number"
+  }).int().positive("Question ID must be a positive integer"),
+  answer_id: z.number({
+    required_error: "Answer ID is required",
+    invalid_type_error: "Answer ID must be a number"
+  }).int().positive("Answer ID must be a positive integer")
+});
+
+const calculateLevelSchema = z.object({
+  assessment_id: z.number({
+    required_error: "Assessment ID is required",
+    invalid_type_error: "Assessment ID must be a number"
+  }).int().positive("Assessment ID must be a positive integer"),
+  category_id: z.number({
+    required_error: "Category ID is required",
+    invalid_type_error: "Category ID must be a number"
+  }).int().positive("Category ID must be a positive integer")
+});
+
 
 const assessmentResolvers = {
   Query: {
