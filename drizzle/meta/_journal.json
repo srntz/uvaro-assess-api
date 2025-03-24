@@ -36,6 +36,13 @@
       "when": 1742407696450,
       "tag": "0004_lyrical_network",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1742841302065,
+      "tag": "0005_cuddly_sabretooth",
+      "breakpoints": true
     }
   ]
 }

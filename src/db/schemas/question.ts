@@ -1,16 +1,33 @@
-import { boolean, integer, pgTable, serial, text } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  check,
+  integer,
+  pgTable,
+  serial,
+  text,
+} from "drizzle-orm/pg-core";
 import { category } from "./category";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { answer } from "./answer";
 
-export const question = pgTable("question", {
-  question_id: serial().primaryKey(),
-  question_text: text().notNull(),
-  category_id: integer()
-    .notNull()
-    .references(() => category.category_id),
-  follow_up: boolean().notNull(),
-});
+export const question = pgTable(
+  "question",
+  {
+    question_id: serial().primaryKey(),
+    question_text: text().notNull(),
+    weighting_coefficient: integer().notNull(),
+    category_id: integer()
+      .notNull()
+      .references(() => category.category_id),
+    follow_up: boolean().notNull(),
+  },
+  (table) => [
+    check(
+      "weighting_coefficient_check",
+      sql`${table.weighting_coefficient} >= 1 AND ${table.weighting_coefficient} <= 10`,
+    ),
+  ],
+);
 
 export const questionRelations = relations(question, ({ one, many }) => ({
   category: one(category, {

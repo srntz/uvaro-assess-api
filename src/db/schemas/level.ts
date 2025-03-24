@@ -7,6 +7,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { category } from "./category";
+import { weighting } from "./weighting";
 
 export const level = pgTable(
   "level",
@@ -14,7 +15,9 @@ export const level = pgTable(
     level_id: serial().primaryKey(),
     level_name: varchar({ length: 100 }).notNull(),
     level_statement: text().notNull(),
-    required_weighting: integer().notNull(),
+    weighting_id: integer()
+      .notNull()
+      .references(() => weighting.weighting_id),
     category_id: integer()
       .notNull()
       .references(() => category.category_id),

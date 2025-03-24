@@ -1,3 +1,5 @@
+import { assessmentLevel } from "../db/schemas";
+
 export class AssessmentLevel {
   constructor(
     readonly assessment_id: number,
@@ -5,7 +7,7 @@ export class AssessmentLevel {
     public level_id?: number,
   ) {}
 
-  static init(data) {
+  static init(data: typeof assessmentLevel.$inferSelect) {
     return new AssessmentLevel(
       data.assessment_id,
       data.category_id,
