@@ -12,10 +12,12 @@ const assessmentResolvers = {
       if (AuthenticatedUser.user_id === null) {
         throw new UnauthorizedError();
       }
-      AssessmentService.getUserAssessments(AuthenticatedUser.user_id);
+      return await AssessmentService.getUserAssessments(
+        AuthenticatedUser.user_id,
+      );
     },
 
-    getAssessmentById: (
+    getAssessmentById: async (
       _,
       args,
       { AssessmentService, AuthenticatedUser }: IContextWithAuth,
@@ -23,12 +25,12 @@ const assessmentResolvers = {
       if (AuthenticatedUser.user_id === null) {
         throw new UnauthorizedError();
       }
-      AssessmentService.getAssessmentById(args.id);
+      return await AssessmentService.getAssessmentById(args.id);
     },
   },
 
   Mutation: {
-    addAssessment: (
+    addAssessment: async (
       _,
       args,
       { AssessmentService, AuthenticatedUser }: IContextWithAuth,
@@ -36,7 +38,7 @@ const assessmentResolvers = {
       if (AuthenticatedUser.user_id === null) {
         throw new UnauthorizedError();
       }
-      AssessmentService.addAssessment(AuthenticatedUser.user_id);
+      return await AssessmentService.addAssessment(AuthenticatedUser.user_id);
     },
 
     addAssessmentAsGuest: (_, __, { AssessmentService }: IContext) =>

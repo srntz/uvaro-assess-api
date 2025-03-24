@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import passport, { strategies } from "passport";
+import passport from "passport";
 import { PassportStrategyConfig } from "../../configs/PassportStrategyConfig";
 
 const AuthRouter = express.Router();
