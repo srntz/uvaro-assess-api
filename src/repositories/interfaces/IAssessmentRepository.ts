@@ -9,7 +9,7 @@ import { Level } from "../../models/Level";
 export interface IAssessmentRepository {
   getAssessmentById(assessmentId: number): Promise<Assessment>;
   getUserAssessments(userId: string): Promise<Assessment[]>;
-  addAssessment(item: Assessment): Promise<Assessment>;
+  addAssessment(userId: string): Promise<Assessment>;
   endAssessment(assessmentId: number): Promise<Assessment>;
   getAssessmentAnswers(assessmentId: number): Promise<Answer[]>;
   getAssessmentLevels(assessmentId: number): Promise<Level[]>;

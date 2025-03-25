@@ -10,13 +10,13 @@ export class AnswerRepository extends Repository implements IAnswerRepository {
   }
 
   async getById(id: number): Promise<Answer> {
-    const data: IAnswer[] = await this.db
+    const data: (typeof answer.$inferSelect)[] = await this.db
       .select()
       .from(answer)
       .where(eq(answer.answer_id, id));
 
     if (data.length > 0) {
-      return new Answer(data[0]);
+      return Answer.init(data[0]);
     }
 
     return null;
@@ -25,13 +25,13 @@ export class AnswerRepository extends Repository implements IAnswerRepository {
   async getByQuestionId(questionId: number): Promise<Answer[]> {
     const relatedAnswers: Answer[] = [];
 
-    const data: IAnswer[] = await this.db
+    const data: (typeof answer.$inferSelect)[] = await this.db
       .select()
       .from(answer)
       .where(eq(answer.question_id, questionId));
 
     data.forEach((item) => {
-      relatedAnswers.push(new Answer(item));
+      relatedAnswers.push(Answer.init(item));
     });
 
     return relatedAnswers;

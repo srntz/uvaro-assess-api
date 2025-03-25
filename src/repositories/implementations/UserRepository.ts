@@ -3,7 +3,6 @@ import { IUserRepository } from "../interfaces/IUserRepository";
 import { User } from "../../models/User";
 import { user as userTable } from "../../db/schemas";
 import { eq } from "drizzle-orm";
-import { Answer } from "../../models/Answer";
 import { UserUpdateDTO } from "../../dto/UserUpdateDTO";
 
 export class UserRepository extends Repository implements IUserRepository {
@@ -23,7 +22,7 @@ export class UserRepository extends Repository implements IUserRepository {
   async updateUser(
     user: UserUpdateDTO,
   ): Promise<typeof userTable.$inferSelect> {
-    const data = await this.db
+    const data: (typeof userTable.$inferSelect)[] = await this.db
       .update(userTable)
       .set({
         first_name: user.firstName,
@@ -37,13 +36,16 @@ export class UserRepository extends Repository implements IUserRepository {
   }
 
   async insertUser(item: User): Promise<User> {
-    const data = await this.db.insert(userTable).values(item).returning();
+    const data: (typeof userTable.$inferSelect)[] = await this.db
+      .insert(userTable)
+      .values(item)
+      .returning();
 
     return User.init(data[0]);
   }
 
   async deleteUser(userId: string): Promise<User> {
-    const data = await this.db
+    const data: (typeof userTable.$inferSelect)[] = await this.db
       .delete(userTable)
       .where(eq(userTable.user_id, userId))
       .returning();

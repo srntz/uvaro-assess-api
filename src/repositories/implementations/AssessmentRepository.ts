@@ -27,13 +27,13 @@ export class AssessmentRepository
     super();
   }
 
-  async addAssessment(item: Assessment): Promise<Assessment> {
+  async addAssessment(userId: string): Promise<Assessment> {
     try {
-      const res = await this.db
+      const data: (typeof assessment.$inferSelect)[] = await this.db
         .insert(assessment)
-        .values({ user_id: item.user_id })
+        .values({ user_id: userId })
         .returning();
-      return new Assessment(res[0]);
+      return Assessment.init(data[0]);
     } catch (error) {
       if (error.code === "23503") {
         throw new GraphQLError("User with the specified does not exist");
@@ -43,13 +43,13 @@ export class AssessmentRepository
   }
 
   async getAssessmentById(assessmentId: number): Promise<Assessment> {
-    const data = await this.db
+    const data: (typeof assessment.$inferSelect)[] = await this.db
       .select()
       .from(assessment)
       .where(eq(assessment.assessment_id, assessmentId));
 
     if (data.length > 0) {
-      return new Assessment(data[0]);
+      return Assessment.init(data[0]);
     } else {
       return null;
     }
@@ -58,40 +58,41 @@ export class AssessmentRepository
   async getUserAssessments(userId: string): Promise<Assessment[]> {
     const assessments: Assessment[] = [];
 
-    const res = await this.db
+    const data: (typeof assessment.$inferSelect)[] = await this.db
       .select()
       .from(assessment)
       .where(eq(assessment.user_id, userId));
 
-    res.forEach((item) => {
-      assessments.push(new Assessment(item));
+    data.forEach((item) => {
+      assessments.push(Assessment.init(item));
     });
 
     return assessments;
   }
 
   async endAssessment(assessmentId: number): Promise<Assessment> {
-    const assessmentSelectQuery = await this.db
-      .select()
-      .from(assessment)
-      .where(eq(assessment.assessment_id, assessmentId));
+    const selectedAssessmentData: (typeof assessment.$inferSelect)[] =
+      await this.db
+        .select()
+        .from(assessment)
+        .where(eq(assessment.assessment_id, assessmentId));
 
-    if (assessmentSelectQuery.length === 0) {
+    if (selectedAssessmentData.length === 0) {
       throw new GraphQLError(
         "Assessment with the provided id has not been found",
       );
     }
 
-    const currentAssessment = new Assessment(assessmentSelectQuery[0]);
+    const currentAssessment = Assessment.init(selectedAssessmentData[0]);
 
     if (currentAssessment.end_date_time === null) {
-      const res = await this.db
+      const data: (typeof assessment.$inferSelect)[] = await this.db
         .update(assessment)
         .set({ end_date_time: new Date() })
         .where(eq(assessment.assessment_id, assessmentId))
         .returning();
 
-      return new Assessment(res[0]);
+      return Assessment.init(data[0]);
     } else {
       throw new GraphQLError("The assessment is already finished");
     }
@@ -112,7 +113,7 @@ export class AssessmentRepository
       .where(eq(assessmentAnswer.assessment_id, assessmentId));
 
     res.forEach((item) => {
-      answers.push(new Answer(item.answer));
+      answers.push(Answer.init(item.answer));
     });
 
     return answers;
@@ -140,21 +141,22 @@ export class AssessmentRepository
   }
 
   async getNotes(assessmentId: number): Promise<Note[]> {
-    const res: Note[] = [];
-    const data = await this.db
+    const notes: Note[] = [];
+
+    const data: (typeof note.$inferSelect)[] = await this.db
       .select()
       .from(note)
       .where(eq(note.assessment_id, assessmentId));
 
     data.forEach((item) => {
-      res.push(new Note(item));
+      notes.push(Note.init(item));
     });
 
-    return res;
+    return notes;
   }
 
   async insertNote(item: Note): Promise<Note> {
-    const res = await this.db
+    const data: (typeof note.$inferSelect)[] = await this.db
       .insert(note)
       .values(item)
       .onConflictDoUpdate({
@@ -162,7 +164,8 @@ export class AssessmentRepository
         set: { note_text: item.note_text },
       })
       .returning();
-    return new Note(res[0]);
+
+    return Note.init(data[0]);
   }
 
   async insertAnswer(item: AssessmentAnswer): Promise<AssessmentAnswer> {

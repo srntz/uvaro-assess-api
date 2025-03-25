@@ -8,13 +8,6 @@ import { Level } from "../../models/Level";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository";
 import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
-import {
-  assessment,
-  assessmentAnswer,
-  assessmentLevel,
-} from "../../db/schemas";
-import { text } from "drizzle-orm/pg-core";
-import { note } from "../../db/schemas/note";
 import { User } from "../../models/User";
 
 export class AssessmentService implements IAssessmentService {
@@ -25,8 +18,7 @@ export class AssessmentService implements IAssessmentService {
   ) {}
 
   async addAssessment(userId: string): Promise<Assessment> {
-    const assessment = new Assessment({ user_id: userId });
-    return await this.assessmentRepository.addAssessment(assessment);
+    return await this.assessmentRepository.addAssessment(userId);
   }
 
   async endAssessment(assessmentId: number): Promise<Assessment> {
@@ -58,11 +50,7 @@ export class AssessmentService implements IAssessmentService {
     categoryId: number,
     text: string,
   ): Promise<Note> {
-    const note = new Note({
-      assessment_id: assessmentId,
-      category_id: categoryId,
-      note_text: text,
-    });
+    const note = new Note(text, assessmentId, categoryId);
     return await this.assessmentRepository.insertNote(note);
   }
 
@@ -78,55 +66,6 @@ export class AssessmentService implements IAssessmentService {
     );
 
     return await this.assessmentRepository.insertAnswer(assessmentAnswer);
-  }
-
-  async calculateLevel(
-    assessmentId: number,
-    categoryId: number,
-  ): Promise<Level> {
-    let totalScore = 0;
-
-    const assessmentLevel = new AssessmentLevel(assessmentId, categoryId);
-
-    // Answers from assessment_answer table related to the provided category
-    const answers =
-      await this.assessmentRepository.getAnswersForLevelCalculation(
-        assessmentLevel,
-      );
-
-    // All levels related to the specified category
-    const levels = await this.levelRepository.getLevelsByCategory(
-      assessmentLevel.category_id,
-    );
-    levels.sort((a, b) => a.required_weighting - b.required_weighting);
-
-    // Iterating the answers to calculate the total score
-    for (let i = 0; i < answers.length; i++) {
-      totalScore += answers[i].answer.weighting;
-    }
-
-    /*
-      Iterating the sorted levels array to find the correct level.
-
-      The array is accessed with i-1 because the if condition is checked after the incrementation
-      which makes the index jump over the correct level.
-    */
-    for (let i = 0; i < levels.length; i++) {
-      if (totalScore < levels[i].required_weighting) {
-        assessmentLevel.level_id = levels[i - 1].level_id;
-        break;
-      } else if (totalScore === levels[i].required_weighting) {
-        assessmentLevel.level_id = levels[i].level_id;
-        break;
-      }
-    }
-
-    // assessment_level record returned by the insert query
-    const insertedLevel =
-      await this.assessmentRepository.insertLevel(assessmentLevel);
-
-    // Querying and returning the actual level.
-    return this.levelRepository.getLevelById(insertedLevel.level_id);
   }
 
   async addAssessmentAsGuest(): Promise<Assessment> {

@@ -29,7 +29,7 @@ export class QuestionRepository
       );
 
     data.forEach((item) => {
-      questions.push(Question.fromDatabase(item));
+      questions.push(Question.init(item));
     });
 
     return questions;
@@ -42,7 +42,7 @@ export class QuestionRepository
       .where(eq(question.question_id, id));
 
     if (data.length > 0) {
-      return Question.fromDatabase(data[0]);
+      return Question.init(data[0]);
     }
 
     return null;
