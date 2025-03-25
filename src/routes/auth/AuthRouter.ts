@@ -2,14 +2,24 @@ import express from "express";
 import bodyParser from "body-parser";
 import passport from "passport";
 import { PassportStrategyConfig } from "../../configs/PassportStrategyConfig";
+import cookieParser from "cookie-parser";
 
 const AuthRouter = express.Router();
 
 AuthRouter.get("/login", (req, res, next) => {
+  res.clearCookie("referer");
   if (req.query.referer) {
-    res.cookie("referer", req.query.referer);
+    res.cookie("referer", req.query.referer, {
+      httpOnly: false,
+      sameSite: "none",
+      secure: true,
+    });
   } else {
-    res.cookie("referer", req.headers.referer);
+    res.cookie("referer", req.headers.referer, {
+      httpOnly: false,
+      sameSite: "none",
+      secure: true,
+    });
   }
   passport.authenticate("saml", {
     failureRedirect: "/",
@@ -19,10 +29,19 @@ AuthRouter.get("/login", (req, res, next) => {
 });
 
 AuthRouter.get("/logout", (req, res) => {
+  res.clearCookie("referer");
   if (req.query.referer) {
-    res.cookie("referer", req.query.referer);
+    res.cookie("referer", req.query.referer, {
+      httpOnly: false,
+      sameSite: "none",
+      secure: true,
+    });
   } else {
-    res.cookie("referer", req.headers.referer);
+    res.cookie("referer", req.headers.referer, {
+      httpOnly: false,
+      sameSite: "none",
+      secure: true,
+    });
   }
   PassportStrategyConfig.getStrategy().logout(
     {
@@ -44,6 +63,7 @@ AuthRouter.get("/logout", (req, res) => {
 AuthRouter.post(
   "/acs",
   bodyParser.urlencoded({ extended: false }),
+  cookieParser(),
   passport.authenticate("saml", {
     failureRedirect: "/",
     failureFlash: true,
