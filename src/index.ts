@@ -51,7 +51,7 @@ await server.start();
 
 app.use(
   cors({
-    origin: "http://localhost:3000", // or 'http://localhost:5500'
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
     credentials: true,
   }),
@@ -74,7 +74,6 @@ app.use(
   },
   expressMiddleware(server, {
     context: async () => {
-      console.log(context);
       return context;
     },
   }),

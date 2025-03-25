@@ -130,7 +130,12 @@ export class AssessmentService implements IAssessmentService {
   }
 
   async addAssessmentAsGuest(): Promise<Assessment> {
-    const guestUser = new User("GUEST", "GUEST", "guest@guest.com");
+    const guestUser = new User(
+      "GUEST",
+      "GUEST",
+      "guest@guest.com",
+      Math.floor(Math.random() * 1000000).toString(),
+    );
     const insertedUser = await this.userRepository.insertUser(guestUser);
     return await this.addAssessment(insertedUser.user_id);
   }
