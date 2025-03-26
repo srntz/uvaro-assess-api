@@ -15,6 +15,10 @@ import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
 import { IAnswerRepository } from "../../repositories/interfaces/IAnswerRepository";
 import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
 import { mapLevelWithWeightingDTOToLevelResponseDTO } from "../../mappers/level/mapLevelWithWeightingDTOToLevelResponseDTO";
+import { Category } from "../../models/Category";
+import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO";
+import { IQuestionRepository } from "../../repositories/interfaces/IQuestionRepository";
+import { GraphQLError } from "graphql/error";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
@@ -22,6 +26,7 @@ export class AssessmentService implements IAssessmentService {
     private readonly levelRepository: ILevelRepository,
     private readonly userRepository: IUserRepository,
     private readonly answerRepository: IAnswerRepository,
+    private readonly questionRepository: IQuestionRepository,
   ) {}
 
   async addAssessment(userId: string): Promise<Assessment> {
@@ -73,6 +78,49 @@ export class AssessmentService implements IAssessmentService {
     );
 
     return await this.assessmentRepository.insertAnswer(assessmentAnswer);
+  }
+
+  async completeCategory(answers: AnswerRequestDTO[], categoryId: number) {
+    const processInputAnswers = async (
+      answers: AnswerRequestDTO[],
+    ): Promise<Map<number, AnswerWithCategoryIdDTO>> => {
+      const answersWithCategoryIdRaw =
+        await this.answerRepository.getAnswersWithCategoryIdsByIds(
+          answers.map((item) => item.answerId),
+        );
+      const answersWithCategoryIdFilteredByCategoryId =
+        answersWithCategoryIdRaw.filter(
+          (item) => item.category_id === categoryId,
+        );
+      return removeDuplicateAnswers(answersWithCategoryIdFilteredByCategoryId);
+    };
+
+    function removeDuplicateAnswers(
+      answers: AnswerWithCategoryIdDTO[],
+    ): Map<number, AnswerWithCategoryIdDTO> {
+      const map = new Map<number, AnswerWithCategoryIdDTO>();
+
+      answers.forEach((answer) => {
+        map.set(answer.question_id, answer);
+      });
+
+      return map;
+    }
+
+    const processedAnswersMap = await processInputAnswers(answers);
+
+    const requiredQuestionIds =
+      await this.questionRepository.getRequiredQuestionIdsByCategory(
+        categoryId,
+      );
+    const answerIds = new Set(processedAnswersMap.keys());
+
+    if (
+      requiredQuestionIds.intersection(answerIds).size !==
+      requiredQuestionIds.size
+    ) {
+      throw new GraphQLError("not enough answers");
+    }
   }
 
   async getLevel(

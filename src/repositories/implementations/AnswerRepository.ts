@@ -1,10 +1,11 @@
 import { IAnswerRepository } from "../interfaces/IAnswerRepository";
 import { Answer } from "../../models/Answer";
-import { answer, IAnswer, question } from "../../db/schemas";
+import { answer, category, IAnswer, question } from "../../db/schemas";
 import { and, eq, or } from "drizzle-orm";
 import { Repository } from "../base/Repository";
 import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
 import { weighting } from "../../db/schemas/weighting";
+import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO";
 
 export class AnswerRepository extends Repository implements IAnswerRepository {
   constructor() {
@@ -91,6 +92,49 @@ export class AnswerRepository extends Repository implements IAnswerRepository {
           item.weighting.weighting,
           item.question.weighting_coefficient,
           item.answer.question_id,
+        ),
+      );
+    });
+
+    return answers;
+  }
+
+  async getAnswersWithCategoryIdsByIds(
+    answerIds: number[],
+  ): Promise<AnswerWithCategoryIdDTO[]> {
+    const answers: AnswerWithCategoryIdDTO[] = [];
+
+    const data: {
+      answer: typeof answer.$inferSelect;
+      question: typeof question.$inferSelect;
+      category: typeof category.$inferSelect;
+    }[] = await this.db
+      .select()
+      .from(answer)
+      .leftJoin(question, eq(answer.question_id, question.question_id))
+      .leftJoin(category, eq(category.category_id, question.category_id))
+      .where(
+        or(
+          ...(() => {
+            const whereClauses: ReturnType<typeof eq>[] = [];
+
+            answerIds.forEach((id) => {
+              whereClauses.push(eq(answer.answer_id, id));
+            });
+
+            return whereClauses;
+          })(),
+        ),
+      );
+
+    data.forEach((item) => {
+      answers.push(
+        new AnswerWithCategoryIdDTO(
+          item.answer.answer_id,
+          item.answer.answer_text,
+          item.answer.weighting_id,
+          item.answer.question_id,
+          item.category.category_id,
         ),
       );
     });

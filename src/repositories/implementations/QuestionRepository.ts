@@ -47,4 +47,21 @@ export class QuestionRepository
 
     return null;
   }
+
+  async getRequiredQuestionIdsByCategory(
+    categoryId: number,
+  ): Promise<Set<number>> {
+    const data: { question_id: typeof question.$inferSelect.question_id }[] =
+      await this.db
+        .select({ question_id: question.question_id })
+        .from(question)
+        .where(
+          and(
+            eq(question.category_id, categoryId),
+            eq(question.follow_up, false),
+          ),
+        );
+
+    return new Set<number>(data.map((item) => item.question_id));
+  }
 }

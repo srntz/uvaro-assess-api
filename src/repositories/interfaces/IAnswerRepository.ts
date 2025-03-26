@@ -1,5 +1,6 @@
 import { Answer } from "../../models/Answer";
 import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
+import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO";
 
 export interface IAnswerRepository {
   getById(id: number): Promise<Answer>;
@@ -8,4 +9,7 @@ export interface IAnswerRepository {
   getAnswersWithWeightingsAndCoefficientsByIds(
     answerIds: number[],
   ): Promise<AnswerWithWeightingAndCoefficientDTO[]>;
+  getAnswersWithCategoryIdsByIds(
+    answerIds: number[],
+  ): Promise<AnswerWithCategoryIdDTO[]>;
 }
