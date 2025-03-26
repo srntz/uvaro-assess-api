@@ -1,0 +1,4 @@
+input GetLevelInput {
+    answerId: Int!
+    questionId: Int!
+}

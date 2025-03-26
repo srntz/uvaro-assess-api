@@ -13,6 +13,8 @@ import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWit
 import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
 import { IAnswerRepository } from "../../repositories/interfaces/IAnswerRepository";
+import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
+import { mapLevelWithWeightingDTOToLevelResponseDTO } from "../../mappers/level/mapLevelWithWeightingDTOToLevelResponseDTO";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
@@ -73,7 +75,10 @@ export class AssessmentService implements IAssessmentService {
     return await this.assessmentRepository.insertAnswer(assessmentAnswer);
   }
 
-  async getLevel(answers: AnswerRequestDTO[], categoryId: number) {
+  async getLevel(
+    answers: AnswerRequestDTO[],
+    categoryId: number,
+  ): Promise<LevelResponseDTO> {
     const availableLevels =
       await this.levelRepository.getLevelsWithWeightingByCategoryId(categoryId);
 
@@ -82,12 +87,14 @@ export class AssessmentService implements IAssessmentService {
         answers.map((item) => item.answerId),
       );
 
-    return this.calculateLevel(
-      answersWithWeightingsAndCoefficients,
-      availableLevels,
-      answersWithWeightingsAndCoefficients.reduce(
-        (acc, cur) => acc + cur.weighting_coefficient,
-        0,
+    return mapLevelWithWeightingDTOToLevelResponseDTO(
+      this.calculateLevel(
+        answersWithWeightingsAndCoefficients,
+        availableLevels,
+        answersWithWeightingsAndCoefficients.reduce(
+          (acc, cur) => acc + cur.weighting_coefficient,
+          0,
+        ),
       ),
     );
   }
@@ -96,7 +103,7 @@ export class AssessmentService implements IAssessmentService {
     answers: AnswerWithWeightingAndCoefficientDTO[],
     levels: LevelWithWeightingDTO[],
     totalCoefficient: number,
-  ): Level {
+  ): LevelWithWeightingDTO {
     /**
      *
      * @param answer Answer to process

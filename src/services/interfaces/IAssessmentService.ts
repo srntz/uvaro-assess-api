@@ -4,6 +4,8 @@ import { Note } from "../../models/Note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { Level } from "../../models/Level";
 import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
+import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
+import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
 
 export interface IAssessmentService {
   getAssessmentById(assessmentId: number): Promise<Assessment>;
@@ -29,4 +31,8 @@ export interface IAssessmentService {
     levels: Level[],
     totalCoefficient: number,
   ): Level;
+  getLevel(
+    answers: AnswerRequestDTO[],
+    categoryId: number,
+  ): Promise<LevelResponseDTO>;
 }

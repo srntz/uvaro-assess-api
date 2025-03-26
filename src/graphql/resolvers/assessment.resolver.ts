@@ -1,6 +1,7 @@
 import { IContext, IContextWithAuth } from "../../context/IContext";
 import { Assessment } from "../../models/Assessment";
 import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
+import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
 
 const assessmentResolvers = {
   Query: {
@@ -26,6 +27,17 @@ const assessmentResolvers = {
         throw new UnauthorizedError();
       }
       return await AssessmentService.getAssessmentById(args.id);
+    },
+
+    getLevel: async (
+      _,
+      {
+        categoryId,
+        answers,
+      }: { categoryId: number; answers: AnswerRequestDTO[] },
+      { AssessmentService }: IContext,
+    ) => {
+      return await AssessmentService.getLevel(answers, categoryId);
     },
   },
 
