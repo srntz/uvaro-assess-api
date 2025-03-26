@@ -3,6 +3,7 @@ import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { Level } from "../../models/Level";
+import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
 
 export interface IAssessmentService {
   getAssessmentById(assessmentId: number): Promise<Assessment>;
@@ -23,5 +24,9 @@ export interface IAssessmentService {
     questionId: number,
     answer_id: number,
   ): Promise<AssessmentAnswer>;
-  calculateLevel(assessmentId: number, categoryId: number): Promise<Level>;
+  calculateLevel(
+    answers: AnswerWithWeightingAndCoefficientDTO[],
+    levels: Level[],
+    totalCoefficient: number,
+  ): Level;
 }

@@ -9,12 +9,17 @@ import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository";
 import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
 import { User } from "../../models/User";
+import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
+import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO";
+import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
+import { IAnswerRepository } from "../../repositories/interfaces/IAnswerRepository";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
     private readonly assessmentRepository: IAssessmentRepository,
     private readonly levelRepository: ILevelRepository,
     private readonly userRepository: IUserRepository,
+    private readonly answerRepository: IAnswerRepository,
   ) {}
 
   async addAssessment(userId: string): Promise<Assessment> {
@@ -66,6 +71,76 @@ export class AssessmentService implements IAssessmentService {
     );
 
     return await this.assessmentRepository.insertAnswer(assessmentAnswer);
+  }
+
+  async getLevel(answers: AnswerRequestDTO[], categoryId: number) {
+    const availableLevels =
+      await this.levelRepository.getLevelsWithWeightingByCategoryId(categoryId);
+
+    const answersWithWeightingsAndCoefficients =
+      await this.answerRepository.getAnswersWithWeightingsAndCoefficientsByIds(
+        answers.map((item) => item.answerId),
+      );
+
+    return this.calculateLevel(
+      answersWithWeightingsAndCoefficients,
+      availableLevels,
+      answersWithWeightingsAndCoefficients.reduce(
+        (acc, cur) => acc + cur.weighting_coefficient,
+        0,
+      ),
+    );
+  }
+
+  calculateLevel(
+    answers: AnswerWithWeightingAndCoefficientDTO[],
+    levels: LevelWithWeightingDTO[],
+    totalCoefficient: number,
+  ): Level {
+    /**
+     *
+     * @param answer Answer to process
+     */
+    function normalizeAndProcessAnswer(
+      answer: AnswerWithWeightingAndCoefficientDTO,
+    ) {
+      const currentCoefficientPercentage = Number(
+        (answer.weighting_coefficient / totalCoefficient).toFixed(10),
+      );
+      totalNormalizedPercentage += currentCoefficientPercentage;
+      totalWeighting += answer.weighting * currentCoefficientPercentage;
+    }
+
+    /*
+    The percentage of level score needed to be reached in order for the level to be assigned
+    */
+    const MARGIN_OF_ERROR = 0.95;
+
+    let totalNormalizedPercentage = 0;
+    let totalWeighting = 0;
+    let chosenLevel: LevelWithWeightingDTO = null;
+
+    answers.forEach((answer) => {
+      normalizeAndProcessAnswer(answer);
+    });
+
+    totalWeighting = totalWeighting / totalNormalizedPercentage;
+
+    /*
+      Iterate the levels and choose the closest level with required score <= total weighting
+     */
+    for (let i = 0; i < levels.length; i++) {
+      if (totalWeighting < levels[i].weighting * MARGIN_OF_ERROR) {
+        chosenLevel = levels[i - 1];
+        break;
+      }
+      if (i === levels.length - 1) {
+        chosenLevel = levels[i];
+        break;
+      }
+    }
+
+    return chosenLevel;
   }
 
   async addAssessmentAsGuest(): Promise<Assessment> {
