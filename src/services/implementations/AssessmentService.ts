@@ -15,10 +15,10 @@ import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
 import { IAnswerRepository } from "../../repositories/interfaces/IAnswerRepository";
 import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
 import { mapLevelWithWeightingDTOToLevelResponseDTO } from "../../mappers/level/mapLevelWithWeightingDTOToLevelResponseDTO";
-import { Category } from "../../models/Category";
 import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO";
 import { IQuestionRepository } from "../../repositories/interfaces/IQuestionRepository";
 import { GraphQLError } from "graphql/error";
+import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
@@ -80,7 +80,15 @@ export class AssessmentService implements IAssessmentService {
     return await this.assessmentRepository.insertAnswer(assessmentAnswer);
   }
 
-  async completeCategory(answers: AnswerRequestDTO[], categoryId: number) {
+  async completeCategory(
+    categoryId: number,
+    assessmentId: number,
+    answers: AnswerRequestDTO[],
+  ): Promise<LevelResponseDTO> {
+    /**
+     * Takes an array of answers and returns a question-answer map with entries relevant only to the specified `categoryId`.
+     * @param answers Array of answers from input
+     */
     const processInputAnswers = async (
       answers: AnswerRequestDTO[],
     ): Promise<Map<number, AnswerWithCategoryIdDTO>> => {
@@ -95,6 +103,10 @@ export class AssessmentService implements IAssessmentService {
       return removeDuplicateAnswers(answersWithCategoryIdFilteredByCategoryId);
     };
 
+    /**
+     * Reduces answers with duplicate `questionId` fields down to the last entry
+     * @param answers - Answer array to process
+     */
     function removeDuplicateAnswers(
       answers: AnswerWithCategoryIdDTO[],
     ): Map<number, AnswerWithCategoryIdDTO> {
@@ -109,30 +121,91 @@ export class AssessmentService implements IAssessmentService {
 
     const processedAnswersMap = await processInputAnswers(answers);
 
+    /**
+     * Hashset of `questionIds` of questions required to be answered to be eligible for level calculation
+     */
     const requiredQuestionIds =
       await this.questionRepository.getRequiredQuestionIdsByCategory(
         categoryId,
       );
-    const answerIds = new Set(processedAnswersMap.keys());
+    if (requiredQuestionIds.size <= 0) {
+      throw new GraphQLError(
+        "The provided category is not available for level calculation",
+      );
+    }
 
+    /**
+     * Hashset of `answerIds` of answers processed from input in previous steps
+     */
+    const answerIds = new Set(processedAnswersMap.keys());
     if (
       requiredQuestionIds.intersection(answerIds).size !==
       requiredQuestionIds.size
     ) {
       throw new GraphQLError("not enough answers");
     }
+
+    /**
+     * Insert answers into the assessment_answer table
+     */
+    const insertedAnswers =
+      await this.assessmentRepository.insertAnswersInBatch(
+        processedAnswersMap
+          .values()
+          .toArray()
+          .map(
+            (item) =>
+              new AssessmentAnswerInsertDTO(
+                assessmentId,
+                item.question_id,
+                item.answer_id,
+              ),
+          ),
+      );
+
+    const { answersWithWeightingsAndCoefficients, availableLevels } =
+      await this.getDataForLevelCalculation(
+        insertedAnswers.map((item) => item.answer_id),
+        categoryId,
+      );
+
+    const chosenLevel = this.calculateLevel(
+      answersWithWeightingsAndCoefficients,
+      availableLevels,
+      answersWithWeightingsAndCoefficients.reduce(
+        (acc, cur) => acc + cur.weighting_coefficient,
+        0,
+      ),
+    );
+
+    /**
+     * Insert the chosen level into the assessment_level table
+     */
+    await this.assessmentRepository.insertLevel(
+      new AssessmentLevel(
+        assessmentId,
+        chosenLevel.category_id,
+        chosenLevel.level_id,
+      ),
+    );
+
+    return new LevelResponseDTO(
+      chosenLevel.level_id,
+      chosenLevel.level_name,
+      chosenLevel.level_statement,
+      chosenLevel.weighting,
+      chosenLevel.category_id,
+    );
   }
 
   async getLevel(
     answers: AnswerRequestDTO[],
     categoryId: number,
   ): Promise<LevelResponseDTO> {
-    const availableLevels =
-      await this.levelRepository.getLevelsWithWeightingByCategoryId(categoryId);
-
-    const answersWithWeightingsAndCoefficients =
-      await this.answerRepository.getAnswersWithWeightingsAndCoefficientsByIds(
+    const { answersWithWeightingsAndCoefficients, availableLevels } =
+      await this.getDataForLevelCalculation(
         answers.map((item) => item.answerId),
+        categoryId,
       );
 
     return mapLevelWithWeightingDTOToLevelResponseDTO(
@@ -207,5 +280,22 @@ export class AssessmentService implements IAssessmentService {
     );
     const insertedUser = await this.userRepository.insertUser(guestUser);
     return await this.addAssessment(insertedUser.user_id);
+  }
+
+  private async getDataForLevelCalculation(
+    answerIds: number[],
+    categoryId: number,
+  ): Promise<{
+    answersWithWeightingsAndCoefficients: AnswerWithWeightingAndCoefficientDTO[];
+    availableLevels: LevelWithWeightingDTO[];
+  }> {
+    const answersWithWeightingsAndCoefficients =
+      await this.answerRepository.getAnswersWithWeightingsAndCoefficientsByIds(
+        answerIds,
+      );
+    const availableLevels =
+      await this.levelRepository.getLevelsWithWeightingByCategoryId(categoryId);
+
+    return { answersWithWeightingsAndCoefficients, availableLevels };
   }
 }

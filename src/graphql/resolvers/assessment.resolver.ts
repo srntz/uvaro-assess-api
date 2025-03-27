@@ -98,6 +98,42 @@ const assessmentResolvers = {
       );
     },
 
+    completeCategory: async (
+      _,
+      {
+        categoryId,
+        assessmentId,
+        answers,
+      }: {
+        categoryId: number;
+        assessmentId: number;
+        answers: AnswerRequestDTO[];
+      },
+      { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+    ) => {
+      if (!AuthenticatedUser || !AuthenticatedUser.user_id) {
+        throw new UnauthorizedError();
+      }
+
+      const userAssessments = await AssessmentService.getUserAssessments(
+        AuthenticatedUser.user_id,
+      );
+
+      if (
+        !userAssessments
+          .map((item) => item.assessment_id)
+          .includes(assessmentId)
+      ) {
+        throw new UnauthorizedError();
+      }
+
+      return await AssessmentService.completeCategory(
+        categoryId,
+        assessmentId,
+        answers,
+      );
+    },
+
     calculateLevel: async (
       _,
       args,

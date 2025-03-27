@@ -9,7 +9,7 @@ import {
   level,
   question,
 } from "../../db/schemas";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { GraphQLError } from "graphql/error";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
@@ -18,6 +18,7 @@ import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { Level } from "../../models/Level";
 import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
+import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
 
 export class AssessmentRepository
   extends Repository
@@ -180,6 +181,43 @@ export class AssessmentRepository
 
     console.log(data);
     return AssessmentAnswer.init(data[0]);
+  }
+
+  async insertAnswersInBatch(
+    answers: AssessmentAnswerInsertDTO[],
+  ): Promise<AssessmentAnswer[]> {
+    const insertedAnswers: AssessmentAnswer[] = [];
+
+    const data: (typeof assessmentAnswer.$inferSelect)[] = await this.db
+      .insert(assessmentAnswer)
+      .values(
+        (() => {
+          return answers.map<typeof assessmentAnswer.$inferInsert>((answer) => {
+            return {
+              assessment_id: answer.assessmentId,
+              question_id: answer.questionId,
+              answer_id: answer.answerId,
+            };
+          });
+        })(),
+      )
+      .onConflictDoUpdate({
+        target: [assessmentAnswer.assessment_id, assessmentAnswer.question_id],
+        set: { answer_id: sql`excluded.answer_id` },
+      })
+      .returning();
+
+    data.forEach((item) => {
+      insertedAnswers.push(
+        new AssessmentAnswer(
+          item.assessment_id,
+          item.question_id,
+          item.answer_id,
+        ),
+      );
+    });
+
+    return insertedAnswers;
   }
 
   async getAnswersForLevelCalculation(

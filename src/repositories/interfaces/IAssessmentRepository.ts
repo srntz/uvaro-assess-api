@@ -5,6 +5,7 @@ import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
 import { Level } from "../../models/Level";
+import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
 
 export interface IAssessmentRepository {
   getAssessmentById(assessmentId: number): Promise<Assessment>;
@@ -16,6 +17,9 @@ export interface IAssessmentRepository {
   getNotes(assessmentId: number): Promise<Note[]>;
   insertNote(item: Note): Promise<Note>;
   insertAnswer(item: AssessmentAnswer): Promise<AssessmentAnswer>;
+  insertAnswersInBatch(
+    answers: AssessmentAnswerInsertDTO[],
+  ): Promise<AssessmentAnswer[]>;
   getAnswersForLevelCalculation(
     item: AssessmentLevel,
   ): Promise<ICalculateLevelAnswer[]>;

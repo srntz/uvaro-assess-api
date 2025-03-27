@@ -35,4 +35,9 @@ export interface IAssessmentService {
     answers: AnswerRequestDTO[],
     categoryId: number,
   ): Promise<LevelResponseDTO>;
+  completeCategory(
+    categoryId: number,
+    assessmentId: number,
+    answers: AnswerRequestDTO[],
+  ): Promise<LevelResponseDTO>;
 }
