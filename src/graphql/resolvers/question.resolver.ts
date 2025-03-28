@@ -1,5 +1,5 @@
-import { Question } from "../../models/Question";
 import { IContext } from "../../context/IContext";
+import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO";
 
 const questionResolvers = {
   Query: {
@@ -9,21 +9,17 @@ const questionResolvers = {
       { QuestionService }: IContext,
     ) => {
       return await QuestionService.getFollowupQuestionsByCategory(
-        args.category_id,
+        args.categoryId,
       );
     },
   },
   QuestionWithChildren: {
-    category: async (parent: Question, _, { CategoryService }: IContext) => {
-      return await CategoryService.getById(parent.category_id);
-    },
-    answers: async (parent: Question, _, { AnswerService }: IContext) => {
-      return await AnswerService.getByQuestionId(parent.question_id);
-    },
-  },
-  Question: {
-    category: async (parent: Question, _, { CategoryService }: IContext) => {
-      return await CategoryService.getById(parent.category_id);
+    answers: async (
+      parent: QuestionResponseDTO,
+      _,
+      { AnswerService }: IContext,
+    ) => {
+      return await AnswerService.getByQuestionId(parent.questionId);
     },
   },
 };

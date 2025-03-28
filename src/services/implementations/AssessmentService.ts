@@ -1,10 +1,6 @@
 import { IAssessmentService } from "../interfaces/IAssessmentService";
 import { IAssessmentRepository } from "../../repositories/interfaces/IAssessmentRepository";
-import { Assessment } from "../../models/Assessment";
-import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
-import { AssessmentAnswer } from "../../models/AssessmentAnswer";
-import { Level } from "../../models/Level";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository";
 import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
@@ -18,6 +14,13 @@ import { IQuestionRepository } from "../../repositories/interfaces/IQuestionRepo
 import { GraphQLError } from "graphql/error";
 import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
 import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
+import { mapLevelEntityToLevelResponseDTO } from "../../mappers/level/mapLevelEntityToLevelResponseDTO";
+import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO";
+import { mapAnswerEntityToAnswerResponseDTO } from "../../mappers/answer/mapAnswerEntityToAnswerResponseDTO";
+import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
+import { mapAssessmentEntityToAssessmentResponseDTO } from "../../mappers/assessment/mapAssessmentEntityToAssessmentResponseDTO";
+import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO";
+import { mapNoteEntityToNoteResponseDTO } from "../../mappers/note/mapNoteEntityToNoteResponseDTO";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
@@ -28,11 +31,13 @@ export class AssessmentService implements IAssessmentService {
     private readonly questionRepository: IQuestionRepository,
   ) {}
 
-  async addAssessment(userId: string): Promise<Assessment> {
-    return await this.assessmentRepository.addAssessment(userId);
+  async addAssessment(userId: string): Promise<AssessmentResponseDTO> {
+    return mapAssessmentEntityToAssessmentResponseDTO(
+      await this.assessmentRepository.addAssessment(userId),
+    );
   }
 
-  async endAssessment(assessmentId: number): Promise<Level[]> {
+  async endAssessment(assessmentId: number): Promise<LevelResponseDTO[]> {
     const assessmentLevels =
       await this.assessmentRepository.getAssessmentLevels(assessmentId);
     const categories = await this.categoryRepository.getAll();
@@ -44,27 +49,43 @@ export class AssessmentService implements IAssessmentService {
     }
 
     await this.assessmentRepository.endAssessment(assessmentId);
-    return assessmentLevels;
+    return assessmentLevels.map((level) =>
+      mapLevelEntityToLevelResponseDTO(level),
+    );
   }
 
-  async getAssessmentById(assessmentId: number): Promise<Assessment> {
-    return await this.assessmentRepository.getAssessmentById(assessmentId);
+  async getAssessmentById(
+    assessmentId: number,
+  ): Promise<AssessmentResponseDTO> {
+    return mapAssessmentEntityToAssessmentResponseDTO(
+      await this.assessmentRepository.getAssessmentById(assessmentId),
+    );
   }
 
-  async getUserAssessments(userId: string): Promise<Assessment[]> {
-    return await this.assessmentRepository.getUserAssessments(userId);
+  async getUserAssessments(userId: string): Promise<AssessmentResponseDTO[]> {
+    return (await this.assessmentRepository.getUserAssessments(userId)).map(
+      (assessment) => mapAssessmentEntityToAssessmentResponseDTO(assessment),
+    );
   }
 
-  async getAssessmentAnswers(assessmentId: number): Promise<Answer[]> {
-    return await this.assessmentRepository.getAssessmentAnswers(assessmentId);
+  async getAssessmentAnswers(
+    assessmentId: number,
+  ): Promise<AnswerResponseDTO[]> {
+    return (
+      await this.assessmentRepository.getAssessmentAnswers(assessmentId)
+    ).map((answer) => mapAnswerEntityToAnswerResponseDTO(answer));
   }
 
-  async getAssessmentLevels(assessmentId: number): Promise<Level[]> {
-    return await this.assessmentRepository.getAssessmentLevels(assessmentId);
+  async getAssessmentLevels(assessmentId: number): Promise<LevelResponseDTO[]> {
+    return (
+      await this.assessmentRepository.getAssessmentLevels(assessmentId)
+    ).map((level) => mapLevelEntityToLevelResponseDTO(level));
   }
 
-  async getNotes(assessmentId: number): Promise<Note[]> {
-    return await this.assessmentRepository.getNotes(assessmentId);
+  async getNotes(assessmentId: number): Promise<NoteResponseDTO[]> {
+    return (await this.assessmentRepository.getNotes(assessmentId)).map(
+      (note) => mapNoteEntityToNoteResponseDTO(note),
+    );
   }
 
   async insertNote(
@@ -74,20 +95,6 @@ export class AssessmentService implements IAssessmentService {
   ): Promise<Note> {
     const note = new Note(text, assessmentId, categoryId);
     return await this.assessmentRepository.insertNote(note);
-  }
-
-  async insertAnswer(
-    assessmentId: number,
-    questionId: number,
-    answer_id: number,
-  ): Promise<AssessmentAnswer> {
-    const assessmentAnswer = new AssessmentAnswer(
-      assessmentId,
-      questionId,
-      answer_id,
-    );
-
-    return await this.assessmentRepository.insertAnswer(assessmentAnswer);
   }
 
   async completeCategory(
@@ -152,7 +159,9 @@ export class AssessmentService implements IAssessmentService {
       requiredQuestionIds.intersection(answerIds).size !==
       requiredQuestionIds.size
     ) {
-      throw new GraphQLError("not enough answers");
+      throw new GraphQLError(
+        "Please provide answers for all required questions of the specified category",
+      );
     }
 
     /**
@@ -179,7 +188,7 @@ export class AssessmentService implements IAssessmentService {
         categoryId,
       );
 
-    const chosenLevel = this.calculateLevel(
+    const chosenLevel = this.determineLevel(
       answersWithWeightingsAndCoefficients,
       availableLevels,
       answersWithWeightingsAndCoefficients.reduce(
@@ -203,12 +212,12 @@ export class AssessmentService implements IAssessmentService {
       chosenLevel.level_id,
       chosenLevel.level_name,
       chosenLevel.level_statement,
-      chosenLevel.weighting,
+      chosenLevel.weighting_id,
       chosenLevel.category_id,
     );
   }
 
-  async getLevel(
+  async calculateLevel(
     answers: AnswerRequestDTO[],
     categoryId: number,
   ): Promise<LevelResponseDTO> {
@@ -219,7 +228,7 @@ export class AssessmentService implements IAssessmentService {
       );
 
     return mapLevelWithWeightingDTOToLevelResponseDTO(
-      this.calculateLevel(
+      this.determineLevel(
         answersWithWeightingsAndCoefficients,
         availableLevels,
         answersWithWeightingsAndCoefficients.reduce(
@@ -230,7 +239,7 @@ export class AssessmentService implements IAssessmentService {
     );
   }
 
-  calculateLevel(
+  private determineLevel(
     answers: AnswerWithWeightingAndCoefficientDTO[],
     levels: LevelWithWeightingDTO[],
     totalCoefficient: number,

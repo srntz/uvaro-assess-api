@@ -1,9 +1,7 @@
+import { Level } from "../../models/Level";
 import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
-import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO";
 
-export function mapLevelWithWeightingDTOToLevelResponseDTO(
-  level: LevelWithWeightingDTO,
-): LevelResponseDTO {
+export function mapLevelEntityToLevelResponseDTO(level: Level) {
   return new LevelResponseDTO(
     level.level_id,
     level.level_name,

@@ -1,7 +1,7 @@
 import { IAnswerRepository } from "../interfaces/IAnswerRepository";
 import { Answer } from "../../models/Answer";
-import { answer, category, IAnswer, question } from "../../db/schemas";
-import { and, eq, or } from "drizzle-orm";
+import { answer, category, question } from "../../db/schemas";
+import { eq, or } from "drizzle-orm";
 import { Repository } from "../base/Repository";
 import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
 import { weighting } from "../../db/schemas/weighting";

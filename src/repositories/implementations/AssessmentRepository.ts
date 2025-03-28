@@ -103,14 +103,9 @@ export class AssessmentRepository
   }
 
   async getAssessmentLevels(assessmentId: number): Promise<Level[]> {
-    interface IData {
-      assessmentLevel: typeof assessmentLevel.$inferSelect;
-      level: typeof level.$inferSelect;
-    }
-
     const levels: Level[] = [];
 
-    const data: IData[] = await this.db
+    const data = await this.db
       .select()
       .from(assessmentLevel)
       .leftJoin(level, eq(assessmentLevel.level_id, level.level_id))
@@ -126,7 +121,7 @@ export class AssessmentRepository
   async getNotes(assessmentId: number): Promise<Note[]> {
     const notes: Note[] = [];
 
-    const data: (typeof note.$inferSelect)[] = await this.db
+    const data = await this.db
       .select()
       .from(note)
       .where(eq(note.assessment_id, assessmentId));
@@ -139,7 +134,7 @@ export class AssessmentRepository
   }
 
   async insertNote(item: Note): Promise<Note> {
-    const data: (typeof note.$inferSelect)[] = await this.db
+    const data = await this.db
       .insert(note)
       .values(item)
       .onConflictDoUpdate({
@@ -161,7 +156,6 @@ export class AssessmentRepository
       })
       .returning();
 
-    console.log(data);
     return AssessmentAnswer.init(data[0]);
   }
 
@@ -170,7 +164,7 @@ export class AssessmentRepository
   ): Promise<AssessmentAnswer[]> {
     const insertedAnswers: AssessmentAnswer[] = [];
 
-    const data: (typeof assessmentAnswer.$inferSelect)[] = await this.db
+    const data = await this.db
       .insert(assessmentAnswer)
       .values(
         (() => {
@@ -224,9 +218,13 @@ export class AssessmentRepository
   }
 
   async insertLevel(item: AssessmentLevel): Promise<AssessmentLevel> {
-    const data: AssessmentLevel = await this.db
+    const data = await this.db
       .insert(assessmentLevel)
-      .values(item)
+      .values({
+        assessment_id: item.assessment_id,
+        category_id: item.category_id,
+        level_id: item.level_id as number,
+      })
       .onConflictDoUpdate({
         target: [assessmentLevel.assessment_id, assessmentLevel.category_id],
         set: { level_id: item.level_id },

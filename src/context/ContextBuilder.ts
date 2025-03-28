@@ -40,7 +40,7 @@ export class ContextBuilder {
     const extendedContext: IContextWithAuth = {
       ...context,
       AuthenticatedUser: {
-        user_id: null,
+        userId: null,
         email: null,
         assessments: null,
       },
@@ -62,7 +62,7 @@ export class ContextBuilder {
         120000,
       );
 
-      extendedContext.AuthenticatedUser.user_id =
+      extendedContext.AuthenticatedUser.userId =
         parsedRefreshToken.payload.user_id;
       extendedContext.AuthenticatedUser.email =
         parsedRefreshToken.payload.email;
@@ -77,7 +77,7 @@ export class ContextBuilder {
 
     const parsedAccessToken = jwt.verify(req.cookies.accessToken);
 
-    extendedContext.AuthenticatedUser.user_id =
+    extendedContext.AuthenticatedUser.userId =
       parsedAccessToken.payload.user_id;
     extendedContext.AuthenticatedUser.email = parsedAccessToken.payload.email;
 

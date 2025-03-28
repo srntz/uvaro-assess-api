@@ -17,7 +17,7 @@ export interface IContext {
 
 export interface IContextWithAuth extends IContext {
   AuthenticatedUser: {
-    user_id: string;
+    userId: string;
     email: string;
     assessments: Assessment[] | null;
   };

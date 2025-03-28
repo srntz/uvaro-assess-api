@@ -1,8 +1,9 @@
 import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
+import { IContextWithAuth } from "../../context/IContext";
 
 export const withAuthenticationRequired = (next) => {
-  return (parent, args, context, info) => {
-    if (!context.AuthenticatedUser || !context.AuthenticatedUser.user_id) {
+  return (parent, args, context: IContextWithAuth, info) => {
+    if (!context.AuthenticatedUser || !context.AuthenticatedUser.userId) {
       throw new UnauthorizedError();
     }
 
