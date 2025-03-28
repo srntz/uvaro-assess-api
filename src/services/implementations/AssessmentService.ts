@@ -7,8 +7,6 @@ import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { Level } from "../../models/Level";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository";
-import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
-import { User } from "../../models/User";
 import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
 import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
@@ -19,12 +17,13 @@ import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDT
 import { IQuestionRepository } from "../../repositories/interfaces/IQuestionRepository";
 import { GraphQLError } from "graphql/error";
 import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
+import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
     private readonly assessmentRepository: IAssessmentRepository,
     private readonly levelRepository: ILevelRepository,
-    private readonly userRepository: IUserRepository,
+    private readonly categoryRepository: ICategoryRepository,
     private readonly answerRepository: IAnswerRepository,
     private readonly questionRepository: IQuestionRepository,
   ) {}
@@ -33,8 +32,19 @@ export class AssessmentService implements IAssessmentService {
     return await this.assessmentRepository.addAssessment(userId);
   }
 
-  async endAssessment(assessmentId: number): Promise<Assessment> {
-    return await this.assessmentRepository.endAssessment(assessmentId);
+  async endAssessment(assessmentId: number): Promise<Level[]> {
+    const assessmentLevels =
+      await this.assessmentRepository.getAssessmentLevels(assessmentId);
+    const categories = await this.categoryRepository.getAll();
+
+    if (assessmentLevels.length !== categories.length) {
+      throw new GraphQLError(
+        "The assessment can't be finished because you haven't completed all categories",
+      );
+    }
+
+    await this.assessmentRepository.endAssessment(assessmentId);
+    return assessmentLevels;
   }
 
   async getAssessmentById(assessmentId: number): Promise<Assessment> {
@@ -269,17 +279,6 @@ export class AssessmentService implements IAssessmentService {
     }
 
     return chosenLevel;
-  }
-
-  async addAssessmentAsGuest(): Promise<Assessment> {
-    const guestUser = new User(
-      "GUEST",
-      "GUEST",
-      "guest@guest.com",
-      Math.floor(Math.random() * 1000000).toString(),
-    );
-    const insertedUser = await this.userRepository.insertUser(guestUser);
-    return await this.addAssessment(insertedUser.user_id);
   }
 
   private async getDataForLevelCalculation(

@@ -59,16 +59,29 @@ const assessmentResolvers = {
     addAssessmentAsGuest: (_, __, { AssessmentService }: IContext) =>
       AssessmentService.addAssessmentAsGuest(),
 
-    endAssessment: async (
-      _,
-      args,
-      { AssessmentService, AuthenticatedUser }: IContextWithAuth,
-    ) => {
-      if (AuthenticatedUser.user_id === null) {
-        throw new UnauthorizedError();
-      }
-      return await AssessmentService.endAssessment(args.assessment_id);
-    },
+    endAssessment: withAuthenticationRequired(
+      withUserAssessments(
+        async (
+          _,
+          args,
+          { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+        ) => {
+          const matchedAssessment = AuthenticatedUser.assessments.find(
+            (item) => item.assessment_id === args.assessment_id,
+          );
+
+          if (!matchedAssessment) {
+            throw new UnauthorizedError();
+          }
+
+          if (matchedAssessment.end_date_time) {
+            throw new GraphQLError("The assessment is already finished");
+          }
+
+          return await AssessmentService.endAssessment(args.assessment_id);
+        },
+      ),
+    ),
 
     insertNote: async (
       _,

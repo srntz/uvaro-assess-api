@@ -72,31 +72,13 @@ export class AssessmentRepository
   }
 
   async endAssessment(assessmentId: number): Promise<Assessment> {
-    const selectedAssessmentData: (typeof assessment.$inferSelect)[] =
-      await this.db
-        .select()
-        .from(assessment)
-        .where(eq(assessment.assessment_id, assessmentId));
+    const data = await this.db
+      .update(assessment)
+      .set({ end_date_time: new Date() } as unknown)
+      .where(eq(assessment.assessment_id, assessmentId))
+      .returning();
 
-    if (selectedAssessmentData.length === 0) {
-      throw new GraphQLError(
-        "Assessment with the provided id has not been found",
-      );
-    }
-
-    const currentAssessment = Assessment.init(selectedAssessmentData[0]);
-
-    if (currentAssessment.end_date_time === null) {
-      const data: (typeof assessment.$inferSelect)[] = await this.db
-        .update(assessment)
-        .set({ end_date_time: new Date() })
-        .where(eq(assessment.assessment_id, assessmentId))
-        .returning();
-
-      return Assessment.init(data[0]);
-    } else {
-      throw new GraphQLError("The assessment is already finished");
-    }
+    return Assessment.init(data[0]);
   }
 
   async getAssessmentAnswers(assessmentId: number): Promise<Answer[]> {

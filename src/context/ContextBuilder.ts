@@ -20,7 +20,7 @@ export class ContextBuilder {
       AssessmentService: new AssessmentService(
         new AssessmentRepository(),
         new LevelRepository(),
-        new UserRepository(),
+        new CategoryRepository(),
         new AnswerRepository(),
         new QuestionRepository(),
       ),
