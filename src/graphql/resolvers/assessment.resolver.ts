@@ -2,6 +2,9 @@ import { IContext, IContextWithAuth } from "../../context/IContext";
 import { Assessment } from "../../models/Assessment";
 import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
+import { GraphQLError } from "graphql/error";
+import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired";
+import { withUserAssessments } from "../middleware/withUserAssessments";
 
 const assessmentResolvers = {
   Query: {
@@ -98,41 +101,41 @@ const assessmentResolvers = {
       );
     },
 
-    completeCategory: async (
-      _,
-      {
-        categoryId,
-        assessmentId,
-        answers,
-      }: {
-        categoryId: number;
-        assessmentId: number;
-        answers: AnswerRequestDTO[];
-      },
-      { AssessmentService, AuthenticatedUser }: IContextWithAuth,
-    ) => {
-      if (!AuthenticatedUser || !AuthenticatedUser.user_id) {
-        throw new UnauthorizedError();
-      }
+    completeCategory: withAuthenticationRequired(
+      withUserAssessments(
+        async (
+          _,
+          {
+            categoryId,
+            assessmentId,
+            answers,
+          }: {
+            categoryId: number;
+            assessmentId: number;
+            answers: AnswerRequestDTO[];
+          },
+          { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+        ) => {
+          const matchedAssessment = AuthenticatedUser.assessments.find(
+            (item) => item.assessment_id === assessmentId,
+          );
 
-      const userAssessments = await AssessmentService.getUserAssessments(
-        AuthenticatedUser.user_id,
-      );
+          if (matchedAssessment === undefined) {
+            throw new UnauthorizedError();
+          }
 
-      if (
-        !userAssessments
-          .map((item) => item.assessment_id)
-          .includes(assessmentId)
-      ) {
-        throw new UnauthorizedError();
-      }
+          if (matchedAssessment.end_date_time) {
+            throw new GraphQLError("The assessment is already finished");
+          }
 
-      return await AssessmentService.completeCategory(
-        categoryId,
-        assessmentId,
-        answers,
-      );
-    },
+          return await AssessmentService.completeCategory(
+            categoryId,
+            assessmentId,
+            answers,
+          );
+        },
+      ),
+    ),
 
     calculateLevel: async (
       _,
@@ -151,13 +154,13 @@ const assessmentResolvers = {
 
   AssessmentWithChildren: {
     answers: (parent: Assessment, _, { AssessmentService }: IContext) =>
-      AssessmentService.getAssessmentAnswers(parent.id),
+      AssessmentService.getAssessmentAnswers(parent.assessment_id),
 
     notes: (parent: Assessment, _, { AssessmentService }: IContext) =>
-      AssessmentService.getNotes(parent.id),
+      AssessmentService.getNotes(parent.assessment_id),
 
     levels: (parent: Assessment, _, { AssessmentService }: IContext) =>
-      AssessmentService.getAssessmentLevels(parent.id),
+      AssessmentService.getAssessmentLevels(parent.assessment_id),
   },
 };
 

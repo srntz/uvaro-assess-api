@@ -42,6 +42,7 @@ export class ContextBuilder {
       AuthenticatedUser: {
         user_id: null,
         email: null,
+        assessments: null,
       },
     };
 
