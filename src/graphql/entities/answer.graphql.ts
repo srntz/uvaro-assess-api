@@ -1,9 +1,0 @@
-export const answerEntity = `#graphql
-  type Answer {
-      answer_id: Int!
-      answer_text: String!
-      weighting: Int!
-      question_id: Int!
-      question: Question!
-  }
-`

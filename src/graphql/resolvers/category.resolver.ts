@@ -1,20 +1,23 @@
-import { QuestionService } from "../../services/QuestionService";
-import { Question } from "../../models/Question";
-import { LevelService } from "../../services/LevelService";
+import { Category } from "../../models/Category";
+import { IContext } from "../../context/IContext";
+import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 
-async function questionsFieldResolver(parent: Question) {
-  const service = new QuestionService();
-  return await service.getRelated(parent.category_id);
-}
-
-async function levelsFieldResolver(parent: Question) {
-  const service = new LevelService();
-  return await service.getRelated(parent.category_id);
-}
-
-export const categoryResolvers = {
+const categoryResolvers = {
+  Query: {
+    allCategories: async (_, __, { CategoryService }: IContext) => {
+      return await CategoryService.getAll();
+    },
+  },
   CategoryWithChildren: {
-    questions: (parent: Question) => questionsFieldResolver(parent),
-    levels: (parent: Question) => levelsFieldResolver(parent),
+    questions: async (category: Category, _, { QuestionService }: IContext) => {
+      return await QuestionService.getRegularQuestionsByCategory(
+        category.category_id,
+      );
+    },
+    levels: async (parent: Category, _, { LevelService }: IContext) => {
+      return await LevelService.getLevelsByCategory(parent.category_id);
+    },
   },
 };
+
+export default categoryResolvers;

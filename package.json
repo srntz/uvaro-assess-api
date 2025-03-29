@@ -4,7 +4,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --watch src --ext ts,js --exec tsx ./src/index.ts"
+    "start": "nodemon --watch src --ext ts,js --exec tsx ./src/index.ts --mode:development",
+    "start:production": "nodemon --watch src --ext ts,js --exec tsx ./src/index.ts --mode:production",
+    "load": "tsx ./src/db/load.ts",
+    "migrate": "drizzle-kit migrate",
+    "upload-source-maps": "npx @sentry/wizard@latest -i sourcemaps --saas",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org sait-1d --project backend-error-service ./dist && sentry-cli sourcemaps upload --org sait-1d --project backend-error-service ./dist",
+    "build": "tsc && npm run sentry:sourcemaps"
   },
   "type": "module",
   "keywords": [],
@@ -23,12 +29,23 @@
   },
   "dependencies": {
     "@apollo/server": "^4.11.2",
+    "@graphql-tools/load-files": "^7.0.1",
+    "@graphql-tools/merge": "^9.0.20",
+    "@graphql-tools/schema": "^10.0.19",
+    "@node-saml/passport-saml": "^5.0.1",
+    "body-parser": "^1.20.3",
+    "@sentry/cli": "^2.42.2",
+    "@sentry/node": "^9.5.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "drizzle-graphql": "^0.8.5",
     "drizzle-orm": "^0.36.4",
     "express": "^4.21.1",
     "graphql": "^16.9.0",
-    "pg": "^8.13.1"
+    "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "pg": "^8.13.1",
+    "xml2js": "^0.6.2"
   }
 }

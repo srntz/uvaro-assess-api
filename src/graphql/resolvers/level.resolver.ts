@@ -1,13 +1,12 @@
-import { CategoryService } from "../../services/CategoryService";
 import { Level } from "../../models/Level";
+import { IContext } from "../../context/IContext";
 
-async function categoryFieldResolver(parent: Level) {
-  const service = new CategoryService();
-  return await service.get(parent.category_id);
-}
-
-export const levelResolvers = {
+const levelResolvers = {
   Level: {
-    category: (parent: Level) => categoryFieldResolver(parent),
+    category: async (parent: Level, _, { CategoryService }: IContext) => {
+      return await CategoryService.getById(parent.category_id);
+    },
   },
 };
+
+export default levelResolvers;

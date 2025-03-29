@@ -1,8 +1,14 @@
 /node_modules
 /dist
 /.idea
-drizzle
+/data
+
 Dockerfile
 entrypoint.sh
-/data
+
 .env
+.env.*
+
+*.pem
+
+.sentryclirc

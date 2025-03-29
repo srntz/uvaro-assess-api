@@ -1,0 +1,7 @@
+type Query {
+    allCategories: [CategoryWithChildren]
+    getUserAssessments: [AssessmentWithChildren]
+    getAssessmentById(id: Int!): AssessmentWithChildren
+    getFollowUpQuestionsByCategory(category_id: Int!): [Question]
+    getUser: User
+}

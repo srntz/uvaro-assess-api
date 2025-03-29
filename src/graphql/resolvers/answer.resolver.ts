@@ -1,13 +1,12 @@
-import { QuestionService } from "../../services/QuestionService";
 import { Answer } from "../../models/Answer";
+import { IContext } from "../../context/IContext";
 
-async function questionFieldResolver(question_id: number) {
-  const service = new QuestionService();
-  return await service.get(question_id);
-}
-
-export const answerResolvers = {
+const answerResolvers = {
   Answer: {
-    question: (parent: Answer) => questionFieldResolver(parent.question_id),
+    question: async (parent: Answer, _, { QuestionService }: IContext) => {
+      return await QuestionService.getQuestionById(parent.question_id);
+    },
   },
 };
+
+export default answerResolvers;
