@@ -46,8 +46,8 @@ export class PassportStrategyConfig {
       lastName: profile.last_name,
     } as { [key: string]: string };
 
-    const userService = new UserService(new UserRepository());
-    const existingUser = await userService.getById(userAttributes.id);
+    const userRepository = new UserRepository();
+    const existingUser = await userRepository.getById(userAttributes.id);
 
     let dbUser: User;
     if (!existingUser) {
@@ -58,7 +58,7 @@ export class PassportStrategyConfig {
         userAttributes.id,
       );
 
-      dbUser = await userService.addUser(user);
+      dbUser = await userRepository.insertUser(user);
     } else {
       const user = new UserUpdateDTO(
         userAttributes.id,
@@ -67,7 +67,7 @@ export class PassportStrategyConfig {
         userAttributes.email,
       );
 
-      dbUser = await userService.updateUser(user);
+      dbUser = await userRepository.updateUser(user);
     }
 
     const jwt = new JWTManager();

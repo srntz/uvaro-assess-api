@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import * as dbSchema from "./schemas";
 
 export class DatabaseConnection {
-  private static instance;
+  private static instance: ReturnType<typeof drizzle>;
 
   private constructor() {}
 

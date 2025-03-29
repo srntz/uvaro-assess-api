@@ -29,7 +29,7 @@ export class QuestionRepository
       );
 
     data.forEach((item) => {
-      questions.push(Question.fromDatabase(item));
+      questions.push(Question.init(item));
     });
 
     return questions;
@@ -42,9 +42,26 @@ export class QuestionRepository
       .where(eq(question.question_id, id));
 
     if (data.length > 0) {
-      return Question.fromDatabase(data[0]);
+      return Question.init(data[0]);
     }
 
     return null;
+  }
+
+  async getRequiredQuestionIdsByCategory(
+    categoryId: number,
+  ): Promise<Set<number>> {
+    const data: { question_id: typeof question.$inferSelect.question_id }[] =
+      await this.db
+        .select({ question_id: question.question_id })
+        .from(question)
+        .where(
+          and(
+            eq(question.category_id, categoryId),
+            eq(question.follow_up, false),
+          ),
+        );
+
+    return new Set<number>(data.map((item) => item.question_id));
   }
 }

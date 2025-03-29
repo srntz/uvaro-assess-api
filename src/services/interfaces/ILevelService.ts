@@ -1,5 +1,5 @@
-import { Level } from "../../models/Level";
+import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
 
 export interface ILevelService {
-  getLevelsByCategory(categoryId: number): Promise<Level[]>;
+  getLevelsByCategory(categoryId: number): Promise<LevelResponseDTO[]>;
 }

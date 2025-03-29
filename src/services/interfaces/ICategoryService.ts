@@ -1,6 +1,7 @@
 import { Category } from "../../models/Category";
+import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO";
 
 export interface ICategoryService {
-  getAll(): Promise<Category[]>;
-  getById(id: number): Promise<Category>;
+  getAll(): Promise<CategoryResponseDTO[]>;
+  getById(id: number): Promise<CategoryResponseDTO>;
 }

@@ -6,4 +6,5 @@ export interface IQuestionRepository {
     categoryId: number,
     isFollowUp: boolean,
   ): Promise<Question[]>;
+  getRequiredQuestionIdsByCategory(categoryId: number): Promise<Set<number>>;
 }

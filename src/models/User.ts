@@ -1,16 +1,26 @@
-import { BaseModel } from "./BaseModel";
-import { IUser } from "../db/schemas";
+import { user } from "../db/schemas";
 import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
 
 export class User {
   constructor(
+    readonly user_id: string,
+    readonly email: string,
     readonly first_name: string,
     readonly last_name: string,
-    readonly email: string,
-    readonly user_id?: string,
   ) {}
 
-  static init(data) {
-    return new User(data.first_name, data.last_name, data.email, data.user_id);
+  static init(data: typeof user.$inferSelect) {
+    try {
+      return new User(
+        data.user_id,
+        data.email,
+        data.first_name,
+        data.last_name,
+      );
+    } catch {
+      throw new InvalidModelConstructionException(
+        Object.getPrototypeOf(this).constructor.name,
+      );
+    }
   }
 }

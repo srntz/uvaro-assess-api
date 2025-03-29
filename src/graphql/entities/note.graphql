@@ -1,5 +1,5 @@
 type Note {
-    category_id: Int!
-    assessment_id: Int!
-    note_text: String!
+    categoryId: Int!
+    assessmentId: Int!
+    noteText: String!
 }
