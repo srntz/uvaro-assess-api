@@ -5,6 +5,7 @@ import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
 import { GraphQLError } from "graphql/error";
 import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired";
 import { withUserAssessments } from "../middleware/withUserAssessments";
+import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
 
 const assessmentResolvers = {
   Query: {
@@ -125,28 +126,26 @@ const assessmentResolvers = {
         },
       ),
     ),
-
-    calculateLevel: async (
-      _,
-      args,
-      { AssessmentService }: IContextWithAuth,
-    ) => {
-      return await AssessmentService.calculateLevel(
-        args.assessmentId,
-        args.categoryId,
-      );
-    },
   },
 
   AssessmentWithChildren: {
-    answers: (parent: Assessment, _, { AssessmentService }: IContext) =>
-      AssessmentService.getAssessmentAnswers(parent.assessment_id),
+    answers: (
+      parent: AssessmentResponseDTO,
+      _,
+      { AssessmentService }: IContext,
+    ) => AssessmentService.getAssessmentAnswers(parent.assessmentId),
 
-    notes: (parent: Assessment, _, { AssessmentService }: IContext) =>
-      AssessmentService.getNotes(parent.assessment_id),
+    notes: (
+      parent: AssessmentResponseDTO,
+      _,
+      { AssessmentService }: IContext,
+    ) => AssessmentService.getNotes(parent.assessmentId),
 
-    levels: (parent: Assessment, _, { AssessmentService }: IContext) =>
-      AssessmentService.getAssessmentLevels(parent.assessment_id),
+    levels: (
+      parent: AssessmentResponseDTO,
+      _,
+      { AssessmentService }: IContext,
+    ) => AssessmentService.getAssessmentLevels(parent.assessmentId),
   },
 };
 

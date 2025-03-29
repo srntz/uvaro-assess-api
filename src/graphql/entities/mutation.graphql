@@ -2,6 +2,5 @@ type Mutation {
     addAssessment: Assessment!
     endAssessment(assessmentId: Int!): [Level!]!
     insertNote(assessmentId: Int!, categoryId: Int!, noteText: String!): Note!
-    calculateLevel(assessmentId: Int!, categoryId: Int!): Level!
     completeCategory(categoryId: Int!, assessmentId: Int!, answers: [GetLevelInput!]!): Level!
 }

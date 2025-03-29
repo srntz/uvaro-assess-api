@@ -20,7 +20,7 @@ export interface IAssessmentService {
     assessmentId: number,
     categoryId: number,
     text: string,
-  ): Promise<Note>;
+  ): Promise<NoteResponseDTO>;
   calculateLevel(
     answers: AnswerRequestDTO[],
     categoryId: number,

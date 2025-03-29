@@ -92,9 +92,11 @@ export class AssessmentService implements IAssessmentService {
     assessmentId: number,
     categoryId: number,
     text: string,
-  ): Promise<Note> {
+  ): Promise<NoteResponseDTO> {
     const note = new Note(text, assessmentId, categoryId);
-    return await this.assessmentRepository.insertNote(note);
+    return mapNoteEntityToNoteResponseDTO(
+      await this.assessmentRepository.insertNote(note),
+    );
   }
 
   async completeCategory(
