@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import passport from "passport";
 import { PassportStrategyConfig } from "../../configs/PassportStrategyConfig";
 import cookieParser from "cookie-parser";
+import { JWTManager } from "../../utils/JWTManager";
 
 const AuthRouter = express.Router();
 
@@ -29,6 +30,11 @@ AuthRouter.get("/login", (req, res, next) => {
 });
 
 AuthRouter.get("/logout", (req, res) => {
+  if (!req.cookies.refreshToken) {
+    res.redirect("/login");
+    return;
+  }
+
   res.clearCookie("referer");
   if (req.query.referer) {
     res.cookie("referer", req.query.referer, {
@@ -43,10 +49,13 @@ AuthRouter.get("/logout", (req, res) => {
       secure: true,
     });
   }
+
+  const validatedToken = new JWTManager().verify(req.cookies.refreshToken);
+
   PassportStrategyConfig.getStrategy().logout(
     {
       user: {
-        nameID: "auth0|67d9cf4415f8d0e0c825de27",
+        nameID: validatedToken.payload.user_id,
         nameIDFormat: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
       },
     },

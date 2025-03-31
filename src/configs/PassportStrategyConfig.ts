@@ -52,10 +52,10 @@ export class PassportStrategyConfig {
     let dbUser: User;
     if (!existingUser) {
       const user = new User(
+        userAttributes.id,
+        userAttributes.email,
         userAttributes.firstName,
         userAttributes.lastName,
-        userAttributes.email,
-        userAttributes.id,
       );
 
       dbUser = await userRepository.insertUser(user);
