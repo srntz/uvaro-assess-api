@@ -1,7 +1,5 @@
 import { INotificationBuilder } from "../../interfaces/INotificationBuilder";
 import { RichTextElement } from "./classes/RichTextElement";
-import { RichTextSection } from "./classes/RichTextSection";
-import { TextBlock } from "./classes/TextBlock";
 
 export class NotificationBuilder implements INotificationBuilder {
   private message = {
@@ -10,7 +8,7 @@ export class NotificationBuilder implements INotificationBuilder {
 
   blankSpace(): INotificationBuilder {
     this.message.blocks.push({
-      type: "text",
+      type: "section",
       text: {
         type: "plain_text",
         text: " ",
@@ -53,21 +51,3 @@ export class NotificationBuilder implements INotificationBuilder {
     return { ...this.message };
   }
 }
-
-function main() {
-  const builder = new NotificationBuilder();
-
-  builder
-    .header("New Completed Assessment")
-    .richText(
-      new RichTextSection().add(
-        new TextBlock({ text: "by " }),
-        new TextBlock({ text: "John Doe", style: { bold: true } }),
-      ),
-    )
-    .divider();
-
-  console.log(JSON.stringify(builder));
-}
-
-main();
