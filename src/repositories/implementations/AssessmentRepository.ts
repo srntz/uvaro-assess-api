@@ -19,6 +19,7 @@ import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { Level } from "../../models/Level";
 import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
 import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
+import { Question } from "../../models/Question";
 
 export class AssessmentRepository
   extends Repository
@@ -100,6 +101,33 @@ export class AssessmentRepository
     });
 
     return answers;
+  }
+
+  async getAssessmentAnswerQuestionPairs(assessmentId: number) {
+    const pairs: { answer: Answer; question: Question }[] = [];
+
+    const data: {
+      assessment_answer: typeof assessmentAnswer.$inferSelect;
+      answer: typeof answer.$inferSelect;
+      question: typeof question.$inferSelect;
+    }[] = await this.db
+      .select()
+      .from(assessmentAnswer)
+      .leftJoin(answer, eq(assessmentAnswer.answer_id, answer.answer_id))
+      .leftJoin(
+        question,
+        eq(assessmentAnswer.question_id, question.question_id),
+      )
+      .where(eq(assessmentAnswer.assessment_id, assessmentId));
+
+    data.forEach((item) => {
+      pairs.push({
+        answer: Answer.init(item.answer),
+        question: Question.init(item.question),
+      });
+    });
+
+    return pairs;
   }
 
   async getAssessmentLevels(assessmentId: number): Promise<Level[]> {
