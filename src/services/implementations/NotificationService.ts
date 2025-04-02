@@ -5,22 +5,29 @@ import { RichTextSection } from "../../utils/notificationBuilder/classes/RichTex
 import { TextBlock } from "../../utils/notificationBuilder/classes/TextBlock";
 import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
 import { RichTextList } from "../../utils/notificationBuilder/classes/RichTextList";
+import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
 
 export class NotificationService implements INotificationService {
   constructor(
     private readonly assessmentRepository: IAssessmentRepository,
     private readonly categoryRepository: ICategoryRepository,
+    private readonly userRepository: IUserRepository,
   ) {}
 
-  async send(assessmentId: number): Promise<void> {
+  async send(assessmentId: number, userId: string): Promise<void> {
     const builder = new NotificationBuilder();
+
+    const user = await this.userRepository.getById(userId);
 
     builder
       .header("New Completed Assessment!")
       .richText(
         new RichTextSection().add(
           new TextBlock({ text: "by " }),
-          new TextBlock({ text: "John Doe", style: { bold: true } }),
+          new TextBlock({
+            text: `${user.first_name} ${user.last_name}`,
+            style: { bold: true },
+          }),
         ),
       )
       .divider();
@@ -104,6 +111,12 @@ export class NotificationService implements INotificationService {
       }
     }
 
-    return Promise.resolve(undefined);
+    fetch(process.env.SLACK_WEBHOOK_URL, {
+      method: "POST",
+      body: JSON.stringify(builder),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 }

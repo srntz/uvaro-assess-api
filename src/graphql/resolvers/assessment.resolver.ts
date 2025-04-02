@@ -1,5 +1,4 @@
 import { IContext, IContextWithAuth } from "../../context/IContext";
-import { Assessment } from "../../models/Assessment";
 import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
 import { GraphQLError } from "graphql/error";
@@ -62,7 +61,11 @@ const assessmentResolvers = {
         async (
           _,
           args,
-          { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+          {
+            AssessmentService,
+            AuthenticatedUser,
+            NotificationService,
+          }: IContextWithAuth,
         ) => {
           const matchedAssessment = AuthenticatedUser.assessments.find(
             (item) => item.assessment_id === args.assessmentId,
@@ -76,7 +79,13 @@ const assessmentResolvers = {
             throw new GraphQLError("The assessment is already finished");
           }
 
-          return await AssessmentService.endAssessment(args.assessmentId);
+          const levels = await AssessmentService.endAssessment(
+            args.assessmentId,
+          );
+
+          NotificationService.send(args.assessmentId, AuthenticatedUser.userId);
+
+          return levels;
         },
       ),
     ),

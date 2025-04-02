@@ -1,3 +1,3 @@
 export interface INotificationService {
-  send(assessmentId: number): Promise<void>;
+  send(assessmentId: number, userId: string): Promise<void>;
 }
