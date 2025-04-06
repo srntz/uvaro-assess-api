@@ -1,7 +1,7 @@
-import { Repository } from "../base/Repository";
-import { ICategoryRepository } from "../interfaces/ICategoryRepository";
-import { Category } from "../../models/Category";
-import { category } from "../../db/schemas";
+import { Repository } from "../base/Repository.js";
+import { ICategoryRepository } from "../interfaces/ICategoryRepository.js";
+import { Category } from "../../models/Category.js";
+import { category } from "../../db/schemas/index.js";
 import { eq } from "drizzle-orm";
 
 export class CategoryRepository

@@ -1,6 +1,6 @@
 import { defineConfig } from "drizzle-kit";
 import dotenv from "dotenv";
-import { EnvironmentLoader } from "./src/utils/environmentLoader/EnvironmentLoader";
+import { EnvironmentLoader } from "./src/utils/environmentLoader/EnvironmentLoader.js";
 
 dotenv.config({
   path: `.env.${EnvironmentLoader.load(["--mode:development"])}`,

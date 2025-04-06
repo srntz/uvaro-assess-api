@@ -1,5 +1,5 @@
-import { IContextWithAuth } from "../../context/IContext";
-import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired";
+import { IContextWithAuth } from "../../context/IContext.js";
+import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired.js";
 
 const userResolvers = {
   Query: {

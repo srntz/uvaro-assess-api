@@ -1,4 +1,4 @@
-import { EnvironmentTypeEnum } from "./EnviromnentTypeEnum";
+import { EnvironmentTypeEnum } from "./EnviromnentTypeEnum.js";
 
 export class EnvironmentLoader {
   private static environment: EnvironmentTypeEnum;

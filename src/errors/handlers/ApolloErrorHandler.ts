@@ -1,6 +1,6 @@
 import { GraphQLFormattedError } from "graphql/error";
-import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended";
-import { mapApolloServerErrorToResponseSafeError } from "../mappers/mapApolloServerErrorToResponseSafeError";
+import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended.js";
+import { mapApolloServerErrorToResponseSafeError } from "../mappers/mapApolloServerErrorToResponseSafeError.js";
 
 export class ApolloErrorHandler {
   private formattedError: GraphQLFormattedError;

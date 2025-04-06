@@ -1,5 +1,5 @@
-import { pgTable, serial, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
-import { user } from "./user";
+import { pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { user } from "./user.js";
 
 export const assessment = pgTable("assessment", {
   assessment_id: serial().primaryKey(),

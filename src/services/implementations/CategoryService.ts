@@ -1,7 +1,7 @@
-import { ICategoryService } from "../interfaces/ICategoryService";
-import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
-import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO";
-import { mapCategoryEntityToCategoryResponseDTO } from "../../mappers/category/mapCategoryEntityToCategoryResponseDTO";
+import { ICategoryService } from "../interfaces/ICategoryService.js";
+import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository.js";
+import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO.js";
+import { mapCategoryEntityToCategoryResponseDTO } from "../../mappers/category/mapCategoryEntityToCategoryResponseDTO.js";
 
 export class CategoryService implements ICategoryService {
   constructor(private readonly categoryRepository: ICategoryRepository) {}

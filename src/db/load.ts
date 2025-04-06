@@ -1,20 +1,17 @@
-import { DatabaseConnection } from "./DatabaseConnection";
+import { DatabaseConnection } from "./DatabaseConnection.js";
 import {
   answer,
-  assessment,
   category,
   IAnswer,
   ICategory,
   ILevel,
   IQuestion,
-  IUser,
   level,
   question,
-  user,
-} from "./schemas";
+} from "./schemas/index.js";
 import dotenv from "dotenv";
-import { EnvironmentLoader } from "../utils/environmentLoader/EnvironmentLoader";
-import { weighting } from "./schemas/weighting";
+import { EnvironmentLoader } from "../utils/environmentLoader/EnvironmentLoader.js";
+import { weighting } from "./schemas/weighting.js";
 
 dotenv.config({
   path: `.env.${EnvironmentLoader.load(["--mode:development"])}`,

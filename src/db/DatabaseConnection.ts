@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import * as dbSchema from "./schemas";
+import * as dbSchema from "./schemas/index.js";
 
 export class DatabaseConnection {
   private static instance: ReturnType<typeof drizzle>;

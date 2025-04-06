@@ -1,5 +1,5 @@
-import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO";
-import { Category } from "../../models/Category";
+import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO.js";
+import { Category } from "../../models/Category.js";
 
 export function mapCategoryEntityToCategoryResponseDTO(category: Category) {
   return new CategoryResponseDTO(

@@ -1,7 +1,7 @@
-import { ILevelService } from "../interfaces/ILevelService";
-import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository";
-import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
-import { mapLevelEntityToLevelResponseDTO } from "../../mappers/level/mapLevelEntityToLevelResponseDTO";
+import { ILevelService } from "../interfaces/ILevelService.js";
+import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository.js";
+import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO.js";
+import { mapLevelEntityToLevelResponseDTO } from "../../mappers/level/mapLevelEntityToLevelResponseDTO.js";
 
 export class LevelService implements ILevelService {
   constructor(private readonly levelRepository: ILevelRepository) {}

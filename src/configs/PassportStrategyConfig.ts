@@ -1,10 +1,9 @@
 import passport from "passport";
 import { Strategy, VerifyWithRequest } from "@node-saml/passport-saml";
-import { UserService } from "../services/implementations/UserService";
-import { UserRepository } from "../repositories/implementations/UserRepository";
-import { User } from "../models/User";
-import { UserUpdateDTO } from "../dto/UserUpdateDTO";
-import { JWTManager } from "../utils/JWTManager";
+import { UserRepository } from "../repositories/implementations/UserRepository.js";
+import { User } from "../models/User.js";
+import { UserUpdateDTO } from "../dto/UserUpdateDTO.js";
+import { JWTManager } from "../utils/JWTManager.js";
 
 export class PassportStrategyConfig {
   private static samlStrategy;

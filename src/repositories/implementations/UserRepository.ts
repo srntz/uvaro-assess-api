@@ -1,9 +1,9 @@
-import { Repository } from "../base/Repository";
-import { IUserRepository } from "../interfaces/IUserRepository";
-import { User } from "../../models/User";
-import { user as userTable } from "../../db/schemas";
+import { Repository } from "../base/Repository.js";
+import { IUserRepository } from "../interfaces/IUserRepository.js";
+import { User } from "../../models/User.js";
+import { user as userTable } from "../../db/schemas/index.js";
 import { eq } from "drizzle-orm";
-import { UserUpdateDTO } from "../../dto/UserUpdateDTO";
+import { UserUpdateDTO } from "../../dto/UserUpdateDTO.js";
 
 export class UserRepository extends Repository implements IUserRepository {
   constructor() {

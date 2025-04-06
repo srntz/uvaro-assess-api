@@ -1,5 +1,5 @@
-import { Level } from "../../models/Level";
-import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO";
+import { Level } from "../../models/Level.js";
+import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO.js";
 
 export interface ILevelRepository {
   getLevelsByCategory(categoryId: number): Promise<Level[]>;

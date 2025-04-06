@@ -1,5 +1,5 @@
-import { Question } from "../../models/Question";
-import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO";
+import { Question } from "../../models/Question.js";
+import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO.js";
 
 export function mapQuestionEntityToQuestionResponseDTO(question: Question) {
   return new QuestionResponseDTO(

@@ -1,5 +1,5 @@
-import { note } from "../db/schemas/note";
-import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
+import { note } from "../db/schemas/note.js";
+import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException.js";
 
 export class Note {
   constructor(

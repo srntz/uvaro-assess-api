@@ -1,5 +1,5 @@
-import { Assessment } from "../../models/Assessment";
-import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
+import { Assessment } from "../../models/Assessment.js";
+import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO.js";
 
 export function mapAssessmentEntityToAssessmentResponseDTO(
   assessment: Assessment,

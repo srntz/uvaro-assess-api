@@ -1,5 +1,5 @@
-import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
-import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO";
+import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO.js";
+import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO.js";
 
 export function mapLevelWithWeightingDTOToLevelResponseDTO(
   level: LevelWithWeightingDTO,

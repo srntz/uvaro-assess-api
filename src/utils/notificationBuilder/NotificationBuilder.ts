@@ -1,5 +1,5 @@
-import { INotificationBuilder } from "../../interfaces/INotificationBuilder";
-import { RichTextElement } from "./classes/RichTextElement";
+import { INotificationBuilder } from "../../interfaces/INotificationBuilder.js";
+import { RichTextElement } from "./classes/RichTextElement.js";
 
 export class NotificationBuilder implements INotificationBuilder {
   private message = {

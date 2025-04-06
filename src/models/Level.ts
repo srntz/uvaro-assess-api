@@ -1,4 +1,4 @@
-import { level } from "../db/schemas";
+import { level } from "../db/schemas/index.js";
 
 export class Level {
   constructor(

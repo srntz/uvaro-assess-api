@@ -1,19 +1,19 @@
-import { IContext, IContextWithAuth } from "./IContext";
-import { AssessmentService } from "../services/implementations/AssessmentService";
-import { AssessmentRepository } from "../repositories/implementations/AssessmentRepository";
-import { LevelRepository } from "../repositories/implementations/LevelRepository";
-import { LevelService } from "../services/implementations/LevelService";
-import { UserRepository } from "../repositories/implementations/UserRepository";
-import { UserService } from "../services/implementations/UserService";
-import { QuestionService } from "../services/implementations/QuestionService";
-import { QuestionRepository } from "../repositories/implementations/QuestionRepository";
-import { AnswerService } from "../services/implementations/AnswerService";
-import { AnswerRepository } from "../repositories/implementations/AnswerRepository";
-import { CategoryService } from "../services/implementations/CategoryService";
-import { CategoryRepository } from "../repositories/implementations/CategoryRepository";
+import { IContext, IContextWithAuth } from "./IContext.js";
+import { AssessmentService } from "../services/implementations/AssessmentService.js";
+import { AssessmentRepository } from "../repositories/implementations/AssessmentRepository.js";
+import { LevelRepository } from "../repositories/implementations/LevelRepository.js";
+import { LevelService } from "../services/implementations/LevelService.js";
+import { UserRepository } from "../repositories/implementations/UserRepository.js";
+import { UserService } from "../services/implementations/UserService.js";
+import { QuestionService } from "../services/implementations/QuestionService.js";
+import { QuestionRepository } from "../repositories/implementations/QuestionRepository.js";
+import { AnswerService } from "../services/implementations/AnswerService.js";
+import { AnswerRepository } from "../repositories/implementations/AnswerRepository.js";
+import { CategoryService } from "../services/implementations/CategoryService.js";
+import { CategoryRepository } from "../repositories/implementations/CategoryRepository.js";
 import express from "express";
-import { JWTManager } from "../utils/JWTManager";
-import { NotificationService } from "../services/implementations/NotificationService";
+import { JWTManager } from "../utils/JWTManager.js";
+import { NotificationService } from "../services/implementations/NotificationService.js";
 
 export class ContextBuilder {
   static Build(): IContext {

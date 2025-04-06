@@ -1,8 +1,8 @@
-import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended";
+import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended.js";
 import {
   IResponseSafeErrorObject,
   ResponseSafeError,
-} from "../constants/ResponseSafeError";
+} from "../constants/ResponseSafeError.js";
 
 export function mapApolloServerErrorToResponseSafeError(
   errorCode: ApolloServerErrorCodeExtended,

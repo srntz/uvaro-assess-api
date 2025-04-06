@@ -1,5 +1,5 @@
-import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO";
-import { Answer } from "../../models/Answer";
+import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO.js";
+import { Answer } from "../../models/Answer.js";
 
 export function mapAnswerEntityToAnswerResponseDTO(answer: Answer) {
   return new AnswerResponseDTO(

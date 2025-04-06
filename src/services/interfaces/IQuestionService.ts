@@ -1,5 +1,4 @@
-import { Question } from "../../models/Question";
-import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO";
+import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO.js";
 
 export interface IQuestionService {
   getFollowupQuestionsByCategory(

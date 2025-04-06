@@ -1,5 +1,5 @@
-import { Note } from "../../models/Note";
-import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO";
+import { Note } from "../../models/Note.js";
+import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO.js";
 
 export function mapNoteEntityToNoteResponseDTO(note: Note) {
   return new NoteResponseDTO(

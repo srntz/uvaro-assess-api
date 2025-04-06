@@ -1,10 +1,10 @@
-import { IContext, IContextWithAuth } from "../../context/IContext";
-import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
-import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
-import { GraphQLError } from "graphql/error";
-import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired";
-import { withUserAssessments } from "../middleware/withUserAssessments";
-import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
+import { IContext, IContextWithAuth } from "../../context/IContext.js";
+import { UnauthorizedError } from "../../errors/errors/UnauthorizedError.js";
+import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO.js";
+import { GraphQLError } from "graphql";
+import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired.js";
+import { withUserAssessments } from "../middleware/withUserAssessments.js";
+import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO.js";
 
 const assessmentResolvers = {
   Query: {

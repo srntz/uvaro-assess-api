@@ -1,5 +1,5 @@
-import { assessment } from "../db/schemas";
-import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
+import { assessment } from "../db/schemas/index.js";
+import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException.js";
 
 export class Assessment {
   constructor(

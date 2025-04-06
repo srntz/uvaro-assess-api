@@ -1,11 +1,11 @@
-import { IAnswerRepository } from "../interfaces/IAnswerRepository";
-import { Answer } from "../../models/Answer";
-import { answer, category, question } from "../../db/schemas";
+import { IAnswerRepository } from "../interfaces/IAnswerRepository.js";
+import { Answer } from "../../models/Answer.js";
+import { answer, category, question } from "../../db/schemas/index.js";
 import { eq, or } from "drizzle-orm";
-import { Repository } from "../base/Repository";
-import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
-import { weighting } from "../../db/schemas/weighting";
-import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO";
+import { Repository } from "../base/Repository.js";
+import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO.js";
+import { weighting } from "../../db/schemas/weighting.js";
+import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO.js";
 
 export class AnswerRepository extends Repository implements IAnswerRepository {
   constructor() {

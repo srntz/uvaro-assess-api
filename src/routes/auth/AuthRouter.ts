@@ -1,9 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
 import passport from "passport";
-import { PassportStrategyConfig } from "../../configs/PassportStrategyConfig";
+import { PassportStrategyConfig } from "../../configs/PassportStrategyConfig.js";
 import cookieParser from "cookie-parser";
-import { JWTManager } from "../../utils/JWTManager";
+import { JWTManager } from "../../utils/JWTManager.js";
 
 const AuthRouter = express.Router();
 

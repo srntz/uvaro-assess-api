@@ -1,5 +1,4 @@
-import { Answer } from "../../models/Answer";
-import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO";
+import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO.js";
 
 export interface IAnswerService {
   getById(id: number): Promise<AnswerResponseDTO>;

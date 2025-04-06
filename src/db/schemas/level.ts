@@ -6,8 +6,8 @@ import {
   unique,
   varchar,
 } from "drizzle-orm/pg-core";
-import { category } from "./category";
-import { weighting } from "./weighting";
+import { category } from "./category.js";
+import { weighting } from "./weighting.js";
 
 export const level = pgTable(
   "level",

@@ -1,4 +1,4 @@
-import { assessmentAnswer } from "../db/schemas";
+import { assessmentAnswer } from "../db/schemas/index.js";
 
 export class AssessmentAnswer {
   constructor(

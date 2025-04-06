@@ -1,5 +1,5 @@
-import { Level } from "../../models/Level";
-import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
+import { Level } from "../../models/Level.js";
+import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO.js";
 
 export function mapLevelEntityToLevelResponseDTO(level: Level) {
   return new LevelResponseDTO(

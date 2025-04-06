@@ -1,12 +1,8 @@
-import { Assessment } from "../../models/Assessment";
-import { Answer } from "../../models/Answer";
-import { Note } from "../../models/Note";
-import { AssessmentAnswer } from "../../models/AssessmentAnswer";
-import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
-import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
-import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO";
-import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
-import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO";
+import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO.js";
+import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO.js";
+import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO.js";
+import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO.js";
+import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO.js";
 
 export interface IAssessmentService {
   getAssessmentById(assessmentId: number): Promise<AssessmentResponseDTO>;

@@ -7,10 +7,10 @@
     // Treat files as modules even if it doesn't use import/export
     "moduleDetection": "force",
 
-    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "NodeNext",
 
     // Ignore module structure
-    "module": "Preserve",
+    "module": "NodeNext",
 
     "target": "ESNext",
 
@@ -35,4 +35,8 @@
     // This improves issue grouping in Sentry.
     "sourceRoot": "/"
   },
+  "paths": {
+    "@src/*": ["src/*"]
+  },
+  "exclude": ["node_modules", "dist"]
 }

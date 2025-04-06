@@ -1,5 +1,4 @@
-import { Category } from "../../models/Category";
-import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO";
+import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO.js";
 
 export interface ICategoryService {
   getAll(): Promise<CategoryResponseDTO[]>;

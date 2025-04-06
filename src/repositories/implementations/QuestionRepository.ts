@@ -1,7 +1,7 @@
-import { IQuestionRepository } from "../interfaces/IQuestionRepository";
-import { Question } from "../../models/Question";
-import { Repository } from "../base/Repository";
-import { question } from "../../db/schemas";
+import { IQuestionRepository } from "../interfaces/IQuestionRepository.js";
+import { Question } from "../../models/Question.js";
+import { Repository } from "../base/Repository.js";
+import { question } from "../../db/schemas/index.js";
 import { and, eq } from "drizzle-orm";
 
 export class QuestionRepository

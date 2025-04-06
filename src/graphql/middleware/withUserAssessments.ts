@@ -1,5 +1,5 @@
-import { IContextWithAuth } from "../../context/IContext";
-import { AssessmentRepository } from "../../repositories/implementations/AssessmentRepository";
+import { IContextWithAuth } from "../../context/IContext.js";
+import { AssessmentRepository } from "../../repositories/implementations/AssessmentRepository.js";
 
 export function withUserAssessments(next) {
   return async (parent, args, context: IContextWithAuth, info) => {
