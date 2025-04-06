@@ -83,7 +83,12 @@ const assessmentResolvers = {
             args.assessmentId,
           );
 
-          NotificationService.send(args.assessmentId, AuthenticatedUser.userId);
+          if (process.env.ENABLE_SLACK_NOTIFICATIONS === "true") {
+            NotificationService.send(
+              args.assessmentId,
+              AuthenticatedUser.userId,
+            );
+          }
 
           return levels;
         },
