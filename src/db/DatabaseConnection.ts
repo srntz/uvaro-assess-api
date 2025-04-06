@@ -8,7 +8,7 @@ export class DatabaseConnection {
 
   public static getInstance() {
     if (!this.instance) {
-      this.instance = drizzle(process.env.UVARO_POSTGRES_URL as string, {
+      this.instance = drizzle(process.env.DATABASE_URL as string, {
         schema: dbSchema,
       });
     }

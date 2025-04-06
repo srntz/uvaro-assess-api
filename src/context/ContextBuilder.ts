@@ -13,6 +13,7 @@ import { CategoryService } from "../services/implementations/CategoryService";
 import { CategoryRepository } from "../repositories/implementations/CategoryRepository";
 import express from "express";
 import { JWTManager } from "../utils/JWTManager";
+import { NotificationService } from "../services/implementations/NotificationService";
 
 export class ContextBuilder {
   static Build(): IContext {
@@ -29,6 +30,11 @@ export class ContextBuilder {
       QuestionService: new QuestionService(new QuestionRepository()),
       AnswerService: new AnswerService(new AnswerRepository()),
       CategoryService: new CategoryService(new CategoryRepository()),
+      NotificationService: new NotificationService(
+        new AssessmentRepository(),
+        new CategoryRepository(),
+        new UserRepository(),
+      ),
     };
   }
 
