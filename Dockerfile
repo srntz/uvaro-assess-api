@@ -10,4 +10,4 @@ RUN npm run build
 
 EXPOSE 4000
 
-CMD ["npm", "run", "prod"]
+ENTRYPOINT ["node", "./dist/src/index.js", "--mode:production"]
