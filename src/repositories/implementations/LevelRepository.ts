@@ -1,10 +1,10 @@
-import { ILevelRepository } from "../interfaces/ILevelRepository.js";
-import { Level } from "../../models/Level.js";
-import { Repository } from "../base/Repository.js";
-import { level } from "../../db/schemas/index.js";
+import { ILevelRepository } from "../interfaces/ILevelRepository";
+import { Level } from "../../models/Level";
+import { Repository } from "../base/Repository";
+import { level } from "../../db/schemas";
 import { eq } from "drizzle-orm";
-import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO.js";
-import { weighting } from "../../db/schemas/weighting.js";
+import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO";
+import { weighting } from "../../db/schemas/weighting";
 
 export class LevelRepository extends Repository implements ILevelRepository {
   async getLevelsByCategory(categoryId: number): Promise<Level[]> {
@@ -41,6 +41,7 @@ export class LevelRepository extends Repository implements ILevelRepository {
         new LevelWithWeightingDTO(
           item.level.level_name,
           item.level.level_statement,
+          item.level.level_image,
           item.weighting.weighting,
           item.level.weighting_id,
           item.level.category_id,

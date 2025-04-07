@@ -1,12 +1,12 @@
-import { Assessment } from "../../models/Assessment.js";
-import { Answer } from "../../models/Answer.js";
-import { Note } from "../../models/Note.js";
-import { AssessmentAnswer } from "../../models/AssessmentAnswer.js";
-import { AssessmentLevel } from "../../models/AssessmentLevel.js";
-import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer.js";
-import { Level } from "../../models/Level.js";
-import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO.js";
-import { Question } from "../../models/Question.js";
+import { Assessment } from "../../models/Assessment";
+import { Answer } from "../../models/Answer";
+import { Note } from "../../models/Note";
+import { AssessmentAnswer } from "../../models/AssessmentAnswer";
+import { AssessmentLevel } from "../../models/AssessmentLevel";
+import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
+import { Level } from "../../models/Level";
+import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
+import { Question } from "../../models/Question";
 
 export interface IAssessmentRepository {
   getAssessmentById(assessmentId: number): Promise<Assessment>;

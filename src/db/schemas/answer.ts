@@ -1,7 +1,7 @@
 import { integer, pgTable, serial, text, unique } from "drizzle-orm/pg-core";
-import { question } from "./question.js";
+import { question } from "./question";
 import { relations } from "drizzle-orm";
-import { weighting } from "./weighting.js";
+import { weighting } from "./weighting";
 
 export const answer = pgTable(
   "answer",

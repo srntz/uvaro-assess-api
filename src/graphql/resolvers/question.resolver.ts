@@ -1,5 +1,5 @@
-import { IContext } from "../../context/IContext.js";
-import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO.js";
+import { IContext } from "../../context/IContext";
+import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO";
 
 const questionResolvers = {
   Query: {

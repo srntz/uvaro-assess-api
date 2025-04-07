@@ -1,6 +1,6 @@
 import { integer, pgTable, primaryKey, text } from "drizzle-orm/pg-core";
-import { category } from "./category.js";
-import { assessment } from "./assessment.js";
+import { category } from "./category";
+import { assessment } from "./assessment";
 
 export const note = pgTable(
   "note",

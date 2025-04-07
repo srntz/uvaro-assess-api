@@ -10,7 +10,7 @@
     "migrate": "drizzle-kit migrate",
     "upload-source-maps": "npx @sentry/wizard@latest -i sourcemaps --saas",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org sait-1d --project backend-error-service ./dist && sentry-cli sourcemaps upload --org sait-1d --project backend-error-service ./dist",
-    "build": "tsc && copyfiles ./src/graphql/**/*.graphql ./dist"
+    "build": "tsc && tsc-alias -p tsconfig.json --resolve-full-paths && copyfiles ./src/graphql/**/*.graphql ./dist"
   },
   "type": "module",
   "private": true,
@@ -48,6 +48,7 @@
     "jsonwebtoken": "^9.0.2",
     "passport": "^0.7.0",
     "pg": "^8.13.1",
+    "tsc-alias": "^1.8.13",
     "xml2js": "^0.6.2"
   }
 }

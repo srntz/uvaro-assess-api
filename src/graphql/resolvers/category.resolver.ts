@@ -1,5 +1,5 @@
-import { IContext } from "../../context/IContext.js";
-import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO.js";
+import { IContext } from "../../context/IContext";
+import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO";
 
 const categoryResolvers = {
   Query: {

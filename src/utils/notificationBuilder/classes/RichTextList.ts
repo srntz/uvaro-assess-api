@@ -1,5 +1,5 @@
-import { RichTextElement } from "./RichTextElement.js";
-import { RichTextSection } from "./RichTextSection.js";
+import { RichTextElement } from "./RichTextElement";
+import { RichTextSection } from "./RichTextSection";
 
 interface IRichTextListOptions {
   style: "bullet" | "ordered";

@@ -1,4 +1,4 @@
-import { DatabaseConnection } from "../../db/DatabaseConnection.js";
+import { DatabaseConnection } from "../../db/DatabaseConnection";
 
 export class Repository {
   protected db: ReturnType<typeof DatabaseConnection.getInstance>;

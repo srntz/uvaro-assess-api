@@ -1,4 +1,4 @@
-import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended.js";
+import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended";
 import {
   IResponseSafeErrorObject,
   ResponseSafeError,

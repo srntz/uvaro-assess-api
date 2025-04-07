@@ -1,7 +1,7 @@
 import { foreignKey, integer, pgTable, primaryKey } from "drizzle-orm/pg-core";
-import { assessment } from "./assessment.js";
-import { level } from "./level.js";
-import { category } from "./category.js";
+import { assessment } from "./assessment";
+import { level } from "./level";
+import { category } from "./category";
 
 export const assessmentLevel = pgTable(
   "assessment_level",

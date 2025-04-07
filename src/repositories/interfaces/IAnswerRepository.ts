@@ -1,6 +1,6 @@
-import { Answer } from "../../models/Answer.js";
-import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO.js";
-import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO.js";
+import { Answer } from "../../models/Answer";
+import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
+import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO";
 
 export interface IAnswerRepository {
   getById(id: number): Promise<Answer>;

@@ -1,4 +1,4 @@
-import { Question } from "../../models/Question.js";
+import { Question } from "../../models/Question";
 
 export interface IQuestionRepository {
   getQuestionById(id: number): Promise<Question>;

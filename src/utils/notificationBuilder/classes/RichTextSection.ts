@@ -1,5 +1,5 @@
-import { RichTextElement } from "./RichTextElement.js";
-import { TextBlock } from "./TextBlock.js";
+import { RichTextElement } from "./RichTextElement";
+import { TextBlock } from "./TextBlock";
 
 export class RichTextSection extends RichTextElement<TextBlock> {
   constructor() {

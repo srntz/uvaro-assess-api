@@ -1,6 +1,6 @@
 import { pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { question } from "./question.js";
+import { question } from "./question";
 
 export const category = pgTable("category", {
   category_id: serial().primaryKey(),

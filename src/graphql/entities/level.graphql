@@ -2,6 +2,7 @@ type Level {
   levelId: Int!
   levelName: String!
   levelStatement: String!
+  levelImage: String!
   weightingId: Int!
   categoryId: Int!
 }

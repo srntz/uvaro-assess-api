@@ -1,11 +1,11 @@
-import { INotificationService } from "../interfaces/INotificationService.js";
-import { IAssessmentRepository } from "../../repositories/interfaces/IAssessmentRepository.js";
-import { NotificationBuilder } from "../../utils/notificationBuilder/NotificationBuilder.js";
-import { RichTextSection } from "../../utils/notificationBuilder/classes/RichTextSection.js";
-import { TextBlock } from "../../utils/notificationBuilder/classes/TextBlock.js";
-import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository.js";
-import { RichTextList } from "../../utils/notificationBuilder/classes/RichTextList.js";
-import { IUserRepository } from "../../repositories/interfaces/IUserRepository.js";
+import { INotificationService } from "../interfaces/INotificationService";
+import { IAssessmentRepository } from "../../repositories/interfaces/IAssessmentRepository";
+import { NotificationBuilder } from "../../utils/notificationBuilder/NotificationBuilder";
+import { RichTextSection } from "../../utils/notificationBuilder/classes/RichTextSection";
+import { TextBlock } from "../../utils/notificationBuilder/classes/TextBlock";
+import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
+import { RichTextList } from "../../utils/notificationBuilder/classes/RichTextList";
+import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
 
 export class NotificationService implements INotificationService {
   constructor(

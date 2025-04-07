@@ -1,7 +1,7 @@
-import { IQuestionService } from "../interfaces/IQuestionService.js";
-import { IQuestionRepository } from "../../repositories/interfaces/IQuestionRepository.js";
-import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO.js";
-import { mapQuestionEntityToQuestionResponseDTO } from "../../mappers/question/mapQuestionEntityToQuestionResponseDTO.js";
+import { IQuestionService } from "../interfaces/IQuestionService";
+import { IQuestionRepository } from "../../repositories/interfaces/IQuestionRepository";
+import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO";
+import { mapQuestionEntityToQuestionResponseDTO } from "../../mappers/question/mapQuestionEntityToQuestionResponseDTO";
 
 export class QuestionService implements IQuestionService {
   constructor(private readonly questionRepository: IQuestionRepository) {}

@@ -1,4 +1,4 @@
-import { answer, assessmentAnswer, question } from "../db/schemas/index.js";
+import { answer, assessmentAnswer, question } from "../db/schemas";
 
 export interface ICalculateLevelAnswer {
   assessment_answer: typeof assessmentAnswer.$inferSelect;

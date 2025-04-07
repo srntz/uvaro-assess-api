@@ -1,5 +1,5 @@
-import { answer } from "../db/schemas/index.js";
-import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException.js";
+import { answer } from "../db/schemas";
+import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
 
 export class Answer {
   constructor(

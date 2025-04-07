@@ -1,6 +1,6 @@
-import { User } from "../../models/User.js";
-import { user as userTable } from "../../db/schemas/index.js";
-import { UserUpdateDTO } from "../../dto/UserUpdateDTO.js";
+import { User } from "../../models/User";
+import { user as userTable } from "../../db/schemas/index";
+import { UserUpdateDTO } from "../../dto/UserUpdateDTO";
 
 export interface IUserRepository {
   insertUser(item: User): Promise<User>;

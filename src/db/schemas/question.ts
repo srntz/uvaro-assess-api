@@ -6,9 +6,9 @@ import {
   serial,
   text,
 } from "drizzle-orm/pg-core";
-import { category } from "./category.js";
+import { category } from "./category";
 import { relations, sql } from "drizzle-orm";
-import { answer } from "./answer.js";
+import { answer } from "./answer";
 
 export const question = pgTable(
   "question",

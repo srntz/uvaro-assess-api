@@ -1,7 +1,7 @@
-import { IAnswerService } from "../interfaces/IAnswerService.js";
-import { IAnswerRepository } from "../../repositories/interfaces/IAnswerRepository.js";
-import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO.js";
-import { mapAnswerEntityToAnswerResponseDTO } from "../../mappers/answer/mapAnswerEntityToAnswerResponseDTO.js";
+import { IAnswerService } from "../interfaces/IAnswerService";
+import { IAnswerRepository } from "../../repositories/interfaces/IAnswerRepository";
+import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO";
+import { mapAnswerEntityToAnswerResponseDTO } from "../../mappers/answer/mapAnswerEntityToAnswerResponseDTO";
 
 export class AnswerService implements IAnswerService {
   constructor(private readonly answerRepository: IAnswerRepository) {}

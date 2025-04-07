@@ -1,4 +1,4 @@
-import { RichTextElement } from "../utils/notificationBuilder/classes/RichTextElement.js";
+import { RichTextElement } from "../utils/notificationBuilder/classes/RichTextElement";
 
 export interface INotificationBuilder {
   header(text: string): INotificationBuilder;

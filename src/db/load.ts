@@ -1,4 +1,4 @@
-import { DatabaseConnection } from "./DatabaseConnection.js";
+import { DatabaseConnection } from "./DatabaseConnection";
 import {
   answer,
   category,
@@ -8,10 +8,10 @@ import {
   IQuestion,
   level,
   question,
-} from "./schemas/index.js";
+} from "./schemas";
 import dotenv from "dotenv";
-import { EnvironmentLoader } from "../utils/environmentLoader/EnvironmentLoader.js";
-import { weighting } from "./schemas/weighting.js";
+import { EnvironmentLoader } from "../utils/environmentLoader/EnvironmentLoader";
+import { weighting } from "./schemas/weighting";
 
 dotenv.config({
   path: `.env.${EnvironmentLoader.load(["--mode:development"])}`,
@@ -56,7 +56,8 @@ const data: IData[] = [
     category_name: "Financial Health",
     category_description:
       "Evaluate your financial habits, planning, and stability. This category assesses your ability to plan for the future, manage your resources, and reach your financial objectives. Stress reduction and long-term professional and personal development are made possible by sound financial health.",
-    category_image: "https://example.com/images/finhealth.jpg",
+    category_image:
+      "https://storage.googleapis.com/penguins_image_bucket/CATEGORY_financial_health.png",
     questions: [
       {
         question_text: "How do you currently manage your financial resources?",
@@ -256,12 +257,16 @@ const data: IData[] = [
       {
         level_name: "Hm...",
         level_statement: "Yeah, that's sad :(",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_financial_health_1.png",
         weighting_id: 1,
         category_id: null,
       },
       {
         level_name: "Ok!",
         level_statement: "You're not bad.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_financial_health_2.png",
         weighting_id: 2,
         category_id: null,
       },
@@ -269,6 +274,8 @@ const data: IData[] = [
         level_name: "Not bad!",
         level_statement:
           "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_financial_health_3.png",
         weighting_id: 3,
         category_id: null,
       },
@@ -276,6 +283,8 @@ const data: IData[] = [
         level_name: "Good Job!",
         level_statement:
           "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_financial_health_4.png",
         weighting_id: 4,
         category_id: null,
       },
@@ -283,6 +292,8 @@ const data: IData[] = [
         level_name: "You are great!",
         level_statement:
           "You are doing a great job managing your personal finances. Keep it up!",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_financial_health_5.png",
         weighting_id: 5,
         category_id: null,
       },
@@ -292,7 +303,8 @@ const data: IData[] = [
     category_name: "Work You Enjoy",
     category_description:
       "Explore how fulfilled and confident you feel in your current role. This category looks at how well you align with your work, your ability to seek feedback, and how confident you are in your capacity to make a significant contribution. Enjoying your work is essential for sustained motivation and career satisfaction.",
-    category_image: "https://example.com/images/wye.jpg",
+    category_image:
+      "https://storage.googleapis.com/penguins_image_bucket/CATEGORY_work_you_enjoy.png",
     questions: [
       {
         question_text:
@@ -490,12 +502,16 @@ const data: IData[] = [
       {
         level_name: "Hm...",
         level_statement: "Yeah, that's sad :(",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_work_you_enjoy_1.png",
         weighting_id: 1,
         category_id: null,
       },
       {
         level_name: "Ok!",
         level_statement: "You're not bad.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_work_you_enjoy_2.png",
         weighting_id: 2,
         category_id: null,
       },
@@ -503,6 +519,8 @@ const data: IData[] = [
         level_name: "Not bad!",
         level_statement:
           "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_work_you_enjoy_3.png",
         weighting_id: 3,
         category_id: null,
       },
@@ -510,6 +528,8 @@ const data: IData[] = [
         level_name: "Good Job!",
         level_statement:
           "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_work_you_enjoy_4.png",
         weighting_id: 4,
         category_id: null,
       },
@@ -517,6 +537,8 @@ const data: IData[] = [
         level_name: "You are great!",
         level_statement:
           "You are doing a great job managing your personal finances. Keep it up!",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_work_you_enjoy_5.png",
         weighting_id: 5,
         category_id: null,
       },
@@ -526,7 +548,8 @@ const data: IData[] = [
     category_name: "Life Choice Fulfillment",
     category_description:
       "Reflect on how well your life choices align with your values and sense of purpose. This category assists you in assessing your fulfillment, balance, and clarity about your 'why'. Happiness and resilience increase when you live your life in accordance with your principles.",
-    category_image: "https://example.com/images/lcf.jpg",
+    category_image:
+      "https://storage.googleapis.com/penguins_image_bucket/CATEGORY_life_choice_fulfillment.png",
     questions: [
       {
         question_text:
@@ -724,12 +747,16 @@ const data: IData[] = [
       {
         level_name: "Hm...",
         level_statement: "Yeah, that's sad :(",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_life_choice_fulfillment_1.png",
         weighting_id: 1,
         category_id: null,
       },
       {
         level_name: "Ok!",
         level_statement: "You're not bad.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_life_choice_fulfillment_2.png",
         weighting_id: 2,
         category_id: null,
       },
@@ -737,6 +764,8 @@ const data: IData[] = [
         level_name: "Not bad!",
         level_statement:
           "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_life_choice_fulfillment_3.png",
         weighting_id: 3,
         category_id: null,
       },
@@ -744,6 +773,8 @@ const data: IData[] = [
         level_name: "Good Job!",
         level_statement:
           "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_life_choice_fulfillment_4.png",
         weighting_id: 4,
         category_id: null,
       },
@@ -751,6 +782,8 @@ const data: IData[] = [
         level_name: "You are great!",
         level_statement:
           "You are doing a great job managing your personal finances. Keep it up!",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_life_choice_fulfillment_5.png",
         weighting_id: 5,
         category_id: null,
       },
@@ -760,7 +793,8 @@ const data: IData[] = [
     category_name: "Peer Community Fulfillment",
     category_description:
       "Assess your sense of belonging and contribution within your peer community. This category evaluates your capacity to encourage others, provide and receive feedback, and form deep connections. Collaboration, development, and a feeling of purpose are all enhanced by a strong peer network.",
-    category_image: "https://example.com/images/pcf.jpg",
+    category_image:
+      "https://storage.googleapis.com/penguins_image_bucket/CATEGORY_peer_community_fulfillment.png",
     questions: [
       {
         question_text:
@@ -958,12 +992,14 @@ const data: IData[] = [
       {
         level_name: "Hm...",
         level_statement: "Yeah, that's sad :(",
+        level_image: "https://example.com/bucket/pcf",
         weighting_id: 1,
         category_id: null,
       },
       {
         level_name: "Ok!",
         level_statement: "You're not bad.",
+        level_image: "https://example.com/bucket/pcf",
         weighting_id: 2,
         category_id: null,
       },
@@ -971,6 +1007,7 @@ const data: IData[] = [
         level_name: "Not bad!",
         level_statement:
           "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
+        level_image: "https://example.com/bucket/pcf",
         weighting_id: 3,
         category_id: null,
       },
@@ -978,6 +1015,7 @@ const data: IData[] = [
         level_name: "Good Job!",
         level_statement:
           "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
+        level_image: "https://example.com/bucket/pcf",
         weighting_id: 4,
         category_id: null,
       },
@@ -985,6 +1023,7 @@ const data: IData[] = [
         level_name: "You are great!",
         level_statement:
           "You are doing a great job managing your personal finances. Keep it up!",
+        level_image: "https://example.com/bucket/pcf",
         weighting_id: 5,
         category_id: null,
       },
@@ -993,7 +1032,9 @@ const data: IData[] = [
 ];
 
 async function truncateAll() {
-  await db.execute('TRUNCATE "user", category RESTART IDENTITY CASCADE');
+  await db.execute(
+    'TRUNCATE "user", category, weighting RESTART IDENTITY CASCADE',
+  );
 }
 
 async function insertCategory(data: ICategory) {

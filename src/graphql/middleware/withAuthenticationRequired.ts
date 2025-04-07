@@ -1,5 +1,5 @@
-import { UnauthorizedError } from "../../errors/errors/UnauthorizedError.js";
-import { IContextWithAuth } from "../../context/IContext.js";
+import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
+import { IContextWithAuth } from "../../context/IContext";
 
 export const withAuthenticationRequired = (next) => {
   return (parent, args, context: IContextWithAuth, info) => {

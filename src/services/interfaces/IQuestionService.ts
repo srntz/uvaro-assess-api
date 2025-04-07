@@ -1,4 +1,4 @@
-import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO.js";
+import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO";
 
 export interface IQuestionService {
   getFollowupQuestionsByCategory(

@@ -1,5 +1,5 @@
-import { category } from "../db/schemas/index.js";
-import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException.js";
+import { category } from "../db/schemas";
+import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
 
 export class Category {
   constructor(

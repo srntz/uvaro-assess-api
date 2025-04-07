@@ -1,6 +1,6 @@
-import { IAssessmentRepository } from "../interfaces/IAssessmentRepository.js";
-import { Repository } from "../base/Repository.js";
-import { Assessment } from "../../models/Assessment.js";
+import { IAssessmentRepository } from "../interfaces/IAssessmentRepository";
+import { Repository } from "../base/Repository";
+import { Assessment } from "../../models/Assessment";
 import {
   answer,
   assessment,
@@ -8,17 +8,17 @@ import {
   assessmentLevel,
   level,
   question,
-} from "../../db/schemas/index.js";
+  note,
+} from "../../db/schemas";
 import { and, eq, sql } from "drizzle-orm";
 import { GraphQLError } from "graphql";
-import { Answer } from "../../models/Answer.js";
-import { Note } from "../../models/Note.js";
-import { note } from "../../db/schemas/note.js";
-import { AssessmentAnswer } from "../../models/AssessmentAnswer.js";
-import { AssessmentLevel } from "../../models/AssessmentLevel.js";
-import { Level } from "../../models/Level.js";
-import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer.js";
-import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO.js";
+import { Answer } from "../../models/Answer";
+import { Note } from "../../models/Note";
+import { AssessmentAnswer } from "../../models/AssessmentAnswer";
+import { AssessmentLevel } from "../../models/AssessmentLevel";
+import { Level } from "../../models/Level";
+import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
+import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
 import { Question } from "../../models/Question.js";
 
 export class AssessmentRepository

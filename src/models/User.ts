@@ -1,5 +1,5 @@
-import { user } from "../db/schemas/index.js";
-import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException.js";
+import { user } from "../db/schemas";
+import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
 
 export class User {
   constructor(

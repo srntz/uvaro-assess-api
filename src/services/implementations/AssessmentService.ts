@@ -1,26 +1,26 @@
-import { IAssessmentService } from "../interfaces/IAssessmentService.js";
-import { IAssessmentRepository } from "../../repositories/interfaces/IAssessmentRepository.js";
-import { Note } from "../../models/Note.js";
-import { AssessmentLevel } from "../../models/AssessmentLevel.js";
-import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository.js";
-import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO.js";
-import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO.js";
-import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO.js";
-import { IAnswerRepository } from "../../repositories/interfaces/IAnswerRepository.js";
-import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO.js";
-import { mapLevelWithWeightingDTOToLevelResponseDTO } from "../../mappers/level/mapLevelWithWeightingDTOToLevelResponseDTO.js";
-import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO.js";
-import { IQuestionRepository } from "../../repositories/interfaces/IQuestionRepository.js";
+import { IAssessmentService } from "../interfaces/IAssessmentService";
+import { IAssessmentRepository } from "../../repositories/interfaces/IAssessmentRepository";
+import { Note } from "../../models/Note";
+import { AssessmentLevel } from "../../models/AssessmentLevel";
+import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository";
+import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
+import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO";
+import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
+import { IAnswerRepository } from "../../repositories/interfaces/IAnswerRepository";
+import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
+import { mapLevelWithWeightingDTOToLevelResponseDTO } from "../../mappers/level/mapLevelWithWeightingDTOToLevelResponseDTO";
+import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO";
+import { IQuestionRepository } from "../../repositories/interfaces/IQuestionRepository";
 import { GraphQLError } from "graphql";
-import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO.js";
-import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository.js";
-import { mapLevelEntityToLevelResponseDTO } from "../../mappers/level/mapLevelEntityToLevelResponseDTO.js";
-import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO.js";
-import { mapAnswerEntityToAnswerResponseDTO } from "../../mappers/answer/mapAnswerEntityToAnswerResponseDTO.js";
-import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO.js";
-import { mapAssessmentEntityToAssessmentResponseDTO } from "../../mappers/assessment/mapAssessmentEntityToAssessmentResponseDTO.js";
-import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO.js";
-import { mapNoteEntityToNoteResponseDTO } from "../../mappers/note/mapNoteEntityToNoteResponseDTO.js";
+import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
+import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
+import { mapLevelEntityToLevelResponseDTO } from "../../mappers/level/mapLevelEntityToLevelResponseDTO";
+import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO";
+import { mapAnswerEntityToAnswerResponseDTO } from "../../mappers/answer/mapAnswerEntityToAnswerResponseDTO";
+import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
+import { mapAssessmentEntityToAssessmentResponseDTO } from "../../mappers/assessment/mapAssessmentEntityToAssessmentResponseDTO";
+import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO";
+import { mapNoteEntityToNoteResponseDTO } from "../../mappers/note/mapNoteEntityToNoteResponseDTO";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
@@ -214,6 +214,7 @@ export class AssessmentService implements IAssessmentService {
       chosenLevel.level_id,
       chosenLevel.level_name,
       chosenLevel.level_statement,
+      chosenLevel.level_image,
       chosenLevel.weighting_id,
       chosenLevel.category_id,
     );

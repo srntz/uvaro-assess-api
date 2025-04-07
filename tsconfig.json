@@ -7,10 +7,10 @@
     // Treat files as modules even if it doesn't use import/export
     "moduleDetection": "force",
 
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "node",
 
     // Ignore module structure
-    "module": "NodeNext",
+    "module": "Preserve",
 
     "target": "ESNext",
 
