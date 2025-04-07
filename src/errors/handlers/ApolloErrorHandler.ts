@@ -1,4 +1,4 @@
-import { GraphQLFormattedError } from "graphql/error";
+import { GraphQLFormattedError } from "graphql";
 import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended";
 import { mapApolloServerErrorToResponseSafeError } from "../mappers/mapApolloServerErrorToResponseSafeError";
 

@@ -41,6 +41,7 @@ export class LevelRepository extends Repository implements ILevelRepository {
         new LevelWithWeightingDTO(
           item.level.level_name,
           item.level.level_statement,
+          item.level.level_image,
           item.weighting.weighting,
           item.level.weighting_id,
           item.level.category_id,

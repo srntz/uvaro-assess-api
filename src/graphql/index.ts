@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
 const schemaFiles = loadFilesSync(`${__dirname}/**/*.graphql`, {
   ignoreIndex: true,
 });
-const resolverFiles = loadFilesSync(`${__dirname}/resolvers/**/*.resolver.ts`, {
+const resolverFiles = loadFilesSync(`${__dirname}/resolvers/**/*.resolver.*`, {
   ignoreIndex: true,
 });
 

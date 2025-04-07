@@ -1,4 +1,3 @@
-import { Answer } from "../../models/Answer";
 import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO";
 
 export interface IAnswerService {

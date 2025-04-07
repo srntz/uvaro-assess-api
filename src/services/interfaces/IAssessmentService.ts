@@ -1,7 +1,3 @@
-import { Assessment } from "../../models/Assessment";
-import { Answer } from "../../models/Answer";
-import { Note } from "../../models/Note";
-import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
 import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
 import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO";

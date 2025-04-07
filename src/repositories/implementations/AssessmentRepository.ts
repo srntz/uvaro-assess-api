@@ -8,18 +8,18 @@ import {
   assessmentLevel,
   level,
   question,
+  note,
 } from "../../db/schemas";
 import { and, eq, sql } from "drizzle-orm";
-import { GraphQLError } from "graphql/error";
+import { GraphQLError } from "graphql";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
-import { note } from "../../db/schemas/note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { Level } from "../../models/Level";
 import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
 import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
-import { Question } from "../../models/Question";
+import { Question } from "../../models/Question.js";
 
 export class AssessmentRepository
   extends Repository

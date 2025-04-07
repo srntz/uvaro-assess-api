@@ -12,8 +12,8 @@ import { AnswerRepository } from "../repositories/implementations/AnswerReposito
 import { CategoryService } from "../services/implementations/CategoryService";
 import { CategoryRepository } from "../repositories/implementations/CategoryRepository";
 import express from "express";
-import { JWTManager } from "../utils/JWTManager";
-import { NotificationService } from "../services/implementations/NotificationService";
+import { JWTManager } from "../utils/JWTManager.js";
+import { NotificationService } from "../services/implementations/NotificationService.js";
 
 export class ContextBuilder {
   static Build(): IContext {

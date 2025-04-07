@@ -11,7 +11,7 @@ import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
 import { mapLevelWithWeightingDTOToLevelResponseDTO } from "../../mappers/level/mapLevelWithWeightingDTOToLevelResponseDTO";
 import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO";
 import { IQuestionRepository } from "../../repositories/interfaces/IQuestionRepository";
-import { GraphQLError } from "graphql/error";
+import { GraphQLError } from "graphql";
 import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
 import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
 import { mapLevelEntityToLevelResponseDTO } from "../../mappers/level/mapLevelEntityToLevelResponseDTO";
@@ -214,6 +214,7 @@ export class AssessmentService implements IAssessmentService {
       chosenLevel.level_id,
       chosenLevel.level_name,
       chosenLevel.level_statement,
+      chosenLevel.level_image,
       chosenLevel.weighting_id,
       chosenLevel.category_id,
     );

@@ -1,7 +1,7 @@
 import { IContext, IContextWithAuth } from "../../context/IContext";
 import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
-import { GraphQLError } from "graphql/error";
+import { GraphQLError } from "graphql";
 import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired";
 import { withUserAssessments } from "../middleware/withUserAssessments";
 import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";

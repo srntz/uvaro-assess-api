@@ -1,4 +1,3 @@
-import { Question } from "../../models/Question";
 import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO";
 
 export interface IQuestionService {

@@ -51,7 +51,7 @@ await server.start();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CORS_ALLOWED_ORIGIN,
     methods: ["GET", "POST"],
     credentials: true,
   }),
@@ -59,10 +59,6 @@ app.use(
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
-
-app.get("/error", () => {
-  throw new Error("a");
-});
 
 app.use("/", AuthRouter);
 

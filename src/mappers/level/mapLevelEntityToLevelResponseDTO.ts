@@ -6,6 +6,7 @@ export function mapLevelEntityToLevelResponseDTO(level: Level) {
     level.level_id,
     level.level_name,
     level.level_statement,
+    level.level_image,
     level.weighting_id,
     level.category_id,
   );

@@ -1,4 +1,4 @@
-import { note } from "../db/schemas/note";
+import { note } from "../db/schemas";
 import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
 
 export class Note {

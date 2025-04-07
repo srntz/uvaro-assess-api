@@ -1,4 +1,3 @@
-import { Category } from "../../models/Category";
 import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO";
 
 export interface ICategoryService {
