@@ -1,0 +1,16 @@
+type Assessment {
+    assessmentId: Int!
+    startDateTime: String!
+    endDateTime: String
+    userId: String!
+}
+
+type AssessmentWithChildren {
+    assessmentId: Int!
+    startDateTime: String!
+    endDateTime: String
+    userId: String!
+    answers: [Answer]!
+    levels: [Level]!
+    notes: [Note]!
+}

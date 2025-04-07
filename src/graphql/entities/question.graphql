@@ -1,0 +1,14 @@
+type Question {
+  questionId: Int!
+  questionText: String!
+  categoryId: Int!
+  followUp: Boolean!
+}
+
+type QuestionWithChildren {
+  questionId: Int!
+  questionText: String!
+  categoryId: Int!
+  followUp: Boolean!
+  answers: [Answer]!
+}

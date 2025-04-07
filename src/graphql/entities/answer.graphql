@@ -1,0 +1,7 @@
+type Answer {
+  answerId: Int!
+  answerText: String!
+  weightingId: Int!
+  questionId: Int!
+}
+

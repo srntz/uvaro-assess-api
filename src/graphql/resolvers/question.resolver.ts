@@ -1,23 +1,27 @@
-import { CategoryService } from "../../services/CategoryService";
-import { AnswerService } from "../../services/AnswerService";
-import { Question } from "../../models/Question";
+import { IContext } from "../../context/IContext";
+import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO";
 
-async function categoryFieldResolver(parent: Question) {
-  const service = new CategoryService();
-  return await service.get(parent.category_id);
-}
-
-async function answersFieldResolver(parent: Question) {
-  const service = new AnswerService();
-  return await service.getRelated(parent.question_id);
-}
-
-export const questionResolvers = {
-  QuestionWithChildren: {
-    category: (parent: Question) => categoryFieldResolver(parent),
-    answers: (parent: Question) => answersFieldResolver(parent),
+const questionResolvers = {
+  Query: {
+    getFollowUpQuestionsByCategory: async (
+      _,
+      args,
+      { QuestionService }: IContext,
+    ) => {
+      return await QuestionService.getFollowupQuestionsByCategory(
+        args.categoryId,
+      );
+    },
   },
-  Question: {
-    category: (parent: Question) => categoryFieldResolver(parent),
+  QuestionWithChildren: {
+    answers: async (
+      parent: QuestionResponseDTO,
+      _,
+      { AnswerService }: IContext,
+    ) => {
+      return await AnswerService.getByQuestionId(parent.questionId);
+    },
   },
 };
+
+export default questionResolvers;

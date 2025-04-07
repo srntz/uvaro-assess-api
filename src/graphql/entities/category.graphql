@@ -1,0 +1,15 @@
+type Category {
+  categoryId: Int!
+  categoryName: String!
+  categoryDescription: String!
+  categoryImage: String!
+}
+
+type CategoryWithChildren {
+  categoryId: Int!
+  categoryName: String!
+  categoryDescription: String!
+  categoryImage: String!
+  questions: [QuestionWithChildren]!
+  levels: [Level]!
+}

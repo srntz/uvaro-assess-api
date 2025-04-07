@@ -3,7 +3,7 @@
 ### Setup guide
 ____
 
-#### Database
+#### Database (You would need to do this once)
 
 1. Install [Docker Desktop](https://docs.docker.com/desktop/). If you have a Mac, enable "Use Rosetta for x86/amd64 emulation" under Settings/General.
 
@@ -26,6 +26,11 @@ ____
    npm i
    ```
 2. Download the [.env file](https://drive.google.com/file/d/1IgLFXX-kruTzaVk52jf0ljgHowZWsmgH/view) and put it into API's root directory.
+
+3. Migrate table definitions
+   ```shell
+   npm run migrate
+   ```
 
 3. Load the database.
    ```shell

@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1739299761562,
+      "tag": "0000_zippy_stephen_strange",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1739480660684,
+      "tag": "0001_amusing_frightful_four",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1740517758250,
+      "tag": "0002_clammy_major_mapleleaf",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1740537372284,
+      "tag": "0003_perfect_trauma",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1742407696450,
+      "tag": "0004_lyrical_network",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1742841302065,
+      "tag": "0005_cuddly_sabretooth",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1743995162462,
+      "tag": "0006_panoramic_vargas",
+      "breakpoints": true
+    }
+  ]
+}

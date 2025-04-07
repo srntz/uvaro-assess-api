@@ -1,8 +1,14 @@
 /node_modules
 /dist
 /.idea
-drizzle
-Dockerfile
-entrypoint.sh
 /data
+/src/__mockTests
+
+entrypoint.sh
+
 .env
+.env.*
+
+*.pem
+
+.sentryclirc
