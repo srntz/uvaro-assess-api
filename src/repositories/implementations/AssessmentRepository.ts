@@ -8,16 +8,18 @@ import {
   assessmentLevel,
   level,
   question,
+  note,
 } from "../../db/schemas";
-import { and, eq } from "drizzle-orm";
-import { GraphQLError } from "graphql/error";
+import { and, eq, sql } from "drizzle-orm";
+import { GraphQLError } from "graphql";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
-import { note } from "../../db/schemas/note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { Level } from "../../models/Level";
 import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
+import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
+import { Question } from "../../models/Question.js";
 
 export class AssessmentRepository
   extends Repository
@@ -27,13 +29,13 @@ export class AssessmentRepository
     super();
   }
 
-  async addAssessment(item: Assessment): Promise<Assessment> {
+  async addAssessment(userId: string): Promise<Assessment> {
     try {
-      const res = await this.db
+      const data: (typeof assessment.$inferSelect)[] = await this.db
         .insert(assessment)
-        .values({ user_id: item.user_id })
+        .values({ user_id: userId })
         .returning();
-      return new Assessment(res[0]);
+      return Assessment.init(data[0]);
     } catch (error) {
       if (error.code === "23503") {
         throw new GraphQLError("User with the specified does not exist");
@@ -43,13 +45,13 @@ export class AssessmentRepository
   }
 
   async getAssessmentById(assessmentId: number): Promise<Assessment> {
-    const data = await this.db
+    const data: (typeof assessment.$inferSelect)[] = await this.db
       .select()
       .from(assessment)
       .where(eq(assessment.assessment_id, assessmentId));
 
     if (data.length > 0) {
-      return new Assessment(data[0]);
+      return Assessment.init(data[0]);
     } else {
       return null;
     }
@@ -58,43 +60,26 @@ export class AssessmentRepository
   async getUserAssessments(userId: string): Promise<Assessment[]> {
     const assessments: Assessment[] = [];
 
-    const res = await this.db
+    const data: (typeof assessment.$inferSelect)[] = await this.db
       .select()
       .from(assessment)
       .where(eq(assessment.user_id, userId));
 
-    res.forEach((item) => {
-      assessments.push(new Assessment(item));
+    data.forEach((item) => {
+      assessments.push(Assessment.init(item));
     });
 
     return assessments;
   }
 
   async endAssessment(assessmentId: number): Promise<Assessment> {
-    const assessmentSelectQuery = await this.db
-      .select()
-      .from(assessment)
-      .where(eq(assessment.assessment_id, assessmentId));
+    const data = await this.db
+      .update(assessment)
+      .set({ end_date_time: new Date() } as unknown)
+      .where(eq(assessment.assessment_id, assessmentId))
+      .returning();
 
-    if (assessmentSelectQuery.length === 0) {
-      throw new GraphQLError(
-        "Assessment with the provided id has not been found",
-      );
-    }
-
-    const currentAssessment = new Assessment(assessmentSelectQuery[0]);
-
-    if (currentAssessment.end_date_time === null) {
-      const res = await this.db
-        .update(assessment)
-        .set({ end_date_time: new Date() })
-        .where(eq(assessment.assessment_id, assessmentId))
-        .returning();
-
-      return new Assessment(res[0]);
-    } else {
-      throw new GraphQLError("The assessment is already finished");
-    }
+    return Assessment.init(data[0]);
   }
 
   async getAssessmentAnswers(assessmentId: number): Promise<Answer[]> {
@@ -112,21 +97,43 @@ export class AssessmentRepository
       .where(eq(assessmentAnswer.assessment_id, assessmentId));
 
     res.forEach((item) => {
-      answers.push(new Answer(item.answer));
+      answers.push(Answer.init(item.answer));
     });
 
     return answers;
   }
 
-  async getAssessmentLevels(assessmentId: number): Promise<Level[]> {
-    interface IData {
-      assessmentLevel: typeof assessmentLevel.$inferSelect;
-      level: typeof level.$inferSelect;
-    }
+  async getAssessmentAnswerQuestionPairs(assessmentId: number) {
+    const pairs: { answer: Answer; question: Question }[] = [];
 
+    const data: {
+      assessment_answer: typeof assessmentAnswer.$inferSelect;
+      answer: typeof answer.$inferSelect;
+      question: typeof question.$inferSelect;
+    }[] = await this.db
+      .select()
+      .from(assessmentAnswer)
+      .leftJoin(answer, eq(assessmentAnswer.answer_id, answer.answer_id))
+      .leftJoin(
+        question,
+        eq(assessmentAnswer.question_id, question.question_id),
+      )
+      .where(eq(assessmentAnswer.assessment_id, assessmentId));
+
+    data.forEach((item) => {
+      pairs.push({
+        answer: Answer.init(item.answer),
+        question: Question.init(item.question),
+      });
+    });
+
+    return pairs;
+  }
+
+  async getAssessmentLevels(assessmentId: number): Promise<Level[]> {
     const levels: Level[] = [];
 
-    const data: IData[] = await this.db
+    const data = await this.db
       .select()
       .from(assessmentLevel)
       .leftJoin(level, eq(assessmentLevel.level_id, level.level_id))
@@ -140,21 +147,22 @@ export class AssessmentRepository
   }
 
   async getNotes(assessmentId: number): Promise<Note[]> {
-    const res: Note[] = [];
+    const notes: Note[] = [];
+
     const data = await this.db
       .select()
       .from(note)
       .where(eq(note.assessment_id, assessmentId));
 
     data.forEach((item) => {
-      res.push(new Note(item));
+      notes.push(Note.init(item));
     });
 
-    return res;
+    return notes;
   }
 
   async insertNote(item: Note): Promise<Note> {
-    const res = await this.db
+    const data = await this.db
       .insert(note)
       .values(item)
       .onConflictDoUpdate({
@@ -162,7 +170,8 @@ export class AssessmentRepository
         set: { note_text: item.note_text },
       })
       .returning();
-    return new Note(res[0]);
+
+    return Note.init(data[0]);
   }
 
   async insertAnswer(item: AssessmentAnswer): Promise<AssessmentAnswer> {
@@ -175,8 +184,44 @@ export class AssessmentRepository
       })
       .returning();
 
-    console.log(data);
     return AssessmentAnswer.init(data[0]);
+  }
+
+  async insertAnswersInBatch(
+    answers: AssessmentAnswerInsertDTO[],
+  ): Promise<AssessmentAnswer[]> {
+    const insertedAnswers: AssessmentAnswer[] = [];
+
+    const data = await this.db
+      .insert(assessmentAnswer)
+      .values(
+        (() => {
+          return answers.map<typeof assessmentAnswer.$inferInsert>((answer) => {
+            return {
+              assessment_id: answer.assessmentId,
+              question_id: answer.questionId,
+              answer_id: answer.answerId,
+            };
+          });
+        })(),
+      )
+      .onConflictDoUpdate({
+        target: [assessmentAnswer.assessment_id, assessmentAnswer.question_id],
+        set: { answer_id: sql`excluded.answer_id` },
+      })
+      .returning();
+
+    data.forEach((item) => {
+      insertedAnswers.push(
+        new AssessmentAnswer(
+          item.assessment_id,
+          item.question_id,
+          item.answer_id,
+        ),
+      );
+    });
+
+    return insertedAnswers;
   }
 
   async getAnswersForLevelCalculation(
@@ -201,9 +246,13 @@ export class AssessmentRepository
   }
 
   async insertLevel(item: AssessmentLevel): Promise<AssessmentLevel> {
-    const data: AssessmentLevel = await this.db
+    const data = await this.db
       .insert(assessmentLevel)
-      .values(item)
+      .values({
+        assessment_id: item.assessment_id,
+        category_id: item.category_id,
+        level_id: item.level_id as number,
+      })
       .onConflictDoUpdate({
         target: [assessmentLevel.assessment_id, assessmentLevel.category_id],
         set: { level_id: item.level_id },

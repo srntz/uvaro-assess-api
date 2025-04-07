@@ -2,8 +2,8 @@
 /dist
 /.idea
 /data
+/src/__mockTests
 
-Dockerfile
 entrypoint.sh
 
 .env

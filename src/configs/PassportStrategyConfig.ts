@@ -1,6 +1,5 @@
 import passport from "passport";
 import { Strategy, VerifyWithRequest } from "@node-saml/passport-saml";
-import { UserService } from "../services/implementations/UserService";
 import { UserRepository } from "../repositories/implementations/UserRepository";
 import { User } from "../models/User";
 import { UserUpdateDTO } from "../dto/UserUpdateDTO";
@@ -46,19 +45,19 @@ export class PassportStrategyConfig {
       lastName: profile.last_name,
     } as { [key: string]: string };
 
-    const userService = new UserService(new UserRepository());
-    const existingUser = await userService.getById(userAttributes.id);
+    const userRepository = new UserRepository();
+    const existingUser = await userRepository.getById(userAttributes.id);
 
     let dbUser: User;
     if (!existingUser) {
       const user = new User(
+        userAttributes.id,
+        userAttributes.email,
         userAttributes.firstName,
         userAttributes.lastName,
-        userAttributes.email,
-        userAttributes.id,
       );
 
-      dbUser = await userService.addUser(user);
+      dbUser = await userRepository.insertUser(user);
     } else {
       const user = new UserUpdateDTO(
         userAttributes.id,
@@ -67,7 +66,7 @@ export class PassportStrategyConfig {
         userAttributes.email,
       );
 
-      dbUser = await userService.updateUser(user);
+      dbUser = await userRepository.updateUser(user);
     }
 
     const jwt = new JWTManager();

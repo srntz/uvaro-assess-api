@@ -1,5 +1,5 @@
 import { User } from "../../models/User";
-import { user as userTable } from "../../db/schemas";
+import { user as userTable } from "../../db/schemas/index";
 import { UserUpdateDTO } from "../../dto/UserUpdateDTO";
 
 export interface IUserRepository {

@@ -2,6 +2,7 @@ type Query {
     allCategories: [CategoryWithChildren]
     getUserAssessments: [AssessmentWithChildren]
     getAssessmentById(id: Int!): AssessmentWithChildren
-    getFollowUpQuestionsByCategory(category_id: Int!): [Question]
+    getFollowUpQuestionsByCategory(categoryId: Int!): [Question]
+    calculateLevel(categoryId: Int!, answers: [GetLevelInput!]!): Level!
     getUser: User
 }

@@ -1,16 +1,8 @@
 type Level {
-  level_id: Int!
-  level_name: String!
-  level_statement: String!
-  required_weighting: Int!
-  category_id: Int!
-  category: Category!
-}
-
-type LevelFlat {
-  level_id: Int!
-  level_name: String!
-  level_statement: String!
-  required_weighting: Int!
-  category_id: Int!
+  levelId: Int!
+  levelName: String!
+  levelStatement: String!
+  levelImage: String!
+  weightingId: Int!
+  categoryId: Int!
 }

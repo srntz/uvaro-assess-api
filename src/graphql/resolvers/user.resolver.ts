@@ -1,18 +1,13 @@
 import { IContextWithAuth } from "../../context/IContext";
-import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
+import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired";
 
 const userResolvers = {
   Query: {
-    getUser: async (
-      _,
-      __,
-      { UserService, AuthenticatedUser }: IContextWithAuth,
-    ) => {
-      if (AuthenticatedUser.user_id === null) {
-        throw new UnauthorizedError();
-      }
-      return await UserService.getById(AuthenticatedUser.user_id);
-    },
+    getUser: withAuthenticationRequired(
+      async (_, __, { UserService, AuthenticatedUser }: IContextWithAuth) => {
+        return await UserService.getById(AuthenticatedUser.userId);
+      },
+    ),
   },
 };
 

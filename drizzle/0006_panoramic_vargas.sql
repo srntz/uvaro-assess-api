@@ -1,0 +1,1 @@
+ALTER TABLE "level" ADD COLUMN "level_image" varchar(2048) DEFAULT 'https://example.com/bucket/image.png' NOT NULL;

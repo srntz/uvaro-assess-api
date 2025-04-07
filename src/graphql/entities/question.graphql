@@ -1,16 +1,14 @@
 type Question {
-  question_id: Int!
-  question_text: String!
-  category_id: Int!
-  category: Category!
-  follow_up: Boolean!
+  questionId: Int!
+  questionText: String!
+  categoryId: Int!
+  followUp: Boolean!
 }
 
 type QuestionWithChildren {
-  question_id: Int!
-  question_text: String!
-  category_id: Int!
-  category: Category!
+  questionId: Int!
+  questionText: String!
+  categoryId: Int!
+  followUp: Boolean!
   answers: [Answer]!
-  follow_up: Boolean!
 }

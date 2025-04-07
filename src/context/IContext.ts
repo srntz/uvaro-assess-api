@@ -4,6 +4,8 @@ import { IUserService } from "../services/interfaces/IUserService";
 import { IQuestionService } from "../services/interfaces/IQuestionService";
 import { IAnswerService } from "../services/interfaces/IAnswerService";
 import { ICategoryService } from "../services/interfaces/ICategoryService";
+import { Assessment } from "../models/Assessment";
+import { INotificationService } from "../services/interfaces/INotificationService";
 
 export interface IContext {
   AssessmentService: IAssessmentService;
@@ -12,11 +14,13 @@ export interface IContext {
   QuestionService: IQuestionService;
   AnswerService: IAnswerService;
   CategoryService: ICategoryService;
+  NotificationService: INotificationService;
 }
 
 export interface IContextWithAuth extends IContext {
   AuthenticatedUser: {
-    user_id: string;
+    userId: string;
     email: string;
+    assessments: Assessment[] | null;
   };
 }

@@ -6,15 +6,17 @@ export class Question {
     readonly question_id: number,
     readonly category_id: number,
     readonly question_text: string,
+    readonly weighting_coefficient: number,
     readonly follow_up: boolean,
   ) {}
 
-  static fromDatabase(data: typeof question.$inferSelect) {
+  static init(data: typeof question.$inferSelect) {
     try {
       return new Question(
         data.question_id,
         data.category_id,
         data.question_text,
+        data.weighting_coefficient,
         data.follow_up,
       );
     } catch {

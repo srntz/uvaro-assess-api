@@ -1,3 +1,5 @@
+import { assessmentAnswer } from "../db/schemas";
+
 export class AssessmentAnswer {
   constructor(
     readonly assessment_id: number,
@@ -5,7 +7,7 @@ export class AssessmentAnswer {
     readonly answer_id: number,
   ) {}
 
-  static init(data) {
+  static init(data: typeof assessmentAnswer.$inferSelect) {
     return new AssessmentAnswer(
       data.assessment_id,
       data.question_id,

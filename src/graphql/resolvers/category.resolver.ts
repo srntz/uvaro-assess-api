@@ -1,6 +1,5 @@
-import { Category } from "../../models/Category";
 import { IContext } from "../../context/IContext";
-import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
+import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO";
 
 const categoryResolvers = {
   Query: {
@@ -9,13 +8,21 @@ const categoryResolvers = {
     },
   },
   CategoryWithChildren: {
-    questions: async (category: Category, _, { QuestionService }: IContext) => {
+    questions: async (
+      category: CategoryResponseDTO,
+      _,
+      { QuestionService }: IContext,
+    ) => {
       return await QuestionService.getRegularQuestionsByCategory(
-        category.category_id,
+        category.categoryId,
       );
     },
-    levels: async (parent: Category, _, { LevelService }: IContext) => {
-      return await LevelService.getLevelsByCategory(parent.category_id);
+    levels: async (
+      parent: CategoryResponseDTO,
+      _,
+      { LevelService }: IContext,
+    ) => {
+      return await LevelService.getLevelsByCategory(parent.categoryId);
     },
   },
 };

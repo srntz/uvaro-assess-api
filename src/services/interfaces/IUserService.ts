@@ -1,9 +1,5 @@
-import { User } from "../../models/User";
-import { UserUpdateDTO } from "../../dto/UserUpdateDTO";
+import { UserResponseDTO } from "../../dto/user/UserResponseDTO";
 
 export interface IUserService {
-  addUser(user: User): Promise<User>;
-  deleteUser(userId: string): Promise<User>;
-  getById(userId: string): Promise<User>;
-  updateUser(user: UserUpdateDTO): Promise<User>;
+  getById(userId: string): Promise<UserResponseDTO>;
 }
