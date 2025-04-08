@@ -12,4 +12,4 @@ RUN npm run build
 
 EXPOSE 4000
 
-ENTRYPOINT ["sh","./entrypoint.sh"]
+ENTRYPOINT ["bash","./entrypoint.sh"]
