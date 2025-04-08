@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import passport from "passport";
 import { PassportStrategyConfig } from "../../configs/PassportStrategyConfig";
 import cookieParser from "cookie-parser";
-import { JWTManager } from "../../utils/JWTManager";
+import { JWTManager } from "../../utils/jwtManager/JWTManager";
 
 const AuthRouter = express.Router();
 

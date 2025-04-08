@@ -3,7 +3,7 @@ import { Strategy, VerifyWithRequest } from "@node-saml/passport-saml";
 import { UserRepository } from "../repositories/implementations/UserRepository";
 import { User } from "../models/User";
 import { UserUpdateDTO } from "../dto/UserUpdateDTO";
-import { JWTManager } from "../utils/JWTManager";
+import { JWTManager } from "../utils/jwtManager/JWTManager";
 
 export class PassportStrategyConfig {
   private static samlStrategy;

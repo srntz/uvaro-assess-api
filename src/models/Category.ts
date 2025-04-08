@@ -1,5 +1,5 @@
 import { category } from "../db/schemas";
-import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
+import { InvalidModelConstructionException } from "../errors/exceptions/InvalidModelConstructionException";
 
 export class Category {
   constructor(
