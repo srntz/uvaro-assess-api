@@ -4,10 +4,12 @@ WORKDIR /app
 
 COPY . .
 
+RUN chmod +x entrypoint.sh
+
 RUN npm install
 
 RUN npm run build
 
 EXPOSE 4000
 
-ENTRYPOINT ["node", "./dist/src/index.js", "--mode:production"]
+ENTRYPOINT ["sh","./entrypoint.sh"]

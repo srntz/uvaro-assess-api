@@ -4,8 +4,6 @@
 /data
 /src/__mockTests
 
-entrypoint.sh
-
 .env
 .env.*
 
