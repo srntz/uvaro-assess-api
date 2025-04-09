@@ -5,33 +5,31 @@ import { UserUpdateDTO } from "../../dto/UserUpdateDTO";
 
 export class MockUserRepository implements IUserRepository {
   readonly storage = new Map<string, User>([
-    [
-      "user1", 
-      new User(
-        "user1",
-        "user1@example.com",
-        "John",
-        "Doe"
-      )
-    ],
-    [
-      "user2",
-      new User(
-        "user2",
-        "user2@example.com",
-        "Jane",
-        "Smith"
-      )
-    ]
+    ["user1", new User("user1", "user1@example.com", "John", "Doe")],
+    ["user2", new User("user2", "user2@example.com", "Jane", "Smith")],
   ]);
 
   async getById(userId: string): Promise<typeof userTable.$inferSelect> {
     const user = this.storage.get(userId);
-    return user ? {
-      user_id: user.user_id,
-      email: user.email,
-      first_name: user.first_name,
-      last_name: user.last_name
-    } : null;
+    return user
+      ? {
+          user_id: user.user_id,
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+        }
+      : null;
+  }
+
+  deleteUser(userId: string): Promise<User> {
+    return Promise.resolve(undefined);
+  }
+
+  insertUser(item: User): Promise<User> {
+    return Promise.resolve(undefined);
+  }
+
+  updateUser(user: UserUpdateDTO): Promise<typeof userTable.$inferSelect> {
+    return Promise.resolve(undefined);
   }
 }

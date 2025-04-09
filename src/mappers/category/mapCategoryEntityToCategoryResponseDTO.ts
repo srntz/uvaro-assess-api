@@ -3,7 +3,7 @@ import { Category } from "../../models/Category";
 
 export function mapCategoryEntityToCategoryResponseDTO(category: Category) {
   if (!category) {
-    return category;
+    return null;
   }
 
   return new CategoryResponseDTO(
