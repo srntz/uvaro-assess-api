@@ -1,17 +1,30 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as dbSchema from "./schemas/index";
+import { Pool } from "pg";
 
 export class DatabaseConnection {
   private static instance: ReturnType<typeof drizzle>;
+  private static pool: Pool;
 
   private constructor() {}
 
   public static getInstance() {
     if (!this.instance) {
-      this.instance = drizzle(process.env.DATABASE_URL as string, {
+      this.pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+      });
+      this.instance = drizzle(this.pool, {
         schema: dbSchema,
       });
     }
     return this.instance;
+  }
+
+  public static getPool() {
+    if (!this.pool) {
+      throw new Error("The pool has not been initialized.");
+    }
+
+    return this.pool;
   }
 }

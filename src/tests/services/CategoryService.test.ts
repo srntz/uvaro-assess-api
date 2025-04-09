@@ -1,15 +1,25 @@
 import { CategoryService } from "../../services/implementations/CategoryService";
-import { MockCategoryRepository } from "../mocks/MockCategoryRepository";
-import { mapCategoryEntityToCategoryResponseDTO } from "../../mappers/category/mapCategoryEntityToCategoryResponseDTO";
 import { IContext } from "../../context/IContext";
+import { CategoryRepository } from "../../repositories/implementations/CategoryRepository";
+import dotenv from "dotenv";
+import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO";
+import { DatabaseConnection } from "../../db/DatabaseConnection";
+
+dotenv.config({ path: ".env.test" });
+
+const categoryJestSchema: CategoryResponseDTO = {
+  categoryId: expect.any(Number),
+  categoryName: expect.any(String),
+  categoryDescription: expect.any(String),
+  categoryImage: expect.any(String),
+};
 
 let context: IContext;
-const mockCategoryRepository = new MockCategoryRepository();
 
 describe("Category Service", () => {
-  beforeAll(async () => {
+  beforeAll(() => {
     context = {
-      CategoryService: new CategoryService(mockCategoryRepository),
+      CategoryService: new CategoryService(new CategoryRepository()),
       AssessmentService: null,
       LevelService: null,
       UserService: null,
@@ -22,26 +32,26 @@ describe("Category Service", () => {
   test("getAll()", async () => {
     const returnedCategories = await context.CategoryService.getAll();
 
-    mockCategoryRepository.storage.values().forEach((category) => {
-      expect(returnedCategories).toContainEqual(
-        mapCategoryEntityToCategoryResponseDTO(category),
-      );
+    returnedCategories.forEach((category) => {
+      expect(category).toBeTruthy();
+      expect(category).toEqual(categoryJestSchema);
     });
   });
 
   test("getById(): Valid id", async () => {
     const category = await context.CategoryService.getById(1);
 
-    expect(category).toEqual(
-      mapCategoryEntityToCategoryResponseDTO(
-        mockCategoryRepository.storage.get(1),
-      ),
-    );
+    expect(category).toBeTruthy();
+    expect(category).toEqual(categoryJestSchema);
   });
 
   test("getById(): Invalid id", async () => {
     const category = await context.CategoryService.getById(9999999);
 
     expect(category).toEqual(null);
+  });
+
+  afterAll(async () => {
+    await DatabaseConnection.getPool().end();
   });
 });
