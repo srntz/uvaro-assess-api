@@ -50,8 +50,4 @@ describe("Category Service", () => {
 
     expect(category).toEqual(null);
   });
-
-  afterAll(async () => {
-    await DatabaseConnection.getPool().end();
-  });
 });

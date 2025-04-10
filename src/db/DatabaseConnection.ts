@@ -21,10 +21,6 @@ export class DatabaseConnection {
   }
 
   public static getPool() {
-    if (!this.pool) {
-      throw new Error("The pool has not been initialized.");
-    }
-
     return this.pool;
   }
 }

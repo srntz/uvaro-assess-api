@@ -1,13 +1,18 @@
 import { AnswerService } from "../../services/implementations/AnswerService";
-import { MockAnswerRepository } from "../mocks/MockAnswerRepository";
 import { IContext } from "../../context/IContext";
 import { mapAnswerEntityToAnswerResponseDTO } from "../../mappers/answer/mapAnswerEntityToAnswerResponseDTO";
-import { Assessment } from '../../models/Assessment';
+import { AnswerRepository } from "../../repositories/implementations/AnswerRepository";
+import { answer } from "../../db/schemas";
+import { DatabaseConnection } from "../../db/DatabaseConnection";
+import { eq } from "drizzle-orm";
+import dotenv from "dotenv";
 
-let context: IContext;
-const mockAnswerRepository = new MockAnswerRepository();
+dotenv.config({ path: ".env.test" });
 
-describe("Answer Service", () => {
+describe("AnswerService", () => {
+  let context: IContext;
+  const db = DatabaseConnection.getInstance();
+
   beforeAll(() => {
     context = {
       CategoryService: null,
@@ -15,41 +20,52 @@ describe("Answer Service", () => {
       LevelService: null,
       UserService: null,
       QuestionService: null,
-      AnswerService: new AnswerService(mockAnswerRepository),
+      AnswerService: new AnswerService(new AnswerRepository()),
       NotificationService: null,
     };
   });
 
-  describe("getById", () => {
-    test("returns answer when exists", async () => {
-      const answer = await context.AnswerService.getById(1);
-      expect(answer).toEqual(
-        mapAnswerEntityToAnswerResponseDTO(mockAnswerRepository.storage.get(1))
-      );
+  describe("getById()", () => {
+    test("Existing answer", async () => {
+      const ANSWER_ID = 1;
+
+      const a = await context.AnswerService.getById(ANSWER_ID);
+      const dbAnswers = await db
+        .select()
+        .from(answer)
+        .where(eq(answer.answer_id, ANSWER_ID));
+
+      expect(a).toEqual(mapAnswerEntityToAnswerResponseDTO(dbAnswers[0]));
     });
 
-    test("returns null when not exists", async () => {
-      const answer = await context.AnswerService.getById(999);
+    test("Non-existing answer", async () => {
+      const answer = await context.AnswerService.getById(99999);
+
       expect(answer).toBeNull();
     });
   });
 
-  describe("getByQuestionId", () => {
-    test("returns answers for existing question", async () => {
-      const answers = await context.AnswerService.getByQuestionId(1);
-      expect(answers.length).toBe(2);
+  describe("getByQuestionId()", () => {
+    test("Existing question", async () => {
+      const QUESTION_ID = 1;
+
+      const a = await context.AnswerService.getByQuestionId(QUESTION_ID);
+
+      const dbAnswers = await db
+        .select()
+        .from(answer)
+        .where(eq(answer.question_id, QUESTION_ID));
+
+      expect(a.length).toBe(dbAnswers.length);
+      expect(a).toEqual(
+        dbAnswers.map((a) => mapAnswerEntityToAnswerResponseDTO(a)),
+      );
     });
 
-    test("returns empty array for non-existent question", async () => {
-      const answers = await context.AnswerService.getByQuestionId(999);
+    test("Non-existing question", async () => {
+      const answers = await context.AnswerService.getByQuestionId(999999);
+
       expect(answers).toEqual([]);
-    });
-  });
-
-  describe("getByCategoryId", () => {
-    test("returns answers for existing category", async () => {
-      const answers = await mockAnswerRepository.getByCategoryId(1);
-      expect(answers.length).toBeGreaterThan(0);
     });
   });
 });

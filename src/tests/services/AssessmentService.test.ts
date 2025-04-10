@@ -463,8 +463,4 @@ describe("AssessmentService", () => {
       ).rejects.toThrow();
     });
   });
-
-  afterAll(async () => {
-    await DatabaseConnection.getPool().end();
-  });
 });
