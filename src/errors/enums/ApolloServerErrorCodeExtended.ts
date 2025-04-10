@@ -2,6 +2,7 @@ import { ApolloServerErrorCode } from "@apollo/server/errors";
 
 export enum ApolloServerErrorCodeExtended {
   INTERNAL_SERVER_ERROR = ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
+  INTERNAL_SERVER_ERROR_WITH_MESSAGE = "INTERNAL_SERVER_ERROR_WITH_MESSAGE",
   GRAPHQL_PARSE_FAILED = ApolloServerErrorCode.GRAPHQL_PARSE_FAILED,
   GRAPHQL_VALIDATION_FAILED = ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED,
   PERSISTED_QUERY_NOT_FOUND = ApolloServerErrorCode.PERSISTED_QUERY_NOT_FOUND,

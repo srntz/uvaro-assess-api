@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { array, object, z } from "zod";
 import { IContext, IContextWithAuth } from "../../context/IContext";
 import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
@@ -6,6 +6,12 @@ import { GraphQLError } from "graphql";
 import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired";
 import { withUserAssessments } from "../middleware/withUserAssessments";
 import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
+import { withInputValidation } from "../middleware/withInputValidation";
+import {
+  endAssessmentSchema,
+  getAssessmentByIdSchema,
+  insertNoteSchema,
+} from "../../validation/schemas/AssessmentResolverSchemas";
 
 // query schemas
 const getUserAssessmentsSchema = z.object({
@@ -15,59 +21,6 @@ const getUserAssessmentsSchema = z.object({
       invalid_type_error: "User ID must be a string",
     })
     .min(1, "User ID cannot be empty"),
-});
-
-const getAssessmentByIdSchema = z.object({
-  id: z
-    .number({
-      required_error: "Assessment ID is required",
-      invalid_type_error: "Assessment ID must be a number",
-    })
-    .int()
-    .positive("Assessment ID must be a positive integer"),
-});
-
-// mutation schemas
-const addAssessmentSchema = z.object({
-  user_id: z
-    .string({
-      required_error: "User ID is required",
-      invalid_type_error: "User ID must be a string",
-    })
-    .min(1, "User ID cannot be empty"),
-});
-
-const endAssessmentSchema = z.object({
-  assessment_id: z
-    .number({
-      required_error: "Assessment ID is required",
-      invalid_type_error: "Assessment ID must be a number",
-    })
-    .int()
-    .positive("Assessment ID must be a positive integer"),
-});
-
-const insertNoteSchema = z.object({
-  assessment_id: z
-    .number({
-      required_error: "Assessment ID is required",
-      invalid_type_error: "Assessment ID must be a number",
-    })
-    .int()
-    .positive("Assessment ID must be a positive integer"),
-  category_id: z
-    .number({
-      required_error: "Category ID is required",
-      invalid_type_error: "Category ID must be a number",
-    })
-    .int()
-    .positive("Category ID must be a positive integer"),
-  note_text: z
-    .string({
-      required_error: "Note text is required",
-      invalid_type_error: "Note text must be a string",
-    })
-    .min(1, "Note text cannot be empty"),
 });
 
 const insertAnswerSchema = z.object({
@@ -95,20 +48,18 @@ const insertAnswerSchema = z.object({
 });
 
 const calculateLevelSchema = z.object({
-  assessment_id: z
-    .number({
-      required_error: "Assessment ID is required",
-      invalid_type_error: "Assessment ID must be a number",
-    })
-    .int()
-    .positive("Assessment ID must be a positive integer"),
-  category_id: z
+  categoryId: z
     .number({
       required_error: "Category ID is required",
       invalid_type_error: "Category ID must be a number",
     })
     .int()
     .positive("Category ID must be a positive integer"),
+  answers: array(
+    object({
+      answerId: z.number().int().min(1).positive(),
+    }),
+  ),
 });
 
 const assessmentResolvers = {
@@ -126,28 +77,34 @@ const assessmentResolvers = {
     ),
 
     getAssessmentById: withAuthenticationRequired(
-      async (
-        _,
-        args,
-        { AssessmentService, AuthenticatedUser }: IContextWithAuth,
-      ) => {
-        if (AuthenticatedUser.userId === null) {
-          throw new UnauthorizedError();
-        }
-        return await AssessmentService.getAssessmentById(args.id);
-      },
+      withInputValidation(
+        getAssessmentByIdSchema,
+        async (
+          _,
+          args,
+          { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+        ) => {
+          if (AuthenticatedUser.userId === null) {
+            throw new UnauthorizedError();
+          }
+          return await AssessmentService.getAssessmentById(args.id);
+        },
+      ),
     ),
 
-    calculateLevel: async (
-      _,
-      {
-        categoryId,
-        answers,
-      }: { categoryId: number; answers: AnswerRequestDTO[] },
-      { AssessmentService }: IContext,
-    ) => {
-      return await AssessmentService.calculateLevel(answers, categoryId);
-    },
+    calculateLevel: withInputValidation(
+      calculateLevelSchema,
+      async (
+        _,
+        {
+          categoryId,
+          answers,
+        }: { categoryId: number; answers: AnswerRequestDTO[] },
+        { AssessmentService }: IContext,
+      ) => {
+        return await AssessmentService.calculateLevel(answers, categoryId);
+      },
+    ),
   },
 
   Mutation: {
@@ -162,52 +119,72 @@ const assessmentResolvers = {
     ),
 
     endAssessment: withAuthenticationRequired(
-      withUserAssessments(
-        async (
-          _,
-          args,
-          {
-            AssessmentService,
-            AuthenticatedUser,
-            NotificationService,
-          }: IContextWithAuth,
-        ) => {
-          const matchedAssessment = AuthenticatedUser.assessments.find(
-            (item) => item.assessment_id === args.assessmentId,
-          );
-
-          if (!matchedAssessment) {
-            throw new UnauthorizedError();
-          }
-
-          if (matchedAssessment.end_date_time) {
-            throw new GraphQLError("The assessment is already finished");
-          }
-
-          const levels = await AssessmentService.endAssessment(
-            args.assessmentId,
-          );
-
-          if (process.env.ENABLE_SLACK_NOTIFICATIONS === "true") {
-            NotificationService.send(
-              args.assessmentId,
-              AuthenticatedUser.userId,
+      withInputValidation(
+        endAssessmentSchema,
+        withUserAssessments(
+          async (
+            _,
+            args,
+            {
+              AssessmentService,
+              AuthenticatedUser,
+              NotificationService,
+            }: IContextWithAuth,
+          ) => {
+            const matchedAssessment = AuthenticatedUser.assessments.find(
+              (item) => item.assessment_id === args.assessmentId,
             );
-          }
 
-          return levels;
-        },
+            if (!matchedAssessment) {
+              throw new UnauthorizedError();
+            }
+
+            if (matchedAssessment.end_date_time) {
+              throw new GraphQLError("The assessment is already finished");
+            }
+
+            const levels = await AssessmentService.endAssessment(
+              args.assessmentId,
+            );
+
+            if (process.env.ENABLE_SLACK_NOTIFICATIONS === "true") {
+              NotificationService.send(
+                args.assessmentId,
+                AuthenticatedUser.userId,
+              );
+            }
+
+            return levels;
+          },
+        ),
       ),
     ),
 
     insertNote: withAuthenticationRequired(
-      async (_, args, { AssessmentService }: IContextWithAuth) => {
-        return await AssessmentService.insertNote(
-          args.assessmentId,
-          args.categoryId,
-          args.noteText,
-        );
-      },
+      withInputValidation(
+        insertNoteSchema,
+        withUserAssessments(
+          async (
+            _,
+            args,
+            { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+          ) => {
+            if (
+              !AuthenticatedUser.assessments.find(
+                (item) => item.assessment_id === args.assessmentId,
+              )
+            ) {
+              throw new UnauthorizedError();
+            }
+
+            return await AssessmentService.insertNote(
+              args.assessmentId,
+              args.categoryId,
+              args.noteText,
+            );
+          },
+        ),
+      ),
     ),
 
     completeCategory: withAuthenticationRequired(
