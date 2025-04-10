@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { array, object, z } from "zod";
 
 export const getAssessmentByIdSchema = z.object({
   id: z
@@ -45,4 +45,36 @@ export const insertNoteSchema = z.object({
       invalid_type_error: "Note text must be a string",
     })
     .min(1, "Note text cannot be empty"),
+});
+
+export const calculateLevelSchema = z.object({
+  categoryId: z
+    .number({
+      required_error: "Category ID is required",
+      invalid_type_error: "Category ID must be a number",
+    })
+    .int()
+    .positive("Category ID must be a positive integer"),
+  answers: array(
+    object({
+      answerId: z.number().int().min(1).positive(),
+    }),
+  ),
+});
+
+export const completeCategorySchema = z.object({
+  categoryId: z.number().int().min(1).positive(),
+  assessmentId: z
+    .number({
+      required_error: "Category ID is required",
+      invalid_type_error: "Category ID must be a number",
+    })
+    .int()
+    .min(1)
+    .positive("Category ID must be a positive integer"),
+  answers: array(
+    object({
+      answerId: z.number().int().min(1).positive(),
+    }),
+  ),
 });

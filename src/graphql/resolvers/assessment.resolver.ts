@@ -8,6 +8,8 @@ import { withUserAssessments } from "../middleware/withUserAssessments";
 import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
 import { withInputValidation } from "../middleware/withInputValidation";
 import {
+  calculateLevelSchema,
+  completeCategorySchema,
   endAssessmentSchema,
   getAssessmentByIdSchema,
   insertNoteSchema,
@@ -45,21 +47,6 @@ const insertAnswerSchema = z.object({
     })
     .int()
     .positive("Answer ID must be a positive integer"),
-});
-
-const calculateLevelSchema = z.object({
-  categoryId: z
-    .number({
-      required_error: "Category ID is required",
-      invalid_type_error: "Category ID must be a number",
-    })
-    .int()
-    .positive("Category ID must be a positive integer"),
-  answers: array(
-    object({
-      answerId: z.number().int().min(1).positive(),
-    }),
-  ),
 });
 
 const assessmentResolvers = {
@@ -188,38 +175,41 @@ const assessmentResolvers = {
     ),
 
     completeCategory: withAuthenticationRequired(
-      withUserAssessments(
-        async (
-          _,
-          {
-            categoryId,
-            assessmentId,
-            answers,
-          }: {
-            categoryId: number;
-            assessmentId: number;
-            answers: AnswerRequestDTO[];
+      withInputValidation(
+        completeCategorySchema,
+        withUserAssessments(
+          async (
+            _,
+            {
+              categoryId,
+              assessmentId,
+              answers,
+            }: {
+              categoryId: number;
+              assessmentId: number;
+              answers: AnswerRequestDTO[];
+            },
+            { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+          ) => {
+            const matchedAssessment = AuthenticatedUser.assessments.find(
+              (item) => item.assessment_id === assessmentId,
+            );
+
+            if (matchedAssessment === undefined) {
+              throw new UnauthorizedError();
+            }
+
+            if (matchedAssessment.end_date_time) {
+              throw new GraphQLError("The assessment is already finished");
+            }
+
+            return await AssessmentService.completeCategory(
+              categoryId,
+              assessmentId,
+              answers,
+            );
           },
-          { AssessmentService, AuthenticatedUser }: IContextWithAuth,
-        ) => {
-          const matchedAssessment = AuthenticatedUser.assessments.find(
-            (item) => item.assessment_id === assessmentId,
-          );
-
-          if (matchedAssessment === undefined) {
-            throw new UnauthorizedError();
-          }
-
-          if (matchedAssessment.end_date_time) {
-            throw new GraphQLError("The assessment is already finished");
-          }
-
-          return await AssessmentService.completeCategory(
-            categoryId,
-            assessmentId,
-            answers,
-          );
-        },
+        ),
       ),
     ),
   },

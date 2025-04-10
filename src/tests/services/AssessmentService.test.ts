@@ -208,10 +208,7 @@ describe("AssessmentService", () => {
         ) {
           answerMap.set(
             group.question.question_id,
-            new AnswerRequestDTO(
-              group.answer.answer_id,
-              group.question.question_id,
-            ),
+            new AnswerRequestDTO(group.answer.answer_id),
           );
         }
       });
