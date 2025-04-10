@@ -19,6 +19,7 @@ import dotenv from "dotenv";
 import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO";
 import { and, eq } from "drizzle-orm";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
+import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
 
 dotenv.config({ path: ".env.test" });
 
@@ -347,6 +348,118 @@ describe("AssessmentService", () => {
             assessmentId,
             Array.from(answerMap.values()),
           ),
+      ).rejects.toThrow();
+    });
+  });
+
+  describe("endAssessment()", () => {
+    const WEIGHTING_ID = 1;
+    const categoryQuestionMap = new Map<
+      number,
+      Map<number, AnswerRequestDTO>
+    >();
+
+    beforeAll(async () => {
+      const questionsWithAnswers = await db
+        .select()
+        .from(question)
+        .leftJoin(answer, eq(question.question_id, answer.question_id))
+        .where(eq(question.follow_up, false));
+
+      for (let i = 0; i < questionsWithAnswers.length; i++) {
+        if (
+          categoryQuestionMap.has(questionsWithAnswers[i].question.category_id)
+        ) {
+          continue;
+        }
+
+        const questionMap = new Map<number, AnswerRequestDTO>();
+
+        for (let j = 0; j < questionsWithAnswers.length; j++) {
+          if (
+            !questionMap.has(questionsWithAnswers[j].question.question_id) &&
+            questionsWithAnswers[j].question.category_id ===
+              questionsWithAnswers[i].question.category_id &&
+            questionsWithAnswers[j].answer.weighting_id === WEIGHTING_ID
+          ) {
+            questionMap.set(
+              questionsWithAnswers[j].question.question_id,
+              new AnswerRequestDTO(
+                questionsWithAnswers[j].answer.answer_id,
+                questionsWithAnswers[j].question.question_id,
+              ),
+            );
+          }
+        }
+
+        categoryQuestionMap.set(
+          questionsWithAnswers[i].question.category_id,
+          questionMap,
+        );
+      }
+    });
+
+    test("Existing assessment, all categories completed", async () => {
+      const categoryMapArray = Array.from(categoryQuestionMap.entries());
+
+      for (let i = 0; i < categoryMapArray.length; i++) {
+        await context.AssessmentService.completeCategory(
+          categoryMapArray[i][0],
+          assessmentId,
+          Array.from(categoryMapArray[i][1].values()),
+        );
+      }
+
+      const levels =
+        await context.AssessmentService.endAssessment(assessmentId);
+
+      expect(levels.length).toBe(4);
+      levels.forEach((level) => {
+        expect(level).toBeInstanceOf(LevelResponseDTO);
+        expect(level.weightingId).toBe(WEIGHTING_ID);
+      });
+    });
+
+    test("Existing assessment, not all categories completed", async () => {
+      const categoryMapArray = Array.from(categoryQuestionMap.entries());
+
+      for (let i = 0; i < categoryMapArray.length - 1; i++) {
+        await context.AssessmentService.completeCategory(
+          categoryMapArray[i][0],
+          assessmentId,
+          Array.from(categoryMapArray[i][1].values()),
+        );
+      }
+
+      await expect(
+        async () => await context.AssessmentService.endAssessment(assessmentId),
+      ).rejects.toThrow();
+    });
+
+    test("Non-existing assessment", async () => {
+      const categoryMapArray = Array.from(categoryQuestionMap.entries());
+
+      for (let i = 0; i < categoryMapArray.length; i++) {
+        await context.AssessmentService.completeCategory(
+          categoryMapArray[i][0],
+          assessmentId,
+          Array.from(categoryMapArray[i][1].values()),
+        );
+      }
+
+      await expect(
+        async () => await context.AssessmentService.endAssessment(999999),
+      ).rejects.toThrow();
+    });
+
+    test("Finished assessment", async () => {
+      await db
+        .update(assessment)
+        .set({ end_date_time: new Date() } as unknown)
+        .where(eq(assessment.assessment_id, assessmentId));
+
+      await expect(
+        async () => await context.AssessmentService.endAssessment(999999),
       ).rejects.toThrow();
     });
   });
