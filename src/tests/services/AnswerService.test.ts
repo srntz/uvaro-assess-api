@@ -5,9 +5,6 @@ import { AnswerRepository } from "../../repositories/implementations/AnswerRepos
 import { answer } from "../../db/schemas";
 import { DatabaseConnection } from "../../db/DatabaseConnection";
 import { eq } from "drizzle-orm";
-import dotenv from "dotenv";
-
-dotenv.config({ path: ".env.test" });
 
 describe("AnswerService", () => {
   let context: IContext;
@@ -23,6 +20,10 @@ describe("AnswerService", () => {
       AnswerService: new AnswerService(new AnswerRepository()),
       NotificationService: null,
     };
+  });
+
+  afterAll(async () => {
+    await DatabaseConnection.getPool().end();
   });
 
   describe("getById()", () => {

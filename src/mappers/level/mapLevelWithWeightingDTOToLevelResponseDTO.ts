@@ -4,6 +4,10 @@ import { LevelWithWeightingDTO } from "../../dto/level/LevelWithWeightingDTO";
 export function mapLevelWithWeightingDTOToLevelResponseDTO(
   level: LevelWithWeightingDTO,
 ): LevelResponseDTO {
+  if (!level) {
+    return null;
+  }
+
   return new LevelResponseDTO(
     level.level_id,
     level.level_name,

@@ -1,11 +1,8 @@
 import { CategoryService } from "../../services/implementations/CategoryService";
 import { IContext } from "../../context/IContext";
 import { CategoryRepository } from "../../repositories/implementations/CategoryRepository";
-import dotenv from "dotenv";
 import { CategoryResponseDTO } from "../../dto/category/CategoryResponseDTO";
 import { DatabaseConnection } from "../../db/DatabaseConnection";
-
-dotenv.config({ path: ".env.test" });
 
 const categoryJestSchema: CategoryResponseDTO = {
   categoryId: expect.any(Number),
@@ -27,6 +24,10 @@ describe("Category Service", () => {
       AnswerService: null,
       NotificationService: null,
     };
+  });
+
+  afterAll(async () => {
+    await DatabaseConnection.getPool().end();
   });
 
   test("getAll()", async () => {

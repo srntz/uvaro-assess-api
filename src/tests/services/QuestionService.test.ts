@@ -1,5 +1,4 @@
 import { QuestionService } from "../../services/implementations/QuestionService";
-import { MockQuestionRepository } from "../mocks/MockQuestionRepository";
 import { IContext } from "../../context/IContext";
 import { QuestionRepository } from "../../repositories/implementations/QuestionRepository";
 import { DatabaseConnection } from "../../db/DatabaseConnection";
@@ -7,9 +6,6 @@ import { QuestionResponseDTO } from "../../dto/question/QuestionResponseDTO";
 import { question } from "../../db/schemas";
 import { and, eq } from "drizzle-orm";
 import { mapQuestionEntityToQuestionResponseDTO } from "../../mappers/question/mapQuestionEntityToQuestionResponseDTO";
-import dotenv from "dotenv";
-
-dotenv.config({ path: ".env.test" });
 
 describe("Question Service", () => {
   let context: IContext;
@@ -25,6 +21,10 @@ describe("Question Service", () => {
       AnswerService: null,
       NotificationService: null,
     };
+  });
+
+  afterAll(async () => {
+    await DatabaseConnection.getPool().end();
   });
 
   describe("getQuestionById()", () => {

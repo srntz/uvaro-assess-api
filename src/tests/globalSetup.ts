@@ -1,8 +1,6 @@
+import dotenv from "dotenv";
 import { DatabaseConnection } from "../db/DatabaseConnection";
 
 export default async function () {
-  const pool = DatabaseConnection.getPool();
-  if (pool) {
-    await pool.end();
-  }
+  dotenv.config({ path: ".env.test" });
 }

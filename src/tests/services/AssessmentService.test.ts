@@ -15,13 +15,10 @@ import { CategoryRepository } from "../../repositories/implementations/CategoryR
 import { AnswerRepository } from "../../repositories/implementations/AnswerRepository";
 import { QuestionRepository } from "../../repositories/implementations/QuestionRepository";
 import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
-import dotenv from "dotenv";
 import { AnswerResponseDTO } from "../../dto/answer/AnswerResponseDTO";
 import { and, eq } from "drizzle-orm";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
 import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
-
-dotenv.config({ path: ".env.test" });
 
 describe("AssessmentService", () => {
   const db = DatabaseConnection.getInstance();
@@ -64,6 +61,10 @@ describe("AssessmentService", () => {
   afterEach(async () => {
     await db.delete(assessment);
     await db.delete(user);
+  });
+
+  afterAll(async () => {
+    await DatabaseConnection.getPool().end();
   });
 
   describe("getAssessmentById()", () => {
