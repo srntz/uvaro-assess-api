@@ -111,9 +111,17 @@ export class AssessmentService implements IAssessmentService {
     const processInputAnswers = async (
       answers: AnswerRequestDTO[],
     ): Promise<Map<number, AnswerWithCategoryIdDTO>> => {
+      const inputAnswerIds = answers.map((item) => item.answerId);
+
+      if (inputAnswerIds.length <= 0) {
+        throw new GraphQLError(
+          "Please provide answers for all required questions of the specified category",
+        );
+      }
+
       const answersWithCategoryIdRaw =
         await this.answerRepository.getAnswersWithCategoryIdsByIds(
-          answers.map((item) => item.answerId),
+          inputAnswerIds,
         );
       const answersWithCategoryIdFilteredByCategoryId =
         answersWithCategoryIdRaw.filter(
@@ -224,6 +232,27 @@ export class AssessmentService implements IAssessmentService {
     answers: AnswerRequestDTO[],
     categoryId: number,
   ): Promise<LevelResponseDTO> {
+    const requiredQuestions =
+      await this.questionRepository.getRequiredQuestionIdsByCategory(
+        categoryId,
+      );
+
+    if (requiredQuestions.size <= 0) {
+      throw new GraphQLError(
+        "The provided category is not available for level calculation",
+      );
+    }
+
+    if (
+      new Set(answers.map((answer) => answer.questionId)).intersection(
+        requiredQuestions,
+      ).size !== requiredQuestions.size
+    ) {
+      throw new GraphQLError(
+        "Please provide answers for all required questions of the specified category",
+      );
+    }
+
     const { answersWithWeightingsAndCoefficients, availableLevels } =
       await this.getDataForLevelCalculation(
         answers.map((item) => item.answerId),

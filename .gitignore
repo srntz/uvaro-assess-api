@@ -3,6 +3,7 @@
 /.idea
 /data
 /src/__mockTests
+/coverage
 
 .env
 .env.*

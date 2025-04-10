@@ -19,7 +19,7 @@ import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { Level } from "../../models/Level";
 import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
 import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
-import { Question } from "../../models/Question.js";
+import { Question } from "../../models/Question";
 
 export class AssessmentRepository
   extends Repository
