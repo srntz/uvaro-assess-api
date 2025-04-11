@@ -1,9 +1,24 @@
-import { GraphQLError } from "graphql";
+import { GraphQLError, GraphQLErrorOptions } from "graphql";
+import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended";
 
 export class UnauthorizedError extends GraphQLError {
-  constructor() {
-    super("You are not authorized to access this resource", {
-      extensions: { code: "UNAUTHORIZED" },
-    });
+  constructor(message?: string, options?: GraphQLErrorOptions) {
+    if (message) {
+      super(message, {
+        ...options,
+        extensions: {
+          ...options.extensions,
+          code: ApolloServerErrorCodeExtended.BAD_REQUEST_WITH_MESSAGE,
+        },
+      });
+    } else {
+      super(null, {
+        ...options,
+        extensions: {
+          ...options.extensions,
+          code: ApolloServerErrorCodeExtended.BAD_REQUEST_WITH_MESSAGE,
+        },
+      });
+    }
   }
 }

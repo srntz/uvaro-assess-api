@@ -11,7 +11,6 @@ import {
   note,
 } from "../../db/schemas";
 import { and, eq, sql } from "drizzle-orm";
-import { GraphQLError } from "graphql";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";

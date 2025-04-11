@@ -1,4 +1,3 @@
-import { array, object, z } from "zod";
 import { IContext, IContextWithAuth } from "../../context/IContext";
 import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
@@ -14,40 +13,7 @@ import {
   getAssessmentByIdSchema,
   insertNoteSchema,
 } from "../../validation/schemas/AssessmentResolverSchemas";
-
-// query schemas
-const getUserAssessmentsSchema = z.object({
-  user_id: z
-    .string({
-      required_error: "User ID is required",
-      invalid_type_error: "User ID must be a string",
-    })
-    .min(1, "User ID cannot be empty"),
-});
-
-const insertAnswerSchema = z.object({
-  assessment_id: z
-    .number({
-      required_error: "Assessment ID is required",
-      invalid_type_error: "Assessment ID must be a number",
-    })
-    .int()
-    .positive("Assessment ID must be a positive integer"),
-  question_id: z
-    .number({
-      required_error: "Question ID is required",
-      invalid_type_error: "Question ID must be a number",
-    })
-    .int()
-    .positive("Question ID must be a positive integer"),
-  answer_id: z
-    .number({
-      required_error: "Answer ID is required",
-      invalid_type_error: "Answer ID must be a number",
-    })
-    .int()
-    .positive("Answer ID must be a positive integer"),
-});
+import { BadRequest } from "../../errors/errors/BadRequest";
 
 const assessmentResolvers = {
   Query: {
@@ -127,7 +93,7 @@ const assessmentResolvers = {
             }
 
             if (matchedAssessment.end_date_time) {
-              throw new GraphQLError("The assessment is already finished");
+              throw new BadRequest("The assessment is already finished");
             }
 
             const levels = await AssessmentService.endAssessment(
@@ -200,7 +166,7 @@ const assessmentResolvers = {
             }
 
             if (matchedAssessment.end_date_time) {
-              throw new GraphQLError("The assessment is already finished");
+              throw new BadRequest("The assessment is already finished");
             }
 
             return await AssessmentService.completeCategory(

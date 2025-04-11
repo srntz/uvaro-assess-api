@@ -22,6 +22,7 @@ import { mapAssessmentEntityToAssessmentResponseDTO } from "../../mappers/assess
 import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO";
 import { mapNoteEntityToNoteResponseDTO } from "../../mappers/note/mapNoteEntityToNoteResponseDTO";
 import { InternalServerError } from "../../errors/errors/InternalServerError";
+import { BadRequest } from "../../errors/errors/BadRequest";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
@@ -39,7 +40,7 @@ export class AssessmentService implements IAssessmentService {
       );
     } catch (error) {
       if (error.code === "23503") {
-        throw new GraphQLError("User does not exist");
+        throw new BadRequest("User does not exist");
       }
       throw new GraphQLError(error.message);
     }
@@ -51,9 +52,7 @@ export class AssessmentService implements IAssessmentService {
     const categories = await this.categoryRepository.getAll();
 
     if (assessmentLevels.length !== categories.length) {
-      throw new InternalServerError(
-        "All categories are required to be completed",
-      );
+      throw new BadRequest("All categories are required to be completed");
     }
 
     await this.assessmentRepository.endAssessment(assessmentId);
@@ -118,7 +117,7 @@ export class AssessmentService implements IAssessmentService {
     const inputAnswerIds = answers.map((item) => item.answerId);
 
     if (inputAnswerIds.length <= 0) {
-      throw new InternalServerError(
+      throw new BadRequest(
         "Please provide answers for all required questions of the specified category",
       );
     }
@@ -170,7 +169,7 @@ export class AssessmentService implements IAssessmentService {
         categoryId,
       );
     if (requiredQuestionIds.size <= 0) {
-      throw new GraphQLError(
+      throw new BadRequest(
         "The provided category is not available for level calculation",
       );
     }
@@ -183,7 +182,7 @@ export class AssessmentService implements IAssessmentService {
       requiredQuestionIds.intersection(answerIds).size !==
       requiredQuestionIds.size
     ) {
-      throw new GraphQLError(
+      throw new BadRequest(
         "Please provide answers for all required questions of the specified category",
       );
     }
@@ -252,7 +251,7 @@ export class AssessmentService implements IAssessmentService {
       );
 
     if (requiredQuestions.size <= 0) {
-      throw new GraphQLError(
+      throw new BadRequest(
         "The provided category is not available for level calculation",
       );
     }
@@ -266,7 +265,7 @@ export class AssessmentService implements IAssessmentService {
       new Set(processedAnswersMap.keys()).intersection(requiredQuestions)
         .size !== requiredQuestions.size
     ) {
-      throw new GraphQLError(
+      throw new BadRequest(
         "Please provide answers for all required questions of the specified category",
       );
     }

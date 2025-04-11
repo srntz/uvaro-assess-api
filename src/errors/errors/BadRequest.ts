@@ -1,7 +1,7 @@
 import { GraphQLError, GraphQLErrorOptions } from "graphql";
 import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended";
 
-export class InternalServerError extends GraphQLError {
+export class BadRequest extends GraphQLError {
   constructor(message?: string, options?: GraphQLErrorOptions) {
     if (message) {
       super(message, {

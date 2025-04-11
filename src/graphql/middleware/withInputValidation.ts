@@ -1,5 +1,6 @@
 import { GraphQLError } from "graphql/index";
 import z from "zod";
+import { BadRequest } from "../../errors/errors/BadRequest";
 
 export function withInputValidation<T>(
   schema: z.ZodSchema<T>,
@@ -11,9 +12,8 @@ export function withInputValidation<T>(
       return await next(parent, validatedArgs, context, info);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        throw new GraphQLError("Validation error", {
+        throw new BadRequest("Validation error", {
           extensions: {
-            code: "BAD_USER_INPUT",
             validationErrors: error.errors,
           },
         });
