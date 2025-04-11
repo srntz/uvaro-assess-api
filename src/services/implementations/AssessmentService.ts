@@ -21,6 +21,8 @@ import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDT
 import { mapAssessmentEntityToAssessmentResponseDTO } from "../../mappers/assessment/mapAssessmentEntityToAssessmentResponseDTO";
 import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO";
 import { mapNoteEntityToNoteResponseDTO } from "../../mappers/note/mapNoteEntityToNoteResponseDTO";
+import { InternalServerError } from "../../errors/errors/InternalServerError";
+import { BadRequest } from "../../errors/errors/BadRequest";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
@@ -32,9 +34,16 @@ export class AssessmentService implements IAssessmentService {
   ) {}
 
   async addAssessment(userId: string): Promise<AssessmentResponseDTO> {
-    return mapAssessmentEntityToAssessmentResponseDTO(
-      await this.assessmentRepository.addAssessment(userId),
-    );
+    try {
+      return mapAssessmentEntityToAssessmentResponseDTO(
+        await this.assessmentRepository.addAssessment(userId),
+      );
+    } catch (error) {
+      if (error.code === "23503") {
+        throw new BadRequest("User does not exist");
+      }
+      throw new GraphQLError(error.message);
+    }
   }
 
   async endAssessment(assessmentId: number): Promise<LevelResponseDTO[]> {
@@ -43,9 +52,7 @@ export class AssessmentService implements IAssessmentService {
     const categories = await this.categoryRepository.getAll();
 
     if (assessmentLevels.length !== categories.length) {
-      throw new GraphQLError(
-        "The assessment can't be finished because you haven't completed all categories",
-      );
+      throw new BadRequest("All categories are required to be completed");
     }
 
     await this.assessmentRepository.endAssessment(assessmentId);
@@ -99,54 +106,60 @@ export class AssessmentService implements IAssessmentService {
     );
   }
 
+  /**
+   * Takes an array of answers and returns a question-answer map with entries relevant only to the specified `categoryId`.
+   * @param answers Array of answers from input
+   */
+  private processInputAnswers = async (
+    answers: AnswerRequestDTO[],
+    categoryId: number,
+  ): Promise<Map<number, AnswerWithCategoryIdDTO>> => {
+    const inputAnswerIds = answers.map((item) => item.answerId);
+
+    if (inputAnswerIds.length <= 0) {
+      throw new BadRequest(
+        "Please provide answers for all required questions of the specified category",
+      );
+    }
+
+    const answersWithCategoryIdRaw =
+      await this.answerRepository.getAnswersWithCategoryIdsByIds(
+        inputAnswerIds,
+      );
+    const answersWithCategoryIdFilteredByCategoryId =
+      answersWithCategoryIdRaw.filter(
+        (item) => item.category_id === categoryId,
+      );
+    return this.removeDuplicateAnswers(
+      answersWithCategoryIdFilteredByCategoryId,
+    );
+  };
+
+  /**
+   * Reduces answers with duplicate `questionId` fields down to the last entry
+   * @param answers - Answer array to process
+   */
+  private removeDuplicateAnswers(
+    answers: AnswerWithCategoryIdDTO[],
+  ): Map<number, AnswerWithCategoryIdDTO> {
+    const map = new Map<number, AnswerWithCategoryIdDTO>();
+
+    answers.forEach((answer) => {
+      map.set(answer.question_id, answer);
+    });
+
+    return map;
+  }
+
   async completeCategory(
     categoryId: number,
     assessmentId: number,
     answers: AnswerRequestDTO[],
   ): Promise<LevelResponseDTO> {
-    /**
-     * Takes an array of answers and returns a question-answer map with entries relevant only to the specified `categoryId`.
-     * @param answers Array of answers from input
-     */
-    const processInputAnswers = async (
-      answers: AnswerRequestDTO[],
-    ): Promise<Map<number, AnswerWithCategoryIdDTO>> => {
-      const inputAnswerIds = answers.map((item) => item.answerId);
-
-      if (inputAnswerIds.length <= 0) {
-        throw new GraphQLError(
-          "Please provide answers for all required questions of the specified category",
-        );
-      }
-
-      const answersWithCategoryIdRaw =
-        await this.answerRepository.getAnswersWithCategoryIdsByIds(
-          inputAnswerIds,
-        );
-      const answersWithCategoryIdFilteredByCategoryId =
-        answersWithCategoryIdRaw.filter(
-          (item) => item.category_id === categoryId,
-        );
-      return removeDuplicateAnswers(answersWithCategoryIdFilteredByCategoryId);
-    };
-
-    /**
-     * Reduces answers with duplicate `questionId` fields down to the last entry
-     * @param answers - Answer array to process
-     */
-    function removeDuplicateAnswers(
-      answers: AnswerWithCategoryIdDTO[],
-    ): Map<number, AnswerWithCategoryIdDTO> {
-      const map = new Map<number, AnswerWithCategoryIdDTO>();
-
-      answers.forEach((answer) => {
-        map.set(answer.question_id, answer);
-      });
-
-      return map;
-    }
-
-    const processedAnswersMap = await processInputAnswers(answers);
+    const processedAnswersMap = await this.processInputAnswers(
+      answers,
+      categoryId,
+    );
 
     /**
      * Hashset of `questionIds` of questions required to be answered to be eligible for level calculation
@@ -156,7 +169,7 @@ export class AssessmentService implements IAssessmentService {
         categoryId,
       );
     if (requiredQuestionIds.size <= 0) {
-      throw new GraphQLError(
+      throw new BadRequest(
         "The provided category is not available for level calculation",
       );
     }
@@ -169,7 +182,7 @@ export class AssessmentService implements IAssessmentService {
       requiredQuestionIds.intersection(answerIds).size !==
       requiredQuestionIds.size
     ) {
-      throw new GraphQLError(
+      throw new BadRequest(
         "Please provide answers for all required questions of the specified category",
       );
     }
@@ -238,24 +251,28 @@ export class AssessmentService implements IAssessmentService {
       );
 
     if (requiredQuestions.size <= 0) {
-      throw new GraphQLError(
+      throw new BadRequest(
         "The provided category is not available for level calculation",
       );
     }
 
+    const processedAnswersMap = await this.processInputAnswers(
+      answers,
+      categoryId,
+    );
+
     if (
-      new Set(answers.map((answer) => answer.questionId)).intersection(
-        requiredQuestions,
-      ).size !== requiredQuestions.size
+      new Set(processedAnswersMap.keys()).intersection(requiredQuestions)
+        .size !== requiredQuestions.size
     ) {
-      throw new GraphQLError(
+      throw new BadRequest(
         "Please provide answers for all required questions of the specified category",
       );
     }
 
     const { answersWithWeightingsAndCoefficients, availableLevels } =
       await this.getDataForLevelCalculation(
-        answers.map((item) => item.answerId),
+        Array.from(processedAnswersMap.values()).map((item) => item.answer_id),
         categoryId,
       );
 

@@ -5,6 +5,15 @@ import { GraphQLError } from "graphql";
 import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired";
 import { withUserAssessments } from "../middleware/withUserAssessments";
 import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
+import { withInputValidation } from "../middleware/withInputValidation";
+import {
+  calculateLevelSchema,
+  completeCategorySchema,
+  endAssessmentSchema,
+  getAssessmentByIdSchema,
+  insertNoteSchema,
+} from "../../validation/schemas/AssessmentResolverSchemas";
+import { BadRequest } from "../../errors/errors/BadRequest";
 
 const assessmentResolvers = {
   Query: {
@@ -21,28 +30,34 @@ const assessmentResolvers = {
     ),
 
     getAssessmentById: withAuthenticationRequired(
-      async (
-        _,
-        args,
-        { AssessmentService, AuthenticatedUser }: IContextWithAuth,
-      ) => {
-        if (AuthenticatedUser.userId === null) {
-          throw new UnauthorizedError();
-        }
-        return await AssessmentService.getAssessmentById(args.id);
-      },
+      withInputValidation(
+        getAssessmentByIdSchema,
+        async (
+          _,
+          args,
+          { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+        ) => {
+          if (AuthenticatedUser.userId === null) {
+            throw new UnauthorizedError();
+          }
+          return await AssessmentService.getAssessmentById(args.id);
+        },
+      ),
     ),
 
-    calculateLevel: async (
-      _,
-      {
-        categoryId,
-        answers,
-      }: { categoryId: number; answers: AnswerRequestDTO[] },
-      { AssessmentService }: IContext,
-    ) => {
-      return await AssessmentService.calculateLevel(answers, categoryId);
-    },
+    calculateLevel: withInputValidation(
+      calculateLevelSchema,
+      async (
+        _,
+        {
+          categoryId,
+          answers,
+        }: { categoryId: number; answers: AnswerRequestDTO[] },
+        { AssessmentService }: IContext,
+      ) => {
+        return await AssessmentService.calculateLevel(answers, categoryId);
+      },
+    ),
   },
 
   Mutation: {
@@ -57,87 +72,110 @@ const assessmentResolvers = {
     ),
 
     endAssessment: withAuthenticationRequired(
-      withUserAssessments(
-        async (
-          _,
-          args,
-          {
-            AssessmentService,
-            AuthenticatedUser,
-            NotificationService,
-          }: IContextWithAuth,
-        ) => {
-          const matchedAssessment = AuthenticatedUser.assessments.find(
-            (item) => item.assessment_id === args.assessmentId,
-          );
-
-          if (!matchedAssessment) {
-            throw new UnauthorizedError();
-          }
-
-          if (matchedAssessment.end_date_time) {
-            throw new GraphQLError("The assessment is already finished");
-          }
-
-          const levels = await AssessmentService.endAssessment(
-            args.assessmentId,
-          );
-
-          if (process.env.ENABLE_SLACK_NOTIFICATIONS === "true") {
-            NotificationService.send(
-              args.assessmentId,
-              AuthenticatedUser.userId,
+      withInputValidation(
+        endAssessmentSchema,
+        withUserAssessments(
+          async (
+            _,
+            args,
+            {
+              AssessmentService,
+              AuthenticatedUser,
+              NotificationService,
+            }: IContextWithAuth,
+          ) => {
+            const matchedAssessment = AuthenticatedUser.assessments.find(
+              (item) => item.assessment_id === args.assessmentId,
             );
-          }
 
-          return levels;
-        },
+            if (!matchedAssessment) {
+              throw new UnauthorizedError();
+            }
+
+            if (matchedAssessment.end_date_time) {
+              throw new BadRequest("The assessment is already finished");
+            }
+
+            const levels = await AssessmentService.endAssessment(
+              args.assessmentId,
+            );
+
+            if (process.env.ENABLE_SLACK_NOTIFICATIONS === "true") {
+              NotificationService.send(
+                args.assessmentId,
+                AuthenticatedUser.userId,
+              );
+            }
+
+            return levels;
+          },
+        ),
       ),
     ),
 
     insertNote: withAuthenticationRequired(
-      async (_, args, { AssessmentService }: IContextWithAuth) => {
-        return await AssessmentService.insertNote(
-          args.assessmentId,
-          args.categoryId,
-          args.noteText,
-        );
-      },
+      withInputValidation(
+        insertNoteSchema,
+        withUserAssessments(
+          async (
+            _,
+            args,
+            { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+          ) => {
+            if (
+              !AuthenticatedUser.assessments.find(
+                (item) => item.assessment_id === args.assessmentId,
+              )
+            ) {
+              throw new UnauthorizedError();
+            }
+
+            return await AssessmentService.insertNote(
+              args.assessmentId,
+              args.categoryId,
+              args.noteText,
+            );
+          },
+        ),
+      ),
     ),
 
     completeCategory: withAuthenticationRequired(
-      withUserAssessments(
-        async (
-          _,
-          {
-            categoryId,
-            assessmentId,
-            answers,
-          }: {
-            categoryId: number;
-            assessmentId: number;
-            answers: AnswerRequestDTO[];
+      withInputValidation(
+        completeCategorySchema,
+        withUserAssessments(
+          async (
+            _,
+            {
+              categoryId,
+              assessmentId,
+              answers,
+            }: {
+              categoryId: number;
+              assessmentId: number;
+              answers: AnswerRequestDTO[];
+            },
+            { AssessmentService, AuthenticatedUser }: IContextWithAuth,
+          ) => {
+            const matchedAssessment = AuthenticatedUser.assessments.find(
+              (item) => item.assessment_id === assessmentId,
+            );
+
+            if (matchedAssessment === undefined) {
+              throw new UnauthorizedError();
+            }
+
+            if (matchedAssessment.end_date_time) {
+              throw new BadRequest("The assessment is already finished");
+            }
+
+            return await AssessmentService.completeCategory(
+              categoryId,
+              assessmentId,
+              answers,
+            );
           },
-          { AssessmentService, AuthenticatedUser }: IContextWithAuth,
-        ) => {
-          const matchedAssessment = AuthenticatedUser.assessments.find(
-            (item) => item.assessment_id === assessmentId,
-          );
-
-          if (matchedAssessment === undefined) {
-            throw new UnauthorizedError();
-          }
-
-          if (matchedAssessment.end_date_time) {
-            throw new GraphQLError("The assessment is already finished");
-          }
-
-          return await AssessmentService.completeCategory(
-            categoryId,
-            assessmentId,
-            answers,
-          );
-        },
+        ),
       ),
     ),
   },

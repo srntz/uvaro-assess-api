@@ -11,7 +11,6 @@ import {
   note,
 } from "../../db/schemas";
 import { and, eq, sql } from "drizzle-orm";
-import { GraphQLError } from "graphql";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";
@@ -30,18 +29,11 @@ export class AssessmentRepository
   }
 
   async addAssessment(userId: string): Promise<Assessment> {
-    try {
-      const data: (typeof assessment.$inferSelect)[] = await this.db
-        .insert(assessment)
-        .values({ user_id: userId })
-        .returning();
-      return Assessment.init(data[0]);
-    } catch (error) {
-      if (error.code === "23503") {
-        throw new GraphQLError("User with the specified does not exist");
-      }
-      throw new GraphQLError(error.message);
-    }
+    const data: (typeof assessment.$inferSelect)[] = await this.db
+      .insert(assessment)
+      .values({ user_id: userId })
+      .returning();
+    return Assessment.init(data[0]);
   }
 
   async getAssessmentById(assessmentId: number): Promise<Assessment> {
