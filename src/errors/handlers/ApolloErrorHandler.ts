@@ -20,6 +20,7 @@ export class ApolloErrorHandler {
 
     const responseSafeError = mapApolloServerErrorToResponseSafeError(
       formattedError.extensions.code as ApolloServerErrorCodeExtended,
+      formattedError.message,
     );
 
     this.message(responseSafeError.message)

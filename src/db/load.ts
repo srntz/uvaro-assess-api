@@ -1067,7 +1067,7 @@ async function insertWeighting(data: typeof weighting.$inferInsert) {
   await db.insert(weighting).values(data);
 }
 
-async function main() {
+export async function main() {
   console.log("Truncating tables...");
   await truncateAll();
 
