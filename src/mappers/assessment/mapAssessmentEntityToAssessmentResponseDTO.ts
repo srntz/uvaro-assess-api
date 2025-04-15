@@ -4,6 +4,10 @@ import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDT
 export function mapAssessmentEntityToAssessmentResponseDTO(
   assessment: Assessment,
 ): AssessmentResponseDTO {
+  if (!assessment) {
+    return null;
+  }
+
   return new AssessmentResponseDTO(
     assessment.assessment_id,
     assessment.start_date_time,
