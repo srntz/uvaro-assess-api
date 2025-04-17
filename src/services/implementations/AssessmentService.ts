@@ -11,7 +11,6 @@ import { LevelResponseDTO } from "../../dto/level/LevelResponseDTO";
 import { mapLevelWithWeightingDTOToLevelResponseDTO } from "../../mappers/level/mapLevelWithWeightingDTOToLevelResponseDTO";
 import { AnswerWithCategoryIdDTO } from "../../dto/answer/AnswerWithCategoryIdDTO";
 import { IQuestionRepository } from "../../repositories/interfaces/IQuestionRepository";
-import { GraphQLError } from "graphql";
 import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
 import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
 import { mapLevelEntityToLevelResponseDTO } from "../../mappers/level/mapLevelEntityToLevelResponseDTO";
@@ -41,9 +40,10 @@ export class AssessmentService implements IAssessmentService {
       );
     } catch (error) {
       if (error.code === "23503") {
-        throw new BadRequest("User does not exist");
+        throw new BadRequest("The user does not exist");
       }
-      throw new GraphQLError(error.message);
+
+      throw error;
     }
   }
 
@@ -103,9 +103,19 @@ export class AssessmentService implements IAssessmentService {
     text: string,
   ): Promise<NoteResponseDTO> {
     const note = new Note(text, assessmentId, categoryId);
-    return mapNoteEntityToNoteResponseDTO(
-      await this.assessmentRepository.insertNote(note),
-    );
+    try {
+      return mapNoteEntityToNoteResponseDTO(
+        await this.assessmentRepository.insertNote(note),
+      );
+    } catch (err) {
+      if (err.code === "23503") {
+        throw new BadRequest(
+          "The specified assessment or category does not exist",
+        );
+      }
+
+      throw err;
+    }
   }
 
   /**

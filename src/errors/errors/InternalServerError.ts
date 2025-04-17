@@ -3,28 +3,35 @@ import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExt
 
 export class InternalServerError extends GraphQLError {
   constructor(message?: string, options?: GraphQLErrorOptions) {
+    const errorOptions = {
+      ...(options || {}),
+      extensions: {
+        ...(() => {
+          if (
+            options &&
+            Object.prototype.hasOwnProperty.call(options, "extensions")
+          ) {
+            return options.extensions;
+          }
+          return {};
+        })(),
+      },
+    };
+
     if (message) {
       super(message, {
-        ...(options || {}),
+        ...errorOptions,
         extensions: {
-          ...(() => {
-            if (
-              options &&
-              Object.prototype.hasOwnProperty.call(options, "extensions")
-            ) {
-              return options.extensions;
-            }
-            return {};
-          })(),
-          code: ApolloServerErrorCodeExtended.BAD_REQUEST_WITH_MESSAGE,
+          ...errorOptions.extensions,
+          code: ApolloServerErrorCodeExtended.INTERNAL_SERVER_ERROR_WITH_MESSAGE,
         },
       });
     } else {
       super(null, {
-        ...options,
+        ...errorOptions,
         extensions: {
-          ...options.extensions,
-          code: ApolloServerErrorCodeExtended.BAD_REQUEST_WITH_MESSAGE,
+          ...errorOptions.extensions,
+          code: ApolloServerErrorCodeExtended.INTERNAL_SERVER_ERROR,
         },
       });
     }
