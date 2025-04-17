@@ -21,7 +21,6 @@ import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDT
 import { mapAssessmentEntityToAssessmentResponseDTO } from "../../mappers/assessment/mapAssessmentEntityToAssessmentResponseDTO";
 import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO";
 import { mapNoteEntityToNoteResponseDTO } from "../../mappers/note/mapNoteEntityToNoteResponseDTO";
-import { InternalServerError } from "../../errors/errors/InternalServerError";
 import { BadRequest } from "../../errors/errors/BadRequest";
 
 export class AssessmentService implements IAssessmentService {
@@ -35,6 +34,8 @@ export class AssessmentService implements IAssessmentService {
 
   async addAssessment(userId: string): Promise<AssessmentResponseDTO> {
     try {
+      await this.assessmentRepository.deletePendingAssessments(userId);
+
       return mapAssessmentEntityToAssessmentResponseDTO(
         await this.assessmentRepository.addAssessment(userId),
       );
@@ -56,6 +57,7 @@ export class AssessmentService implements IAssessmentService {
     }
 
     await this.assessmentRepository.endAssessment(assessmentId);
+
     return assessmentLevels.map((level) =>
       mapLevelEntityToLevelResponseDTO(level),
     );
@@ -353,6 +355,9 @@ export class AssessmentService implements IAssessmentService {
     const availableLevels =
       await this.levelRepository.getLevelsWithWeightingByCategoryId(categoryId);
 
-    return { answersWithWeightingsAndCoefficients, availableLevels };
+    return {
+      answersWithWeightingsAndCoefficients,
+      availableLevels,
+    };
   }
 }

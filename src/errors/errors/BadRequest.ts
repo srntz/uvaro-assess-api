@@ -5,9 +5,17 @@ export class BadRequest extends GraphQLError {
   constructor(message?: string, options?: GraphQLErrorOptions) {
     if (message) {
       super(message, {
-        ...options,
+        ...(options || {}),
         extensions: {
-          ...options.extensions,
+          ...(() => {
+            if (
+              options &&
+              Object.prototype.hasOwnProperty.call(options, "extensions")
+            ) {
+              return options.extensions;
+            }
+            return {};
+          })(),
           code: ApolloServerErrorCodeExtended.BAD_REQUEST_WITH_MESSAGE,
         },
       });

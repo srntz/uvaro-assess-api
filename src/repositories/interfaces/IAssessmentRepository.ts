@@ -12,6 +12,7 @@ export interface IAssessmentRepository {
   getAssessmentById(assessmentId: number): Promise<Assessment>;
   getUserAssessments(userId: string): Promise<Assessment[]>;
   addAssessment(userId: string): Promise<Assessment>;
+  deletePendingAssessments(userId: string): Promise<Assessment[]>
   endAssessment(assessmentId: number): Promise<Assessment>;
   getAssessmentAnswers(assessmentId: number): Promise<Answer[]>;
   getAssessmentAnswerQuestionPairs(
