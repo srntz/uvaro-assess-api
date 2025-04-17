@@ -7,3 +7,4 @@ export * from "./note";
 export * from "./level";
 export * from "./question";
 export * from "./user";
+export * from "./weighting";
