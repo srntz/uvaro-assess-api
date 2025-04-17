@@ -31,7 +31,7 @@ export class AssessmentService implements IAssessmentService {
     private readonly categoryRepository: ICategoryRepository,
     private readonly answerRepository: IAnswerRepository,
     private readonly questionRepository: IQuestionRepository,
-  ) {}
+  ) { }
 
   async addAssessment(userId: string): Promise<AssessmentResponseDTO> {
     try {

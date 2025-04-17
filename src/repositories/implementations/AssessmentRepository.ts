@@ -22,8 +22,7 @@ import { Question } from "../../models/Question";
 
 export class AssessmentRepository
   extends Repository
-  implements IAssessmentRepository
-{
+  implements IAssessmentRepository {
   constructor() {
     super();
   }
@@ -34,6 +33,17 @@ export class AssessmentRepository
       .values({ user_id: userId })
       .returning();
     return Assessment.init(data[0]);
+  }
+
+  async deletePendingAssessments(userId: string): Promise<Assessment[]> {
+    const deletedAssessments: Assessment[] = []
+    const data: (typeof assessment.$inferSelect)[] = await this.db.delete(assessment).where(and(eq(assessment.user_id, userId), eq(assessment.end_date_time, null))).returning()
+
+    data.forEach(item => {
+      deletedAssessments.push(Assessment.init(item))
+    })
+
+    return deletedAssessments
   }
 
   async getAssessmentById(assessmentId: number): Promise<Assessment> {
