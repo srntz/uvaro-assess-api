@@ -10,7 +10,7 @@ import {
   question,
   note,
 } from "../../db/schemas";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import { Answer } from "../../models/Answer";
 import { Note } from "../../models/Note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";
@@ -34,6 +34,22 @@ export class AssessmentRepository
       .values({ user_id: userId })
       .returning();
     return Assessment.init(data[0]);
+  }
+
+  async deletePendingAssessments(userId: string): Promise<Assessment[]> {
+    const deletedAssessments: Assessment[] = [];
+    const data: (typeof assessment.$inferSelect)[] = await this.db
+      .delete(assessment)
+      .where(
+        and(eq(assessment.user_id, userId), isNull(assessment.end_date_time)),
+      )
+      .returning();
+
+    data.forEach((item) => {
+      deletedAssessments.push(Assessment.init(item));
+    });
+
+    return deletedAssessments;
   }
 
   async getAssessmentById(assessmentId: number): Promise<Assessment> {
@@ -199,7 +215,9 @@ export class AssessmentRepository
       )
       .onConflictDoUpdate({
         target: [assessmentAnswer.assessment_id, assessmentAnswer.question_id],
-        set: { answer_id: sql`excluded.answer_id` },
+        set: {
+          answer_id: sql`excluded.answer_id`,
+        },
       })
       .returning();
 
