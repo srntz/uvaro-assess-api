@@ -8,10 +8,14 @@ export class AssessmentLevel {
   ) {}
 
   static init(data: typeof assessmentLevel.$inferSelect) {
-    return new AssessmentLevel(
-      data.assessment_id,
-      data.category_id,
-      data.level_id,
-    );
+    try {
+      return new AssessmentLevel(
+        data.assessment_id,
+        data.category_id,
+        data.level_id,
+      );
+    } catch {
+      return null;
+    }
   }
 }

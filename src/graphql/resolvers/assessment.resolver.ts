@@ -100,10 +100,11 @@ const assessmentResolvers = {
             );
 
             if (process.env.ENABLE_SLACK_NOTIFICATIONS === "true") {
-              NotificationService.send(
+              const builder = await NotificationService.build(
                 args.assessmentId,
                 AuthenticatedUser.userId,
               );
+              NotificationService.send(builder);
             }
 
             return levels;
