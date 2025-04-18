@@ -65,7 +65,7 @@ export class AssessmentService implements IAssessmentService {
 
   async getAssessmentById(
     assessmentId: number,
-  ): Promise<AssessmentResponseDTO> {
+  ): Promise<AssessmentResponseDTO | null> {
     return mapAssessmentEntityToAssessmentResponseDTO(
       await this.assessmentRepository.getAssessmentById(assessmentId),
     );
@@ -119,37 +119,9 @@ export class AssessmentService implements IAssessmentService {
   }
 
   /**
-   * Takes an array of answers and returns a question-answer map with entries relevant only to the specified `categoryId`.
-   * @param answers Array of answers from input
-   */
-  private processInputAnswers = async (
-    answers: AnswerRequestDTO[],
-    categoryId: number,
-  ): Promise<Map<number, AnswerWithCategoryIdDTO>> => {
-    const inputAnswerIds = answers.map((item) => item.answerId);
-
-    if (inputAnswerIds.length <= 0) {
-      throw new BadRequest(
-        "Please provide answers for all required questions of the specified category",
-      );
-    }
-
-    const answersWithCategoryIdRaw =
-      await this.answerRepository.getAnswersWithCategoryIdsByIds(
-        inputAnswerIds,
-      );
-    const answersWithCategoryIdFilteredByCategoryId =
-      answersWithCategoryIdRaw.filter(
-        (item) => item.category_id === categoryId,
-      );
-    return this.removeDuplicateAnswers(
-      answersWithCategoryIdFilteredByCategoryId,
-    );
-  };
-
-  /**
    * Reduces answers with duplicate `questionId` fields down to the last entry
    * @param answers - Answer array to process
+   * @returns ```Map<number, AnswerWithCategoryIdDTO>``` where keys store question ids
    */
   private removeDuplicateAnswers(
     answers: AnswerWithCategoryIdDTO[],
@@ -163,19 +135,42 @@ export class AssessmentService implements IAssessmentService {
     return map;
   }
 
+  /**
+   * Takes an array of answers and returns a question-answer map with entries relevant only to the specified `categoryId`.
+   * @param answers Array of answers from input
+   * @returns ```Promise<AnswerWithCategoryIdDTO>```
+   */
+  private filterInputAnswersByCategory = async (
+    answers: AnswerRequestDTO[],
+    categoryId: number,
+  ): Promise<AnswerWithCategoryIdDTO[]> => {
+    const inputAnswerIds = answers.map((item) => item.answerId);
+
+    if (inputAnswerIds.length <= 0) {
+      throw new BadRequest(
+        "Please provide answers for all required questions of the specified category",
+      );
+    }
+
+    // Array of input answers with injected category ids
+    const answersWithCategoryIdRaw =
+      await this.answerRepository.getAnswersWithCategoryIdsByIds(
+        inputAnswerIds,
+      );
+
+    const answersWithCategoryIdFilteredByCategoryId =
+      answersWithCategoryIdRaw.filter(
+        (item) => item.category_id === categoryId,
+      );
+
+    return answersWithCategoryIdFilteredByCategoryId;
+  };
+
   async completeCategory(
     categoryId: number,
     assessmentId: number,
     answers: AnswerRequestDTO[],
   ): Promise<LevelResponseDTO> {
-    const processedAnswersMap = await this.processInputAnswers(
-      answers,
-      categoryId,
-    );
-
-    /**
-     * Hashset of `questionIds` of questions required to be answered to be eligible for level calculation
-     */
     const requiredQuestionIds =
       await this.questionRepository.getRequiredQuestionIdsByCategory(
         categoryId,
@@ -186,8 +181,13 @@ export class AssessmentService implements IAssessmentService {
       );
     }
 
+    const processedAnswersMap = this.removeDuplicateAnswers(
+      await this.filterInputAnswersByCategory(answers, categoryId),
+    );
+
     /**
-     * Hashset of `answerIds` of answers processed from input in previous steps
+     *  Hashset intersection checks if all required questions are answered
+     *  (if intersection size eqals the number of required questions, all required questions are answered)
      */
     const answerIds = new Set(processedAnswersMap.keys());
     if (
@@ -199,9 +199,6 @@ export class AssessmentService implements IAssessmentService {
       );
     }
 
-    /**
-     * Insert answers into the assessment_answer table
-     */
     const insertedAnswers =
       await this.assessmentRepository.insertAnswersInBatch(
         processedAnswersMap
@@ -217,6 +214,9 @@ export class AssessmentService implements IAssessmentService {
           ),
       );
 
+    /**
+     * Get data required for level calculation
+     */
     const { answersWithWeightingsAndCoefficients, availableLevels } =
       await this.getDataForLevelCalculation(
         insertedAnswers.map((item) => item.answer_id),
@@ -232,9 +232,6 @@ export class AssessmentService implements IAssessmentService {
       ),
     );
 
-    /**
-     * Insert the chosen level into the assessment_level table
-     */
     await this.assessmentRepository.insertLevel(
       new AssessmentLevel(
         assessmentId,
@@ -268,9 +265,8 @@ export class AssessmentService implements IAssessmentService {
       );
     }
 
-    const processedAnswersMap = await this.processInputAnswers(
-      answers,
-      categoryId,
+    const processedAnswersMap = this.removeDuplicateAnswers(
+      await this.filterInputAnswersByCategory(answers, categoryId),
     );
 
     if (
@@ -300,14 +296,21 @@ export class AssessmentService implements IAssessmentService {
     );
   }
 
+  /**
+   * Performs normalization and level calculation
+   * @param answers
+   * @param levels
+   * @param totalCoefficient the sum of coefficients of all relevant questions
+   * @returns ```LevelWithWeightingDTO``` calculated level
+   */
   private determineLevel(
     answers: AnswerWithWeightingAndCoefficientDTO[],
     levels: LevelWithWeightingDTO[],
     totalCoefficient: number,
   ): LevelWithWeightingDTO {
     /**
-     *
-     * @param answer Answer to process
+     * Calculates the normalized weighting percentage and the actual weighting of the answer
+     * @param answer
      */
     function normalizeAndProcessAnswer(
       answer: AnswerWithWeightingAndCoefficientDTO,
@@ -320,7 +323,7 @@ export class AssessmentService implements IAssessmentService {
     }
 
     /*
-    The percentage of level score needed to be reached in order for the level to be assigned
+    The percentage of level score needed to be reached in order for the level to be picked
     */
     const MARGIN_OF_ERROR = 0.95;
 
@@ -332,11 +335,14 @@ export class AssessmentService implements IAssessmentService {
       normalizeAndProcessAnswer(answer);
     });
 
+    /*
+     * Clean potential inaccuracies introduced by float multiplication
+     */
     totalWeighting = totalWeighting / totalNormalizedPercentage;
 
     /*
-      Iterate the levels and choose the closest level with required score <= total weighting
-     */
+      Determine the appropriate level based on the total weighting  
+    */
     for (let i = 0; i < levels.length; i++) {
       if (totalWeighting < levels[i].weighting * MARGIN_OF_ERROR) {
         chosenLevel = levels[i - 1];
@@ -351,6 +357,12 @@ export class AssessmentService implements IAssessmentService {
     return chosenLevel;
   }
 
+  /**
+   * Retrieve assessment answers and available levels for level calculation in the required format
+   * @param categoryId
+   * @param answerIds
+   * @returns object with answers and availableLevels
+   */
   private async getDataForLevelCalculation(
     answerIds: number[],
     categoryId: number,
