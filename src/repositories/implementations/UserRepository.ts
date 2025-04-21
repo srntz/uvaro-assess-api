@@ -10,7 +10,7 @@ export class UserRepository extends Repository implements IUserRepository {
     super();
   }
 
-  async getById(userId: string): Promise<typeof userTable.$inferSelect> {
+  async getById(userId: string): Promise<User> {
     const data: (typeof userTable.$inferSelect)[] = await this.db
       .select()
       .from(userTable)
@@ -19,9 +19,7 @@ export class UserRepository extends Repository implements IUserRepository {
     return data[0];
   }
 
-  async updateUser(
-    user: UserUpdateDTO,
-  ): Promise<typeof userTable.$inferSelect> {
+  async updateUser(userId: string, user: UserUpdateDTO): Promise<User> {
     const data: (typeof userTable.$inferSelect)[] = await this.db
       .update(userTable)
       .set({
@@ -29,7 +27,7 @@ export class UserRepository extends Repository implements IUserRepository {
         last_name: user.lastName,
         email: user.email,
       })
-      .where(eq(userTable.user_id, user.id))
+      .where(eq(userTable.user_id, userId))
       .returning();
 
     return data[0];

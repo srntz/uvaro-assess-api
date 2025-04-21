@@ -64,6 +64,10 @@ export class AnswerRepository extends Repository implements IAnswerRepository {
   ): Promise<AnswerWithWeightingAndCoefficientDTO[]> {
     const answers: AnswerWithWeightingAndCoefficientDTO[] = [];
 
+    if (answerIds.length === 0) {
+      return answers;
+    }
+
     const data: {
       answer: typeof answer.$inferSelect;
       question: typeof question.$inferSelect;

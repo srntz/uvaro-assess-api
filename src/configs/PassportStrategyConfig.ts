@@ -60,13 +60,12 @@ export class PassportStrategyConfig {
       dbUser = await userRepository.insertUser(user);
     } else {
       const user = new UserUpdateDTO(
-        userAttributes.id,
         userAttributes.firstName,
         userAttributes.lastName,
         userAttributes.email,
       );
 
-      dbUser = await userRepository.updateUser(user);
+      dbUser = await userRepository.updateUser(userAttributes.id, user);
     }
 
     const jwt = new JWTManager();
