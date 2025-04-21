@@ -13,6 +13,15 @@ import dotenv from "dotenv";
 import { EnvironmentLoader } from "../utils/environmentLoader/EnvironmentLoader";
 import { weighting } from "./schemas/weighting";
 
+/*
+ * This script is used for local development. It fills the postgres container with static assessment data (categories. questions, etc.).
+ *
+ * It can be executed manually with "npm run load".
+ * The database must contain all required tables with the correct schemas before this script can be properly executed.
+ *
+ * NOTE: This script should NOT be used in production
+ */
+
 dotenv.config({
   path: `.env.${EnvironmentLoader.load(["--mode:development"])}`,
 });

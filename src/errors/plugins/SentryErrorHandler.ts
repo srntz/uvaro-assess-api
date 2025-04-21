@@ -1,6 +1,11 @@
 import { ApolloServerPlugin } from "@apollo/server";
 import * as Sentry from "@sentry/node";
 
+/**
+ * This plugin catches internal errors and sends raw error data to Sentry.
+ *
+ * Errors will not get sent if an operation has not been initialized since such errors are not related to internal API functionality
+ */
 export const sentryErrorHandler: ApolloServerPlugin = {
   async requestDidStart() {
     return {

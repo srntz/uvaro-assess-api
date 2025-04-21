@@ -1,6 +1,11 @@
 import { GraphQLError, GraphQLErrorOptions } from "graphql";
 import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended";
 
+/**
+ * An extension of GraphQLError that corresponds to the HTTP Unauthorized (401) error.
+ *
+ * NOTE: This error must be thrown instead of the generic GraphQLError where applicable.
+ */
 export class UnauthorizedError extends GraphQLError {
   constructor(message?: string, options?: GraphQLErrorOptions) {
     const errorOptions = {

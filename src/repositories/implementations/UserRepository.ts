@@ -3,7 +3,7 @@ import { IUserRepository } from "../interfaces/IUserRepository";
 import { User } from "../../models/User";
 import { user as userTable } from "../../db/schemas";
 import { eq } from "drizzle-orm";
-import { UserUpdateDTO } from "../../dto/UserUpdateDTO";
+import { UserUpdateDTO } from "../../dto/user/UserUpdateDTO";
 
 export class UserRepository extends Repository implements IUserRepository {
   constructor() {

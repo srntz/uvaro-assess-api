@@ -1,5 +1,5 @@
 import { User } from "../../models/User";
-import { UserUpdateDTO } from "../../dto/UserUpdateDTO";
+import { UserUpdateDTO } from "../../dto/user/UserUpdateDTO";
 
 export interface IUserRepository {
   /**

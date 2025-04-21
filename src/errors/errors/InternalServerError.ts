@@ -1,6 +1,11 @@
 import { GraphQLError, GraphQLErrorOptions } from "graphql";
 import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended";
 
+/**
+ * An extension of GraphQLError that corresponds to HTTP InternalServerError (500).
+ *
+ * NOTE: This error must be thrown instead of the generic GraphQLError where applicable.
+ */
 export class InternalServerError extends GraphQLError {
   constructor(message?: string, options?: GraphQLErrorOptions) {
     const errorOptions = {

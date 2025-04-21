@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy, VerifyWithRequest } from "@node-saml/passport-saml";
 import { UserRepository } from "../repositories/implementations/UserRepository";
 import { User } from "../models/User";
-import { UserUpdateDTO } from "../dto/UserUpdateDTO";
+import { UserUpdateDTO } from "../dto/user/UserUpdateDTO";
 import { JWTManager } from "../utils/jwt/JWTManager";
 
 // NOTE: The structure of data inside JWT tokens is defined here
