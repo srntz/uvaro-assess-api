@@ -1,6 +1,5 @@
 import { IAssessmentService } from "../interfaces/IAssessmentService";
 import { IAssessmentRepository } from "../../repositories/interfaces/IAssessmentRepository";
-import { Note } from "../../models/Note";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { ILevelRepository } from "../../repositories/interfaces/ILevelRepository";
 import { AnswerWithWeightingAndCoefficientDTO } from "../../dto/answer/AnswerWithWeightingAndCoefficientDTO";
@@ -21,6 +20,7 @@ import { mapAssessmentEntityToAssessmentResponseDTO } from "../../mappers/assess
 import { NoteResponseDTO } from "../../dto/note/NoteResponseDTO";
 import { mapNoteEntityToNoteResponseDTO } from "../../mappers/note/mapNoteEntityToNoteResponseDTO";
 import { BadRequest } from "../../errors/errors/BadRequest";
+import { NoteInsertDTO } from "../../dto/note/NoteInsertDTO";
 
 export class AssessmentService implements IAssessmentService {
   constructor(
@@ -102,10 +102,14 @@ export class AssessmentService implements IAssessmentService {
     categoryId: number,
     text: string,
   ): Promise<NoteResponseDTO> {
-    const note = new Note(text, assessmentId, categoryId);
+    const note = new NoteInsertDTO(text);
     try {
       return mapNoteEntityToNoteResponseDTO(
-        await this.assessmentRepository.insertNote(note),
+        await this.assessmentRepository.insertNote(
+          assessmentId,
+          categoryId,
+          note,
+        ),
       );
     } catch (err) {
       if (err.code === "23503") {
