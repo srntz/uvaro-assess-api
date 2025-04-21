@@ -1,8 +1,20 @@
 import jwt from "jsonwebtoken";
 import * as fs from "node:fs";
 
+/**
+ * Structure of token payload
+ */
+export interface IToken {
+  user_id: string;
+  email: string;
+}
+
+/**
+ * This class is an abstraction on top of jwt that ensures clear typing of token payloads
+ * and the usage of correct cerfiticates.
+ */
 export class JWTManager {
-  sign(payload: object, expiresIn: string | number) {
+  sign(payload: IToken, expiresIn: string | number) {
     return jwt.sign(
       payload,
       fs.readFileSync("./jwt_private_key.pem", "utf-8"),
@@ -13,7 +25,10 @@ export class JWTManager {
     );
   }
 
-  verify(token: string) {
+  verify(token: string): {
+    payload: IToken;
+    expired: boolean;
+  } {
     try {
       const payload = jwt.verify(
         token,

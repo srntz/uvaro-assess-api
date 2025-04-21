@@ -3,8 +3,18 @@ import { Strategy, VerifyWithRequest } from "@node-saml/passport-saml";
 import { UserRepository } from "../repositories/implementations/UserRepository";
 import { User } from "../models/User";
 import { UserUpdateDTO } from "../dto/UserUpdateDTO";
-import { JWTManager } from "../utils/JWTManager";
+import { JWTManager } from "../utils/jwt/JWTManager";
 
+// NOTE: The structure of data inside JWT tokens is defined here
+
+/**
+ * This class is responsible for configuring passport-saml to work with the Auth0 IdP server.
+ * Alongside configuration, it implements initial assertion receivers that validate and transform
+ * assertion data before passing it to ACS (assertion consumer service) or SLS (single logout service).
+ *
+ * The static configure() method should be called before server spins up to prepare passport for interacting with the remote IdP.
+ * Authentication WILL NOT work if the strategy is not configured.
+ */
 export class PassportStrategyConfig {
   private static samlStrategy;
 

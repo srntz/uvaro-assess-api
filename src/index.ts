@@ -24,7 +24,7 @@ Sentry.init({
 
 const app = express();
 
-let context = ContextBuilder.Build();
+let context = ContextBuilder.build();
 
 const server = new ApolloServer({
   schema,
@@ -65,7 +65,7 @@ app.use("/", AuthRouter);
 app.use(
   "/graphql",
   (req, res, next) => {
-    context = ContextBuilder.ParseTokens(req, res, context);
+    context = ContextBuilder.injectAuthenticatedUser(req, res, context);
     next();
   },
   expressMiddleware(server, {
