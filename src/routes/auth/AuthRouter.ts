@@ -106,11 +106,15 @@ AuthRouter.post(
     res.cookie("accessToken", req.user["accessToken"], {
       maxAge: 120000,
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
     });
 
     res.cookie("refreshToken", req.user["refreshToken"], {
       maxAge: 86400000,
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
     });
 
     if (req.cookies.referer) {
@@ -123,7 +127,7 @@ AuthRouter.post(
   },
 );
 
-/**
+/*
  * The Single Logout Service of the SAML flow.
  * It resets cookies after the user has signed out.
  */
@@ -139,11 +143,15 @@ AuthRouter.post(
     res.cookie("accessToken", "", {
       maxAge: 0,
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
     });
 
     res.cookie("refreshToken", "", {
       maxAge: 0,
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
     });
 
     if (req.cookies.referer) {
