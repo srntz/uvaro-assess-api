@@ -1,5 +1,4 @@
 import { answer } from "../db/schemas";
-import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
 
 export class Answer {
   constructor(
@@ -18,9 +17,7 @@ export class Answer {
         data.question_id,
       );
     } catch {
-      throw new InvalidModelConstructionException(
-        Object.getPrototypeOf(this).constructor.name,
-      );
+      return null;
     }
   }
 }

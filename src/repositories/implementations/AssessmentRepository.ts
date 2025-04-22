@@ -8,7 +8,7 @@ import {
   assessmentLevel,
   level,
   question,
-  note,
+  note as noteTable,
 } from "../../db/schemas";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { Answer } from "../../models/Answer";
@@ -16,9 +16,9 @@ import { Note } from "../../models/Note";
 import { AssessmentAnswer } from "../../models/AssessmentAnswer";
 import { AssessmentLevel } from "../../models/AssessmentLevel";
 import { Level } from "../../models/Level";
-import { ICalculateLevelAnswer } from "../../interfaces/ICalculateLevelAnswer";
 import { AssessmentAnswerInsertDTO } from "../../dto/assessmentAnswer/AssessmentAnswerInsertDTO";
 import { Question } from "../../models/Question";
+import { NoteInsertDTO } from "../../dto/note/NoteInsertDTO";
 
 export class AssessmentRepository
   extends Repository
@@ -159,8 +159,8 @@ export class AssessmentRepository
 
     const data = await this.db
       .select()
-      .from(note)
-      .where(eq(note.assessment_id, assessmentId));
+      .from(noteTable)
+      .where(eq(noteTable.assessment_id, assessmentId));
 
     data.forEach((item) => {
       notes.push(Note.init(item));
@@ -169,30 +169,25 @@ export class AssessmentRepository
     return notes;
   }
 
-  async insertNote(item: Note): Promise<Note> {
+  async insertNote(
+    assessmentId: number,
+    categoryId: number,
+    note: NoteInsertDTO,
+  ): Promise<Note> {
     const data = await this.db
-      .insert(note)
-      .values(item)
+      .insert(noteTable)
+      .values({
+        assessment_id: assessmentId,
+        category_id: categoryId,
+        note_text: note.noteText,
+      })
       .onConflictDoUpdate({
-        target: [note.assessment_id, note.category_id],
-        set: { note_text: item.note_text },
+        target: [noteTable.assessment_id, noteTable.category_id],
+        set: { note_text: note.noteText },
       })
       .returning();
 
     return Note.init(data[0]);
-  }
-
-  async insertAnswer(item: AssessmentAnswer): Promise<AssessmentAnswer> {
-    const data = await this.db
-      .insert(assessmentAnswer)
-      .values(item)
-      .onConflictDoUpdate({
-        target: [assessmentAnswer.assessment_id, assessmentAnswer.question_id],
-        set: { answer_id: item.answer_id },
-      })
-      .returning();
-
-    return AssessmentAnswer.init(data[0]);
   }
 
   async insertAnswersInBatch(
@@ -234,38 +229,17 @@ export class AssessmentRepository
     return insertedAnswers;
   }
 
-  async getAnswersForLevelCalculation(
-    item: AssessmentLevel,
-  ): Promise<ICalculateLevelAnswer[]> {
-    const answers: ICalculateLevelAnswer[] = await this.db
-      .select()
-      .from(assessmentAnswer)
-      .leftJoin(answer, eq(assessmentAnswer.answer_id, answer.answer_id))
-      .leftJoin(
-        question,
-        eq(assessmentAnswer.question_id, question.question_id),
-      )
-      .where(
-        and(
-          eq(question.category_id, item.category_id),
-          eq(assessmentAnswer.assessment_id, item.assessment_id),
-        ),
-      );
-
-    return answers;
-  }
-
-  async insertLevel(item: AssessmentLevel): Promise<AssessmentLevel> {
+  async insertLevel(level: AssessmentLevel): Promise<AssessmentLevel> {
     const data = await this.db
       .insert(assessmentLevel)
       .values({
-        assessment_id: item.assessment_id,
-        category_id: item.category_id,
-        level_id: item.level_id as number,
+        assessment_id: level.assessment_id,
+        category_id: level.category_id,
+        level_id: level.level_id as number,
       })
       .onConflictDoUpdate({
         target: [assessmentLevel.assessment_id, assessmentLevel.category_id],
-        set: { level_id: item.level_id },
+        set: { level_id: level.level_id },
       })
       .returning();
 

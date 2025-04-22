@@ -6,7 +6,7 @@ import { mapUserEntityToUserResponseDTO } from "../../mappers/user/mapUserEntity
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async getById(userId: string): Promise<UserResponseDTO> {
+  async getById(userId: string): Promise<UserResponseDTO | null> {
     return mapUserEntityToUserResponseDTO(
       await this.userRepository.getById(userId),
     );

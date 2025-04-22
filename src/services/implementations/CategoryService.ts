@@ -12,9 +12,9 @@ export class CategoryService implements ICategoryService {
     );
   }
 
-  async getById(id: number): Promise<CategoryResponseDTO> {
+  async getById(categoryId: number): Promise<CategoryResponseDTO> {
     return mapCategoryEntityToCategoryResponseDTO(
-      await this.categoryRepository.getById(id),
+      await this.categoryRepository.getById(categoryId),
     );
   }
 }

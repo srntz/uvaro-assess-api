@@ -1,7 +1,6 @@
 import { IContext, IContextWithAuth } from "../../context/IContext";
 import { UnauthorizedError } from "../../errors/errors/UnauthorizedError";
 import { AnswerRequestDTO } from "../../dto/answer/AnswerRequestDTO";
-import { GraphQLError } from "graphql";
 import { withAuthenticationRequired } from "../middleware/withAuthenticationRequired";
 import { withUserAssessments } from "../middleware/withUserAssessments";
 import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDTO";
@@ -101,10 +100,11 @@ const assessmentResolvers = {
             );
 
             if (process.env.ENABLE_SLACK_NOTIFICATIONS === "true") {
-              NotificationService.send(
+              const builder = await NotificationService.build(
                 args.assessmentId,
                 AuthenticatedUser.userId,
               );
+              NotificationService.send(builder);
             }
 
             return levels;

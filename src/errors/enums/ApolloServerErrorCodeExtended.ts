@@ -1,5 +1,11 @@
 import { ApolloServerErrorCode } from "@apollo/server/errors";
 
+/**
+ * This is an extension of the ApolloServerErrorCode enum.
+ * It is used to allow for custom internal error types which improves the flexibility of error handling
+ *
+ * NOTE: This enum must be used instead of ApolloServerErrorCode.
+ */
 export enum ApolloServerErrorCodeExtended {
   INTERNAL_SERVER_ERROR = ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
   INTERNAL_SERVER_ERROR_WITH_MESSAGE = "INTERNAL_SERVER_ERROR_WITH_MESSAGE",

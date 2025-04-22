@@ -1,5 +1,4 @@
 import { assessment } from "../db/schemas";
-import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
 
 export class Assessment {
   constructor(
@@ -18,9 +17,7 @@ export class Assessment {
         data.user_id,
       );
     } catch {
-      throw new InvalidModelConstructionException(
-        Object.getPrototypeOf(this).constructor.name,
-      );
+      return null;
     }
   }
 }

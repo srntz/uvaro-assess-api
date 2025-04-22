@@ -1,5 +1,4 @@
 import { category } from "../db/schemas";
-import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
 
 export class Category {
   constructor(
@@ -18,9 +17,7 @@ export class Category {
         data.category_image,
       );
     } catch {
-      throw new InvalidModelConstructionException(
-        Object.getPrototypeOf(this).constructor.name,
-      );
+      return null;
     }
   }
 }

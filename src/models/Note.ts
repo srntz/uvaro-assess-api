@@ -1,5 +1,4 @@
 import { note } from "../db/schemas";
-import { InvalidModelConstructionException } from "../errors/InvalidModelConstructionException";
 
 export class Note {
   constructor(
@@ -12,9 +11,7 @@ export class Note {
     try {
       return new Note(data.note_text, data.assessment_id, data.category_id);
     } catch {
-      throw new InvalidModelConstructionException(
-        Object.getPrototypeOf(this).constructor.name,
-      );
+      return null;
     }
   }
 }

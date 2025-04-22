@@ -1,5 +1,12 @@
 import { EnvironmentTypeEnum } from "./EnviromnentTypeEnum";
 
+/**
+ * This class determines the environment based on the respective command line argument.
+ * Currently, it is used for loading corrent .env file according to the environment.
+ *
+ * The class is a singleton to ensure the consistency of the environment across the application.
+ * It is recommended to be initialized as early as possible.
+ */
 export class EnvironmentLoader {
   private static environment: EnvironmentTypeEnum;
 
@@ -29,8 +36,10 @@ export class EnvironmentLoader {
       this.environment = EnvironmentTypeEnum.DEVELOPMENT;
     } else if (argValue === "production") {
       this.environment = EnvironmentTypeEnum.PRODUCTION;
+    } else if (argValue === "test") {
+      this.environment = EnvironmentTypeEnum.TEST;
     } else {
-      throw new Error(`--mode flag is invalid`);
+      throw new Error(`--mode value is invalid`);
     }
 
     return this.environment;

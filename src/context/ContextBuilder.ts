@@ -12,11 +12,16 @@ import { AnswerRepository } from "../repositories/implementations/AnswerReposito
 import { CategoryService } from "../services/implementations/CategoryService";
 import { CategoryRepository } from "../repositories/implementations/CategoryRepository";
 import express from "express";
-import { JWTManager } from "../utils/JWTManager.js";
-import { NotificationService } from "../services/implementations/NotificationService.js";
+import { NotificationService } from "../services/implementations/NotificationService";
+import { TokenParser } from "../utils/jwt/TokenParser";
 
+/**
+ * This class is responsible for managing dependency injection.
+ * The context produced by the Build() method is fed to Apollo Server and consumed from field resolvers,
+ * providing a single source of truth for services across the application.
+ */
 export class ContextBuilder {
-  static Build(): IContext {
+  static build(): IContext {
     return {
       AssessmentService: new AssessmentService(
         new AssessmentRepository(),
@@ -38,7 +43,7 @@ export class ContextBuilder {
     };
   }
 
-  static ParseTokens(
+  static injectAuthenticatedUser(
     req: express.Request,
     res: express.Response,
     context: IContext,
@@ -52,41 +57,23 @@ export class ContextBuilder {
       },
     };
 
-    const jwt = new JWTManager();
+    const { payload } = TokenParser.Parse(req, res);
 
-    if (!req.cookies.accessToken && !req.cookies.refreshToken) {
+    if (!payload) {
       return extendedContext;
     }
 
-    if (!req.cookies.accessToken) {
-      const parsedRefreshToken = jwt.verify(req.cookies.refreshToken);
-      const newAccessToken = jwt.sign(
-        {
-          user_id: parsedRefreshToken.payload.user_id,
-          email: parsedRefreshToken.payload.email,
+    try {
+      return {
+        ...extendedContext,
+        AuthenticatedUser: {
+          ...extendedContext.AuthenticatedUser,
+          userId: payload.user_id,
+          email: payload.email,
         },
-        120000,
-      );
-
-      extendedContext.AuthenticatedUser.userId =
-        parsedRefreshToken.payload.user_id;
-      extendedContext.AuthenticatedUser.email =
-        parsedRefreshToken.payload.email;
-
-      res.cookie("accessToken", newAccessToken, {
-        httpOnly: true,
-        maxAge: 120000,
-      });
-
+      };
+    } catch {
       return extendedContext;
     }
-
-    const parsedAccessToken = jwt.verify(req.cookies.accessToken);
-
-    extendedContext.AuthenticatedUser.userId =
-      parsedAccessToken.payload.user_id;
-    extendedContext.AuthenticatedUser.email = parsedAccessToken.payload.email;
-
-    return extendedContext;
   }
 }

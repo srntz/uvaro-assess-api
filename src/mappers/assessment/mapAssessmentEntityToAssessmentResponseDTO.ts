@@ -3,7 +3,7 @@ import { AssessmentResponseDTO } from "../../dto/assessment/AssessmentResponseDT
 
 export function mapAssessmentEntityToAssessmentResponseDTO(
   assessment: Assessment,
-): AssessmentResponseDTO {
+): AssessmentResponseDTO | null {
   if (!assessment) {
     return null;
   }
