@@ -1,5 +1,7 @@
 import z from "zod";
 
+// Input validation schemas for endpoints found in question.resolver.ts
+
 export const getFollowUpQuestionsByCategorySchema = z.object({
   categoryId: z
     .number({
