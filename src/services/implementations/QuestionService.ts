@@ -14,9 +14,9 @@ export class QuestionService implements IQuestionService {
     ).map((question) => mapQuestionEntityToQuestionResponseDTO(question));
   }
 
-  async getQuestionById(id: number): Promise<QuestionResponseDTO> {
+  async getQuestionById(questionId: number): Promise<QuestionResponseDTO> {
     return mapQuestionEntityToQuestionResponseDTO(
-      await this.questionRepository.getQuestionById(id),
+      await this.questionRepository.getQuestionById(questionId),
     );
   }
 

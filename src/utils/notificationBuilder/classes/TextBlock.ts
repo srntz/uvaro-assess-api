@@ -10,6 +10,9 @@ interface ITextBlock extends ITextBlockPartial {
   type: "text";
 }
 
+/**
+ * This class represents the regular text block defined in the Slack API docs
+ */
 export class TextBlock {
   private element: ITextBlock;
 

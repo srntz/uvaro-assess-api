@@ -13,6 +13,15 @@ import dotenv from "dotenv";
 import { EnvironmentLoader } from "../utils/environmentLoader/EnvironmentLoader";
 import { weighting } from "./schemas/weighting";
 
+/*
+ * This script is used for local development. It fills the postgres container with static assessment data (categories. questions, etc.).
+ *
+ * It can be executed manually with "npm run load".
+ * The database must contain all required tables with the correct schemas before this script can be properly executed.
+ *
+ * NOTE: This script should NOT be used in production
+ */
+
 dotenv.config({
   path: `.env.${EnvironmentLoader.load(["--mode:development"])}`,
 });
@@ -255,43 +264,45 @@ const data: IData[] = [
     ],
     levels: [
       {
-        level_name: "Hm...",
-        level_statement: "Yeah, that's sad :(",
+        level_name: "Struggling with Finances",
+        level_statement:
+          "You often find it difficult to make ends meet, live paycheck to paycheck, and feel overwhelmed by financial planning. Savings and long-term goals may seem out of reach.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_financial_health_1.png",
         weighting_id: 1,
         category_id: null,
       },
       {
-        level_name: "Ok!",
-        level_statement: "You're not bad.",
+        level_name: "Building Financial Stability",
+        level_statement:
+          "You have started managing your finances better, covering your expenses, and thinking about saving. However, you may still struggle with budgeting and unexpected costs.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_financial_health_2.png",
         weighting_id: 2,
         category_id: null,
       },
       {
-        level_name: "Not bad!",
+        level_name: "Financially Aware & Growing",
         level_statement:
-          "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
+          "You actively budget, save money, and work toward financial goals like an emergency fund or big purchases. Occasional overspending may occur, but overall, you are on the right track.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_financial_health_3.png",
         weighting_id: 3,
         category_id: null,
       },
       {
-        level_name: "Good Job!",
+        level_name: "Strategic Planner",
         level_statement:
-          "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
+          "You consistently save, invest, and have a solid financial plan. You track your progress and adjust as needed to maintain stability and build long-term wealth.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_financial_health_4.png",
         weighting_id: 4,
         category_id: null,
       },
       {
-        level_name: "You are great!",
+        level_name: "Financially Independent & Mentor",
         level_statement:
-          "You are doing a great job managing your personal finances. Keep it up!",
+          "You have mastered financial management, feeling secure in your investments and savings. You help others by sharing financial advice and strategies for success.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_financial_health_5.png",
         weighting_id: 5,
@@ -500,43 +511,45 @@ const data: IData[] = [
     ],
     levels: [
       {
-        level_name: "Hm...",
-        level_statement: "Yeah, that's sad :(",
+        level_name: "Lacking Confidence & Direction",
+        level_statement:
+          "You often feel unsure about your skills and struggle to see how your work contributes to the bigger picture. Asking for help or feedback feels uncomfortable.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_work_you_enjoy_1.png",
         weighting_id: 1,
         category_id: null,
       },
       {
-        level_name: "Ok!",
-        level_statement: "You're not bad.",
+        level_name: "Gaining Skills & Confidence",
+        level_statement:
+          "You are beginning to recognize your strengths and areas for improvement. You are open to learning and starting to connect your work to company goals.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_work_you_enjoy_2.png",
         weighting_id: 2,
         category_id: null,
       },
       {
-        level_name: "Not bad!",
+        level_name: "Competent & Actively Engaged",
         level_statement:
-          "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
+          "You feel comfortable seeking feedback, contributing ideas, and engaging in discussions. You see how your work impacts the company and feel motivated to improve.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_work_you_enjoy_3.png",
         weighting_id: 3,
         category_id: null,
       },
       {
-        level_name: "Good Job!",
+        level_name: "Recognized Expert & Mentor",
         level_statement:
-          "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
+          "You are seen as an expert in your field. Others turn to you for guidance, and you actively take responsibility for impactful projects.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_work_you_enjoy_4.png",
         weighting_id: 4,
         category_id: null,
       },
       {
-        level_name: "You are great!",
+        level_name: "Visionary & Leader",
         level_statement:
-          "You are doing a great job managing your personal finances. Keep it up!",
+          "You take leadership roles, mentor others, and influence company strategies. You create a workplace where others feel empowered and fulfilled.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_work_you_enjoy_5.png",
         weighting_id: 5,
@@ -745,43 +758,45 @@ const data: IData[] = [
     ],
     levels: [
       {
-        level_name: "Hm...",
-        level_statement: "Yeah, that's sad :(",
+        level_name: "Uncertain About Fulfillment",
+        level_statement:
+          "You rarely reflect on what brings you joy and fulfillment. Life may feel chaotic, and you may not have a strong sense of purpose or direction.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_life_choice_fulfillment_1.png",
         weighting_id: 1,
         category_id: null,
       },
       {
-        level_name: "Ok!",
-        level_statement: "You're not bad.",
+        level_name: "Exploring Personal Fulfillment",
+        level_statement:
+          "You are starting to explore what makes you feel fulfilled. You are taking small steps to bring more meaning into your daily life but are still figuring things out.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_life_choice_fulfillment_2.png",
         weighting_id: 2,
         category_id: null,
       },
       {
-        level_name: "Not bad!",
+        level_name: "Purpose-Driven & Goal-Oriented",
         level_statement:
-          "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
+          "You have a good understanding of what makes you happy. You set goals that align with your values and work toward a balanced lifestyle.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_life_choice_fulfillment_3.png",
         weighting_id: 3,
         category_id: null,
       },
       {
-        level_name: "Good Job!",
+        level_name: "Living with Intention",
         level_statement:
-          "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
+          "You make decisions based on your core values, ensuring that your actions contribute to a fulfilling life. You are mindful about how you spend your time and energy.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_life_choice_fulfillment_4.png",
         weighting_id: 4,
         category_id: null,
       },
       {
-        level_name: "You are great!",
+        level_name: "Fully Aligned & Inspiring Others",
         level_statement:
-          "You are doing a great job managing your personal finances. Keep it up!",
+          "You live in full alignment with your values and purpose. You inspire others to do the same, mentoring or guiding people toward fulfillment.",
         level_image:
           "https://storage.googleapis.com/penguins_image_bucket/LEVEL_life_choice_fulfillment_5.png",
         weighting_id: 5,
@@ -990,40 +1005,47 @@ const data: IData[] = [
     ],
     levels: [
       {
-        level_name: "Hm...",
-        level_statement: "Yeah, that's sad :(",
-        level_image: "https://example.com/bucket/pcf",
+        level_name: "Disconnected from Community",
+        level_statement:
+          "You don’t feel connected to a peer group and may struggle to ask for or provide support. It can feel difficult to find a sense of belonging.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_peer_community_fulfillment_1.png",
         weighting_id: 1,
         category_id: null,
       },
       {
-        level_name: "Ok!",
-        level_statement: "You're not bad.",
-        level_image: "https://example.com/bucket/pcf",
+        level_name: "Beginning to Engage",
+        level_statement:
+          "You are making an effort to engage with a community, but you still feel like an outsider. You may be hesitant to fully participate.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_peer_community_fulfillment_2.png",
         weighting_id: 2,
         category_id: null,
       },
       {
-        level_name: "Not bad!",
+        level_name: "Active & Valued Contributor",
         level_statement:
-          "Good job for trying to improve your financial skills, take a look at how they could be further improved.",
-        level_image: "https://example.com/bucket/pcf",
+          "You have found a community where you feel valued. You contribute, share feedback, and support others while also receiving help when needed.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_peer_community_fulfillment_3.png",
         weighting_id: 3,
         category_id: null,
       },
       {
-        level_name: "Good Job!",
+        level_name: "Community Builder",
         level_statement:
-          "You are doing a good job managing your personal finances. Although, some of your habits could be improved.",
-        level_image: "https://example.com/bucket/pcf",
+          "You take an active role in strengthening your community. You help others connect, create opportunities for collaboration, and seek meaningful interactions.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_peer_community_fulfillment_4.png",
         weighting_id: 4,
         category_id: null,
       },
       {
-        level_name: "You are great!",
+        level_name: "Leader & Mentor in Community",
         level_statement:
-          "You are doing a great job managing your personal finances. Keep it up!",
-        level_image: "https://example.com/bucket/pcf",
+          "You are a leader in your peer community, creating a supportive and growth-oriented environment. You mentor others and foster strong relationships that help everyone succeed.",
+        level_image:
+          "https://storage.googleapis.com/penguins_image_bucket/LEVEL_peer_community_fulfillment_5.png",
         weighting_id: 5,
         category_id: null,
       },

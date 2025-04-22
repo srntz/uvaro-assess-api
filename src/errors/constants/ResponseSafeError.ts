@@ -4,6 +4,11 @@ export interface IResponseSafeErrorObject {
   message: string;
 }
 
+/**
+ * This class stores default response objects for each error that could be exposed to the client.
+ *
+ * NOTE: This class should be used for constructing safe error responses. Manual construction of errors is not recommended.
+ */
 export class ResponseSafeError {
   private static construct(
     error: IResponseSafeErrorObject,

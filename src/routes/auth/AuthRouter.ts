@@ -3,11 +3,21 @@ import bodyParser from "body-parser";
 import passport from "passport";
 import { PassportStrategyConfig } from "../../configs/PassportStrategyConfig";
 import cookieParser from "cookie-parser";
-import { JWTManager } from "../../utils/JWTManager";
+import { JWTManager } from "../../utils/jwt/JWTManager";
 
 const AuthRouter = express.Router();
 
+/*
+ * This endpoint initializes the login flow
+ */
 AuthRouter.get("/login", (req, res, next) => {
+  /*
+   * Referer can be passed from the client and defines the redirect URL which the API redirects to after a flow has been completed.
+   * If the client did not explicitly specify the referer, it will default to the referer present in request headers.
+   *
+   * It is stored in cookies to persist the state between redirects and different endpoints
+   * (referer is accessed from the last step in the authentication flow which is either /acs or /sls)
+   */
   res.clearCookie("referer");
   if (req.query.referer) {
     res.cookie("referer", req.query.referer, {
@@ -29,12 +39,22 @@ AuthRouter.get("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+/*
+ * This endpoint initializes the logout flow
+ */
 AuthRouter.get("/logout", (req, res) => {
   if (!req.cookies.refreshToken) {
     res.redirect("/login");
     return;
   }
 
+  /*
+   * Referer can be passed from the client and defines the redirect URL which the API redirects to after a flow has been completed.
+   * If the client did not explicitly specify the referer, it will default to the referer present in request headers.
+   *
+   * It is stored in cookies to persist the state between redirects and different endpoints
+   * (referer is accessed from the last step in the authentication flow which is either /acs or /sls)
+   */
   res.clearCookie("referer");
   if (req.query.referer) {
     res.cookie("referer", req.query.referer, {
@@ -69,6 +89,10 @@ AuthRouter.get("/logout", (req, res) => {
   );
 });
 
+/*
+ * The Assertion Consumer Service of the SAML flow.
+ * It receives signed tokens from the passport strategy callback and sets cookies respectively.
+ */
 AuthRouter.post(
   "/acs",
   bodyParser.urlencoded({ extended: false }),
@@ -99,6 +123,10 @@ AuthRouter.post(
   },
 );
 
+/**
+ * The Single Logout Service of the SAML flow.
+ * It resets cookies after the user has signed out.
+ */
 AuthRouter.post(
   "/sls",
   bodyParser.urlencoded({ extended: false }),

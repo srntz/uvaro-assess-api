@@ -4,6 +4,12 @@ import {
   ResponseSafeError,
 } from "../constants/ResponseSafeError.js";
 
+/**
+ * This function maps internal GraphQL errors to their response-safe equivalents.
+ *
+ * NOTE: Error types defined in ```ApolloServerErrorCodeExtended``` should be explicitly checked for.
+ * If the error type is not present, the mapper will default the error to InternalServerError (500)
+ */
 export function mapApolloServerErrorToResponseSafeError(
   errorCode: ApolloServerErrorCodeExtended,
   message: string,
@@ -13,6 +19,7 @@ export function mapApolloServerErrorToResponseSafeError(
     case ApolloServerErrorCodeExtended.BAD_REQUEST:
     case ApolloServerErrorCodeExtended.GRAPHQL_PARSE_FAILED:
       return ResponseSafeError.BadRequest();
+
     case ApolloServerErrorCodeExtended.BAD_REQUEST_WITH_MESSAGE:
       return ResponseSafeError.BadRequest(message);
 
@@ -21,11 +28,13 @@ export function mapApolloServerErrorToResponseSafeError(
     case ApolloServerErrorCodeExtended.PERSISTED_QUERY_NOT_SUPPORTED:
     case ApolloServerErrorCodeExtended.NOT_FOUND:
       return ResponseSafeError.NotFound();
+
     case ApolloServerErrorCodeExtended.NOT_FOUND_WITH_MESSAGE:
       return ResponseSafeError.NotFound(message);
 
     case ApolloServerErrorCodeExtended.UNAUTHORIZED:
       return ResponseSafeError.Unauthorized();
+
     case ApolloServerErrorCodeExtended.UNAUTHORIZED_WITH_MESSAGE:
       return ResponseSafeError.Unauthorized(message);
 

@@ -6,9 +6,9 @@ import { mapAnswerEntityToAnswerResponseDTO } from "../../mappers/answer/mapAnsw
 export class AnswerService implements IAnswerService {
   constructor(private readonly answerRepository: IAnswerRepository) {}
 
-  async getById(id: number): Promise<AnswerResponseDTO> {
+  async getById(answerId: number): Promise<AnswerResponseDTO | null> {
     return mapAnswerEntityToAnswerResponseDTO(
-      await this.answerRepository.getById(id),
+      await this.answerRepository.getById(answerId),
     );
   }
 

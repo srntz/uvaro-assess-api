@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
-import { DatabaseConnection } from "../db/DatabaseConnection";
+import { EnvironmentLoader } from "../utils/environmentLoader/EnvironmentLoader";
 
 export default async function () {
-  dotenv.config({ path: ".env.test" });
+  dotenv.config({ path: `.env.${EnvironmentLoader.load(["--mode:test"])}` });
 }
