@@ -11,13 +11,17 @@ export class Level {
   ) {}
 
   static init(data: typeof level.$inferSelect) {
-    return new Level(
-      data.level_name,
-      data.level_statement,
-      data.level_image,
-      data.weighting_id,
-      data.category_id,
-      data.level_id,
-    );
+    try {
+      return new Level(
+        data.level_name,
+        data.level_statement,
+        data.level_image,
+        data.weighting_id,
+        data.category_id,
+        data.level_id,
+      );
+    } catch {
+      return null;
+    }
   }
 }

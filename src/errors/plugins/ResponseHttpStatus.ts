@@ -1,5 +1,9 @@
 import { ApolloServerPlugin } from "@apollo/server";
 
+/**
+ * This plugin sets the response status code to the code passed by the error formatter
+ * (default Apollo Server formatter or custom response-safe mapper) in the error body.
+ */
 export const responseHttpStatus: ApolloServerPlugin = {
   async requestDidStart() {
     return {

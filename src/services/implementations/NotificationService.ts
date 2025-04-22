@@ -6,6 +6,7 @@ import { TextBlock } from "../../utils/notificationBuilder/classes/TextBlock";
 import { ICategoryRepository } from "../../repositories/interfaces/ICategoryRepository";
 import { RichTextList } from "../../utils/notificationBuilder/classes/RichTextList";
 import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
+import { INotificationBuilder } from "../../interfaces/INotificationBuilder";
 
 export class NotificationService implements INotificationService {
   constructor(
@@ -14,7 +15,20 @@ export class NotificationService implements INotificationService {
     private readonly userRepository: IUserRepository,
   ) {}
 
-  async send(assessmentId: number, userId: string): Promise<void> {
+  async send(builder: INotificationBuilder): Promise<void> {
+    fetch(process.env.SLACK_WEBHOOK_URL, {
+      method: "POST",
+      body: JSON.stringify(builder),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
+  async build(
+    assessmentId: number,
+    userId: string,
+  ): Promise<INotificationBuilder> {
     const builder = new NotificationBuilder();
 
     const user = await this.userRepository.getById(userId);
@@ -111,12 +125,6 @@ export class NotificationService implements INotificationService {
       }
     }
 
-    fetch(process.env.SLACK_WEBHOOK_URL, {
-      method: "POST",
-      body: JSON.stringify(builder),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return builder;
   }
 }

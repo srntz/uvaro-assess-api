@@ -1,7 +1,10 @@
-import { GraphQLError } from "graphql/index";
 import z from "zod";
 import { BadRequest } from "../../errors/errors/BadRequest";
 
+/**
+ * Validates GraphQL args against the provided zod schema.
+ * @throws ```BadRequest``` if the args did not pass validation.
+ */
 export function withInputValidation<T>(
   schema: z.ZodSchema<T>,
   next: (parent, args, context, info) => unknown,

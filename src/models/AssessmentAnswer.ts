@@ -8,10 +8,14 @@ export class AssessmentAnswer {
   ) {}
 
   static init(data: typeof assessmentAnswer.$inferSelect) {
-    return new AssessmentAnswer(
-      data.assessment_id,
-      data.question_id,
-      data.answer_id,
-    );
+    try {
+      return new AssessmentAnswer(
+        data.assessment_id,
+        data.question_id,
+        data.answer_id,
+      );
+    } catch {
+      return null;
+    }
   }
 }

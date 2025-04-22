@@ -1,5 +1,7 @@
 import { array, object, z } from "zod";
 
+// Input validation schemas for endpoints found is assessment.resolver.ts
+
 export const getAssessmentByIdSchema = z.object({
   id: z
     .number({

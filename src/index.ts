@@ -15,17 +15,23 @@ import { responseHttpStatus } from "./errors/plugins/ResponseHttpStatus";
 import { sentryErrorHandler } from "./errors/plugins/SentryErrorHandler";
 import { EnvironmentLoader } from "./utils/environmentLoader/EnvironmentLoader";
 
+// Environment is loaded and the return string is passed to dotenv to determine the correct .env file for the given environment
 dotenv.config({ path: `.env.${EnvironmentLoader.load(process.argv)}` });
+
+// Loads the passport-saml configuration. This enables authentication flows and prepares the API for communication with the external IdP.
 PassportStrategyConfig.configure();
 
+// Initializes Sentry client
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
 });
 
 const app = express();
 
-let context = ContextBuilder.Build();
+// Loads the base context.
+let context = ContextBuilder.build();
 
+// Creates an instance of Apollo Server. Determines plugins based on the options from .env
 const server = new ApolloServer({
   schema,
   formatError:
@@ -47,6 +53,7 @@ const server = new ApolloServer({
   })(),
 });
 
+// Spins up the GraphQL server. This is a required step before passing the server to express.
 await server.start();
 
 app.use(
@@ -60,12 +67,14 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
+// Attaches the AuthRouter to the express instance.
 app.use("/", AuthRouter);
 
+// Attaches the GraphQL (Apollo) server to the express instance.
 app.use(
   "/graphql",
   (req, res, next) => {
-    context = ContextBuilder.ParseTokens(req, res, context);
+    context = ContextBuilder.injectAuthenticatedUser(req, res, context);
     next();
   },
   expressMiddleware(server, {
@@ -75,6 +84,7 @@ app.use(
   }),
 );
 
+// Attaches the Sentry middleware to the express instance. This will catch and log all errors thrown outside of the GraphQL server.
 Sentry.setupExpressErrorHandler(app);
 
 app.listen(4000, "0.0.0.0", () => {

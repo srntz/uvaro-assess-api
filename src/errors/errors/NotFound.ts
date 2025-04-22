@@ -1,30 +1,42 @@
 import { GraphQLError, GraphQLErrorOptions } from "graphql";
 import { ApolloServerErrorCodeExtended } from "../enums/ApolloServerErrorCodeExtended";
 
+/**
+ * An extension of GraphQLError that corresponds to the HTTP NotFound (404) error.
+ *
+ * NOTE: This error must be thrown instead of the generic GraphQLError where applicable.
+ */
 export class NotFound extends GraphQLError {
   constructor(message?: string, options?: GraphQLErrorOptions) {
+    const errorOptions = {
+      ...(options || {}),
+      extensions: {
+        ...(() => {
+          if (
+            options &&
+            Object.prototype.hasOwnProperty.call(options, "extensions")
+          ) {
+            return options.extensions;
+          }
+          return {};
+        })(),
+      },
+    };
+
     if (message) {
       super(message, {
-        ...(options || {}),
+        ...errorOptions,
         extensions: {
-          ...(() => {
-            if (
-              options &&
-              Object.prototype.hasOwnProperty.call(options, "extensions")
-            ) {
-              return options.extensions;
-            }
-            return {};
-          })(),
-          code: ApolloServerErrorCodeExtended.BAD_REQUEST_WITH_MESSAGE,
+          ...errorOptions.extensions,
+          code: ApolloServerErrorCodeExtended.NOT_FOUND_WITH_MESSAGE,
         },
       });
     } else {
       super(null, {
-        ...options,
+        ...errorOptions,
         extensions: {
-          ...options.extensions,
-          code: ApolloServerErrorCodeExtended.BAD_REQUEST_WITH_MESSAGE,
+          ...errorOptions.extensions,
+          code: ApolloServerErrorCodeExtended.NOT_FOUND,
         },
       });
     }
